@@ -189,8 +189,6 @@ const getCookieValues = require('getCookieValues');
 const setCookie = require('setCookie');
 const decodeUriComponent = require('decodeUriComponent');
 
-log(data);
-
 //Helpers
 const getEventName = (event) => {
   switch (event.event_name) {
@@ -249,10 +247,10 @@ const url = collectorUrl + '/com.snowplowanalytics.snowplow/tp2';
 const eventData = getAllEventData(); 
 
 let snowplowEvent;
-if (eventData.snowplow_event) {
+if (eventData["x-sp-tp2"]) {
   snowplowEvent = {
     schema: "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4", 
-    data: [ eventData.snowplow_event ]
+    data: [ eventData["x-sp-tp2"] ]
   };
   if (eventData.ip_override) {
     snowplowEvent.data[0].ip = eventData.ip_override;
@@ -496,6 +494,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 06/06/2021, 19:08:55
+Created on 23/08/2021, 16:56:07
 
 
