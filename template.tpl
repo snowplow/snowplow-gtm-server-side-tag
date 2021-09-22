@@ -13,7 +13,12 @@ ___INFO___
   "id": "cvt_temp_public_id",
   "version": 1,
   "securityGroups": [],
-  "displayName": "Snowplow Tag",
+  "displayName": "Snowplow",
+  "categories": [
+    "ANALYTICS",
+    "DATA_WAREHOUSING",
+    "TAG_MANAGEMENT"
+  ],
   "brand": {
     "id": "brand_dummy",
     "displayName": "",
@@ -173,33 +178,551 @@ ___TEMPLATE_PARAMETERS___
         ]
       }
     ]
+  },
+  {
+    "type": "GROUP",
+    "name": "customEvents",
+    "displayName": "Advanced Event Settings",
+    "groupStyle": "ZIPPY_CLOSED",
+    "subParams": [
+      {
+        "type": "CHECKBOX",
+        "name": "defineAsSelfDescribing",
+        "checkboxText": "Define events to be sent as Snowplow Self-Describing Events",
+        "simpleValueType": true,
+        "subParams": [
+          {
+            "type": "PARAM_TABLE",
+            "name": "customEventSchemas",
+            "displayName": "Event Name to Schema",
+            "paramTableColumns": [
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "eventName",
+                  "displayName": "Event Name",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": true
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "eventSchema",
+                  "displayName": "Event Schema",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": true
+              }
+            ],
+            "enablingConditions": [
+              {
+                "paramName": "defineAsSelfDescribing",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ],
+            "help": "A table of the events (event names and corresponding schemas) to be tracked as custom self-describing Snowplow events."
+          },
+          {
+            "type": "PARAM_TABLE",
+            "name": "customEventData",
+            "displayName": "Event Definitions",
+            "paramTableColumns": [
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "eventName",
+                  "displayName": "Event Name",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "snowplowPropName",
+                  "displayName": "Snowplow property name",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "SELECT",
+                  "name": "type",
+                  "displayName": "Type",
+                  "macrosInSelect": false,
+                  "selectItems": [
+                    {
+                      "value": "default",
+                      "displayValue": "Default"
+                    },
+                    {
+                      "value": "string",
+                      "displayValue": "String"
+                    },
+                    {
+                      "value": "boolean",
+                      "displayValue": "Boolean"
+                    },
+                    {
+                      "value": "number",
+                      "displayValue": "Number"
+                    }
+                  ],
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "SELECT",
+                  "name": "ref",
+                  "displayName": "Reference",
+                  "macrosInSelect": false,
+                  "selectItems": [
+                    {
+                      "value": "eventProperty",
+                      "displayValue": "Client Event Property"
+                    },
+                    {
+                      "value": "userSet",
+                      "displayValue": "Constant or Variable"
+                    }
+                  ],
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "value",
+                  "displayName": "Value",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ]
+                },
+                "isUnique": false
+              }
+            ],
+            "enablingConditions": [
+              {
+                "paramName": "defineAsSelfDescribing",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ],
+            "help": "A table of definitions for self-describing data properties. Each row maps a single data property of a custom self-describing Snowplow event to its value."
+          }
+        ],
+        "help": "Enable this to allow custom self-describing event definitions."
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "defineAsStructured",
+        "checkboxText": "Send selected events as Snowplow Structured Events",
+        "simpleValueType": true,
+        "subParams": [
+          {
+            "type": "TEXT",
+            "name": "customStructuredDefs",
+            "displayName": "Event name(s) selected",
+            "simpleValueType": true,
+            "enablingConditions": [
+              {
+                "paramName": "defineAsStructured",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ],
+            "textAsList": true,
+            "lineCount": 2,
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "help": "Add the event names (in separate lines) to be tracked as custom structured Snowplow events."
+          }
+        ],
+        "help": "Enable this to allow setting custom structured events."
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "encodeBase64",
+        "checkboxText": "Base64 encoding",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "defaultValue": true,
+        "help": "Whether to encode the custom self-describing event data."
+      },
+      {
+        "type": "SELECT",
+        "name": "platform",
+        "displayName": "Platform identifier",
+        "macrosInSelect": false,
+        "selectItems": [
+          {
+            "value": "web",
+            "displayValue": "Web"
+          },
+          {
+            "value": "mob",
+            "displayValue": "Mobile"
+          },
+          {
+            "value": "pc",
+            "displayValue": "Desktop/Laptop"
+          },
+          {
+            "value": "srv",
+            "displayValue": "Server-side"
+          },
+          {
+            "value": "app",
+            "displayValue": "General App"
+          },
+          {
+            "value": "tv",
+            "displayValue": "Connected TV"
+          },
+          {
+            "value": "cnsl",
+            "displayValue": "Games Console"
+          },
+          {
+            "value": "iot",
+            "displayValue": "Internet of things"
+          }
+        ],
+        "simpleValueType": true,
+        "help": "The application platform",
+        "defaultValue": "srv"
+      }
+    ]
   }
 ]
 
 
 ___SANDBOXED_JS_FOR_SERVER___
 
-const getEventData = require('getEventData');
-const log = require('logToConsole');
-const makeString = require('makeString');
-const sendHttpRequest = require('sendHttpRequest');
-const JSON = require('JSON');
+// Server-side tagging API imports
+const decodeUriComponent = require('decodeUriComponent');
 const getAllEventData = require('getAllEventData');
 const getCookieValues = require('getCookieValues');
+const getEventData = require('getEventData');
+const getTimestampMillis = require('getTimestampMillis');
+const getType = require('getType');
+const JSON = require('JSON');
+const log = require('logToConsole');
+const makeNumber = require('makeNumber');
+const makeString = require('makeString');
+const sendHttpRequest = require('sendHttpRequest');
 const setCookie = require('setCookie');
-const decodeUriComponent = require('decodeUriComponent');
+const toBase64 = require('toBase64');
 
-//Helpers
-const getEventName = (event) => {
-  switch (event.event_name) {
-    case 'page_view':
-      return 'pv';
-    default:
-      log(event);
-      return undefined;
+// Constants
+const spPayloadDataSchema = 'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
+const spSelfDescribingSchema = 'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0';
+const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
+const spVersion = 'gtmss-0.1.0';
+
+// event data mappings for self-describing Snowplow events
+const videoDataMappings = [
+  {
+    spPropName: 'video_current_time',
+    type: 'number',
+    ref: 'eventProperty',
+    value: 'video_current_time'
+  },
+  {
+    spPropName: 'video_duration',
+    type: 'number',
+    ref: 'eventProperty',
+    value: 'video_duration'
+  },
+  {
+    spPropName: 'video_percent',
+    type: 'number',
+    ref: 'eventProperty',
+    value: 'video_percent'
+  },
+  {
+    spPropName: 'video_provider',
+    type: 'string',
+    ref: 'eventProperty',
+    value: 'video_provider'
+  },
+  {
+    spPropName: 'video_title',
+    type: 'string',
+    ref: 'eventProperty',
+    value: 'video_title'
+  },
+  {
+    spPropName: 'video_url',
+    type: 'string',
+    ref: 'eventProperty',
+    value: 'video_url'
+  },
+  {
+    spPropName: 'visible',
+    type: 'boolean',
+    ref: 'eventProperty',
+    value: 'visible'
   }
+];
+
+const spDefaultCustomDefs = {
+  // server side
+  add_payment_info: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/add_payment_info/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'coupon', 'payment_type', 'items']
+  },
+  add_to_cart: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/add_to_cart/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'items']
+  },
+  add_to_wishlist: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/add_to_wishlist/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'items']
+  },
+  begin_checkout: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/begin_checkout/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'coupon', 'items']
+  },
+  exception: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/exception/jsonschema/1-0-0',
+    eventDataMappings: [
+      {
+        spPropName: 'description',
+        type: 'string',
+        ref: 'eventProperty',
+        value: 'description'
+      },
+      {
+        spPropName: 'fatal',
+        type: 'boolean',
+        ref: 'eventProperty',
+        value: 'fatal'
+      }
+    ]
+  },
+  generate_lead: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/generate_lead/jsonschema/1-0-0',
+    eventDataMappings : ['currency', 'value']
+  },
+  join_group: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/join_group/jsonschema/1-0-0',
+    eventDataMappings : ['group_id']
+  },
+  login: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/login/jsonschema/1-0-0',
+    eventDataMappings : ['method']
+  },
+  purchase: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/purchase/jsonschema/1-0-0',
+    eventDataMappings : ['currency', 'transaction_id', 'value', 'affiliation', 'coupon', 'shipping', 'tax', 'items']
+  },
+  refund: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/refund/jsonschema/1-0-0',
+    eventDataMappings : ['currency', 'transaction_id', 'value', 'affiliation', 'coupon', 'shipping', 'tax', 'items']
+  },
+  search: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/search/jsonschema/1-0-0',
+    eventDataMappings : ['search_term']
+  },
+  select_content: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/select_content/jsonschema/1-0-0',
+    eventDataMappings : ['content_type', 'item_id']
+  },
+  share: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/share/jsonschema/1-0-0',
+    eventDataMappings : ['method', 'content_type', 'item_id']
+  },
+  sign_up: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/sign_up/jsonschema/1-0-0',
+    eventDataMappings : ['method']
+  },
+  view_item: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/view_item/jsonschema/1-0-0',
+    eventDataMappings : ['currency', 'value', 'items']
+  },
+  view_item_list: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/view_item_list/jsonschema/1-0-0',
+    eventDataMappings : ['item_list_id', 'item_list_name', 'items']
+  },
+  view_search_results: {
+    eventType: 'ue',
+    eventSchema: 'com.google.tag-manager.server-side/view_search_results/jsonschema/1-0-0',
+    eventDataMappings : ['search_term', 'items']
+  },
+  // enhanced measurement
+  click: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/click/jsonschema/1-0-0',
+    eventDataMappings: [
+      {
+        spPropName: 'link_classes',
+        type: 'string',
+        ref: 'eventProperty',
+        value: 'link_classes'
+      },
+      {
+        spPropName: 'link_domain',
+        type: 'string',
+        ref: 'eventProperty',
+        value: 'link_domain'
+      },
+      {
+        spPropName: 'link_id',
+        type: 'string',
+        ref: 'eventProperty',
+        value: 'link_id'
+      },
+      {
+        spPropName: 'link_url',
+        type: 'string',
+        ref: 'eventProperty',
+        value: 'link_url'
+      },
+      {
+        spPropName: 'outbound',
+        type: 'boolean',
+        ref: 'eventProperty',
+        value: 'outbound'
+      }
+    ]
+  },
+  file_download: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/file_download/jsonschema/1-0-0',
+    eventDataMappings : ['file_extention', 'file_name', 'link_classes', 'link_domain', 'link_id', 'link_text', 'link_url']
+  },
+  scroll: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/scroll/jsonschema/1-0-0',
+    eventDataMappings : []
+  },
+  video_complete: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/video_complete/jsonschema/1-0-0',
+    eventDataMappings : videoDataMappings
+  },
+  video_progress: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/video_progress/jsonschema/1-0-0',
+    eventDataMappings : videoDataMappings
+  },
+  video_start: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4.enhanced-measurement/video_start/jsonschema/1-0-0',
+    eventDataMappings : videoDataMappings
+  },
+  // ga4 automatically collected
+  first_visit: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4/first_visit/jsonschema/1-0-0',
+    eventDataMappings : []
+  },
+  session_start: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4/session_start/jsonschema/1-0-0',
+    eventDataMappings : []
+  },
+  user_engagement: {
+    eventType: 'ue',
+    eventSchema: 'com.google.ga4/user_engagement/jsonschema/1-0-0',
+    eventDataMappings : ['engagement_time_msec']
+  },
 };
 
+
+// Helpers
+const fail = (msg) => {
+  log('[ERROR GTM-SS / Snowplow Tag] ' + msg);
+  return data.gtmOnFailure();
+};
+
+const replaceAll = (str, substr, newSubstr) => {
+  let finished = false, result = str;
+  while (!finished) {
+    const newStr = result.replace(substr, newSubstr);
+    if (result === newStr) {
+      finished = true;
+    }
+    result = newStr;
+  }
+  return result;
+};
+
+const base64urlencode = (data) => {
+  if (!data) {
+    return data;
+  }
+  const base64Enc = toBase64(data);
+  const urlBase64Enc = replaceAll(replaceAll(replaceAll(base64Enc,
+                                                        '=', ''),
+                                             '+', '-'),
+                                  '/', '_');
+  return urlBase64Enc;
+};
+
+/*
+ * Parses the cookie attributes of set-cookie header and returns the corresponding object.
+ * e.g. parseCookie('name=value; Secure; HttpOnly') returns
+ *       { name:value, Secure:true, HttpOnly:true }
+ */
 const parseCookie = (str) =>
   makeString(str)
     .split(';')
@@ -213,9 +736,43 @@ const parseCookie = (str) =>
       return acc;
     }, {});
 
+/*
+ * Sets the cookie
+ * (assumes: if headers['set-cookie'])
+ */
+const setCookieFrom = (headers, data) => {
+  const cookieValues = parseCookie(headers['set-cookie']);
+  let cookieProperties = {
+    domain: cookieValues.Domain || 'auto',
+    path: cookieValues.Path || '/',
+    httpOnly: cookieValues.HttpOnly || true,
+    secure: cookieValues.Secure || true,
+    sameSite: cookieValues.SameSite || 'Lax',
+  };
+
+  if (cookieValues.Expires) {
+    cookieProperties.expires = cookieValues.Expires;
+  } else {
+    cookieProperties['max-age'] = 63072000;
+  }
+
+  if (data.cookieOverrideEnabled) {
+    cookieProperties = {
+      'max-age': data.cookieExpiration,
+      domain: data.cookieDomain,
+      path: data.cookiePath,
+      httpOnly: data.cookieHttpOnly,
+      secure: data.cookieSecure,
+      sameSite: data.cookieSameSite,
+    };
+  }
+
+  setCookie(data.userIdCookie, cookieValues[data.userIdCookie], cookieProperties);
+};
+
 const getHeaders = (event) => {
-  const headers = { 
-    'Content-Type': 'application/json', 
+  const headers = {
+    'Content-Type': 'application/json',
   };
   const userAgent = event.user_agent;
   if (userAgent) {
@@ -231,100 +788,331 @@ const getHeaders = (event) => {
   return headers;
 };
 
-if (!data.collectorUrl) {
-  log('A collector URL must be specified');
-  data.gtmOnFailure();
-}
-let collectorUrl;
-if (data.collectorUrl.indexOf('http') === 0) {
-  collectorUrl = data.collectorUrl;
-} else {
-  collectorUrl = 'https://' + data.collectorUrl;
-}
-
-const url = collectorUrl + '/com.snowplowanalytics.snowplow/tp2';
-
-const eventData = getAllEventData(); 
-
-let snowplowEvent;
-if (eventData["x-sp-tp2"]) {
-  snowplowEvent = {
-    schema: "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4", 
-    data: [ eventData["x-sp-tp2"] ]
-  };
-  if (eventData.ip_override) {
-    snowplowEvent.data[0].ip = eventData.ip_override;
+/*
+ * Adds https as the default protocol if not provided in collector url.
+ */
+const asCollectorUrl = (collectorUrl) => {
+  if (collectorUrl.indexOf('http') === 0) {
+    return collectorUrl;
   }
-} else {
-  const eventName = getEventName(eventData);
-  if (eventName) {
-    snowplowEvent = {
-      schema: "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4", 
-      data: [ 
-        {
-          e: eventName,
-          url: eventData.page_location,
-          duid: eventData.client_id,
-          ip: eventData.ip_override,
-          lang: eventData.language,
-          cs: eventData.page_encoding,
-          refr: eventData.page_referrer,
-          page: eventData.page_title,
-          res: eventData.screen_resolution,
-          uid: eventData.user_id,
-          vp: eventData.viewport_size
-        } 
-      ]
-    };
-  } 
+  return 'https://' + collectorUrl;
+};
+
+const asIgluSchema = (schema) => {
+  if (schema.indexOf('iglu:') === 0) {
+    return schema;
+  }
+  return 'iglu:' + schema;
+};
+
+/*
+ * Returns a boolean from a value, maps the string 'false' to boolean false.
+ *  e.g. asBoolean('false') => false
+ */
+const asBoolean = (val) => {
+  if (val === 'false') {
+    return false;
+  }
+  return !!val;
+};
+
+/*
+ * Ovewrites the default custom event definitions with the user provided ones if any.
+ * Does not validate data - assumes the non-empty validation rule.
+ * Guarantees that for any custom self-describing mapping m, m.value is a string.
+ */
+const mkCustomDefs = (data, definitions) => {
+  if (data.defineAsStructured) {
+    data.customStructuredDefs.forEach((evName) => {
+      if (evName) {
+        definitions[evName] = {
+          eventType: 'se'
+        };
+      }
+    });
+  }
+
+  if (data.defineAsSelfDescribing) {
+    data.customEventSchemas.forEach((row) => {
+      const evName = row.eventName;
+      const mappings = data.customEventData
+        .filter((r) => r.eventName === evName)
+        .map((m) => {
+          return {
+            spPropName: m.snowplowPropName,
+            type: m.type,
+            ref: m.ref,
+            value: makeString(m.value)
+          };
+        });
+      definitions[evName] = {
+        eventType: 'ue',
+        eventSchema: row.eventSchema,
+        eventDataMappings: mappings
+      };
+    });
+  }
+
+  return definitions;
+};
+
+/*
+ * Gets the value in obj from path.
+ * Path denotes a nested property string path separated by '.'
+ *  e.g. getFromPath('a.b', {a: {b: 0}}) => 0
+ */
+const getFromPath = (path, obj) => {
+  if (getType(path) === 'string') {
+    const splitPath = path.split('.').filter((prop) => !!prop);
+    return splitPath.reduce((acc, curr) => acc && acc[curr], obj);
+  }
+  return undefined;
+};
+
+/*
+ * Sets the value in obj from path (side-effects).
+ * Overwrites if encounters existing properties, and creates nesting if needed.
+ *  e.g. setFromPath('a.b.c', 3, {a: {b: 0}}) => {a: {b: {c: 3}}}
+ */
+const setFromPath = (path, val, obj, target) => {
+  if (!target) {
+    target = obj;
+  }
+
+  if (getType(path) === 'string') {
+    path = path.split('.').filter((p) => !!p);
+  }
+
+  if (path.length === 1) {
+    target[path[0]] = val;
+    return obj;
+  } else {
+    const nestKey = path[0];
+    const nestPath = path.slice(1);
+    if (getType(target[nestKey]) !== 'object') {
+      target[nestKey] = {};
+    }
+    return setFromPath(nestPath, val, obj, target[nestKey]);
+  }
+  return obj;
+};
+
+/*
+ * Assumes val argument is string.
+ * Interprets val according to a type typ.
+ * If val is a name (referred to by ref as 'eventProperty'),
+ *   interprets its value in (event)object instead.
+ *
+ * @param val {string} - the value to interpret
+ * @param typ {string} - the type (one of number, boolean, string, default)
+ * @param ref {string} - singifies whether val refers to a name in evObj
+ * @param evObj {Object} - the object ref may refer to.
+ * @returns - the interpreted value
+ */
+function interpret(val, typ, ref, evObj) {
+  const deducedVal = ref === 'eventProperty' ? getFromPath(val, evObj) : val;
+  switch (typ) {
+    case 'number':
+      return makeNumber(deducedVal);
+    case 'boolean':
+      return asBoolean(deducedVal);
+    case 'string':
+      return makeString(deducedVal);
+    default:
+      return deducedVal;
+  }
 }
 
-if (snowplowEvent) {
-  sendHttpRequest(url, (statusCode, headers, body) => {
-    if (statusCode >= 200 && statusCode < 300) {
-      const setCookieHeader = headers['set-cookie'];
-      if (setCookieHeader) {
-        const cookieValues = parseCookie(setCookieHeader);
-        let cookieProperties = {
-          domain: cookieValues.Domain || 'auto',
-          path: cookieValues.Path || '/',
-          httpOnly: cookieValues.HttpOnly || true,
-          secure: cookieValues.Secure || true,
-          sameSite: cookieValues.SameSite || 'Lax',
-        };
+/*
+ * Makes the standard name-value pairs of Snowplow event.
+ *
+ * @param evObj {Object} - the client event object
+ * @param evType {string} - the Snowplow event type ('se' or 'ue')
+ * @param tagConfig {Object} - the tag configuration data
+ * @returns - the initial Snowplow event object
+ */
+const mkStandardPairs = (evObj, evType, tagConfig) => {
+  return {
+    e: evType,
+    p: tagConfig.platform,
+    tv: spVersion,
+    dtm: makeString(getTimestampMillis()),
+    url: evObj.page_location,
+    duid: evObj.client_id,
+    lang: evObj.language,
+    cs: evObj.page_encoding,
+    refr: evObj.page_referrer,
+    page: evObj.page_title,
+    res: evObj.screen_resolution,
+    uid: evObj.user_id,
+    vp: evObj.viewport_size,
+    ip: evObj.ip_override
+  };
+};
 
-        if (cookieValues.Expires) {
-          cookieProperties.expires = cookieValues.Expires;
-        } else {
-          cookieProperties['max-age'] = 63072000;
-        }
+/*
+ * Given a client event, makes a self-describing Snowplow event
+ *
+ * @param evObj {Object} - the client event object
+ * @param evSchema {string} - the schema for the event
+ * @param mappings {Array} - the event data mappings
+ * @param tagConfig {Object} - the tag configuration data
+ * @returns - the self-describing Snowplow event object
+ */
+const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
+  const event = mkStandardPairs(evObj, 'ue', tagConfig);
+  const selfDescData = {};
 
-        if (data.cookieOverrideEnabled) {
-          cookieProperties = {
-            'max-age': data.cookieExpiration,
-            domain: data.cookieDomain,
-            path: data.cookiePath,
-            httpOnly: data.cookieHttpOnly,
-            secure: data.cookieSecure,
-            sameSite: data.cookieSameSite,
-          };
-        }
-
-        setCookie(data.userIdCookie, cookieValues[data.userIdCookie], cookieProperties);
-      }
-      
-      data.gtmOnSuccess();
+  mappings.forEach((m) => {
+    if (getType(m) === 'string') {
+      const setVal = interpret(m, 'default', 'eventProperty', evObj);
+      setFromPath(m, setVal, selfDescData);
     } else {
-      data.gtmOnFailure();
+      const setVal = interpret(m.value, m.type, m.ref, evObj);
+      setFromPath(m.spPropName, setVal, selfDescData);
     }
-  }, { 
-    headers: getHeaders(eventData), 
-    method: 'POST', 
-    timeout: 5000 
-  }, JSON.stringify(snowplowEvent));
+  });
+
+  const uePr = JSON.stringify({
+    schema: spSelfDescribingSchema,
+    data: {
+      schema: evSchema,
+      data: selfDescData
+    }
+  });
+
+  const encodeBase64 = tagConfig.encodeBase64;
+  if (encodeBase64) {
+    event.ue_px = base64urlencode(uePr);
+  } else {
+    event.ue_pr = uePr;
+  }
+
+  return event;
+};
+
+/*
+ * Given a client event, makes a structured Snowplow event
+ *
+ * @param evObj {Object} - the client event object
+ * @param tagConfig {Object} - the tag configuration data
+ * @returns - the structured Snowplow event object
+ */
+const mkStructuredEvent = (evObj, tagConfig) => {
+  const action = evObj.event_action ? evObj.event_action : evObj.event_name;
+  const category = evObj.event_category;
+
+  if (action && category) {
+    const event = mkStandardPairs(evObj, 'se', tagConfig);
+    event.se_ac = action;
+    event.se_ca = category;
+    event.se_la = evObj.event_label;
+    event.se_va = evObj.event_value;
+
+    return event;
+  }
+  return undefined;
+};
+
+/*
+ * Makes a Snowplow event from a non-Snowplow client event.
+ *
+ * @param evObj {Object} - the client event object
+ * @param customDefs {Object} - the custom event data definitions
+ * @param tagConfig {Object} - the tag configuration data
+ * @returns - the Snowplow event or undefined, if event could not be constructed
+ */
+const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
+  const eventName = evObj.event_name;
+
+  if (!customDefs.hasOwnProperty(eventName)) {
+    return undefined;
+  }
+
+  if (customDefs[eventName].eventType === 'ue') {
+    const eventSchema = asIgluSchema(customDefs[eventName].eventSchema);
+    const eventMappings = customDefs[eventName].eventDataMappings;
+
+    return mkSelfDescribingEvent(evObj, eventSchema, eventMappings, tagConfig);
+  }
+
+  if (customDefs[eventName].eventType === 'se') {
+    return mkStructuredEvent(evObj, tagConfig);
+  }
+
+  return undefined;
+};
+
+/*
+ * Given the client event object,
+ *  - gets the Snowplow event from 'x-sp-tp2' (by Snowplow client)
+ *  - or makes a Snowplow event
+ */
+const buildSpEvent = (evObj, tagConfig) => {
+  if (evObj["x-sp-tp2"]) {
+    const spEvent = evObj["x-sp-tp2"];
+    spEvent.ip = evObj.ip_override;
+
+    return spEvent;
+  }
+
+  const spCustomDefs = mkCustomDefs(tagConfig, spDefaultCustomDefs);
+  const rawEvent = mkSnowplowEvent(evObj, spCustomDefs, tagConfig);
+
+  return rawEvent ? rawEvent : undefined;
+};
+
+/*
+ * Given a Snowplow event, returns the Snowplow payload to be sent.
+ */
+const mkSnowplowPayload = (snowplowEvent) => {
+  if (snowplowEvent) {
+    const snowplowPayload = {
+      schema: spPayloadDataSchema,
+      data: [ snowplowEvent ]
+    };
+    return snowplowPayload;
+  }
+  return undefined;
+};
+
+// Main
+if (!data.collectorUrl) {
+  return fail('A collector URL must be specified');
+}
+
+
+const collectorUrl = asCollectorUrl(data.collectorUrl);
+const url = collectorUrl + spPostPath;
+
+const eventData = getAllEventData();
+
+const snowplowEvent = buildSpEvent(eventData, data);
+const snowplowPayload = mkSnowplowPayload(snowplowEvent);
+const requestHeaders = {
+  headers: getHeaders(eventData),
+  method: 'POST',
+  timeout: 5000
+};
+
+if (snowplowPayload) {
+  sendHttpRequest(
+    url,
+    (statusCode, headers, body) => {
+      if (statusCode >= 200 && statusCode < 300) {
+        if (headers['set-cookie']) {
+          setCookieFrom(headers, data);
+        }
+        data.gtmOnSuccess();
+        return;
+      }
+      data.gtmOnFailure();
+    },
+    requestHeaders,
+    JSON.stringify(snowplowPayload));
+
 } else {
-  log('Unable to build Snowplow event from supplied Client event');
-  data.gtmOnFailure();
+  fail('Unable to build Snowplow event from supplied Client event');
 }
 
 
@@ -489,11 +1277,367 @@ ___SERVER_PERMISSIONS___
 
 ___TESTS___
 
-scenarios: []
+scenarios:
+- name: Test Snowplow page_view event
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \n// test constants\nconst mockSnowplowEvent = {\n  \"e\":\"pv\",\n  \"url\":\"\
+    https://snowplowanalytics.com/\",\n  \"page\":\"Collect, manage and operationalize\
+    \ behavioral data at scale | Snowplow\",\n  \"tv\":\"js-3.1.4\",\n  \"tna\":\"\
+    sp\",\n  \"aid\":\"website\",\n  \"p\":\"web\",\n  \"tz\":\"Europe/London\",\n\
+    \  \"lang\":\"en-GB\",\n  \"cs\":\"UTF-8\",\n  \"res\":\"1920x1080\",\n  \"cd\"\
+    :\"24\",\n  \"cookie\":\"1\",\n  \"eid\":\"8676de79-0eba-4435-ad95-8a41a8a0129c\"\
+    ,\n  \"dtm\":\"1628586512246\",\n    \"cx\":\"eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uc25vd3Bsb3dhbmFseXRpY3Muc25vd3Bsb3cvd2ViX3BhZ2UvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsiaWQiOiJhODZjNDJlNS1iODMxLTQ1YzgtYjcwNi1lMjE0YzI2YjRiM2QifX0seyJzY2hlbWEiOiJpZ2x1Om9yZy53My9QZXJmb3JtYW5jZVRpbWluZy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJuYXZpZ2F0aW9uU3RhcnQiOjE2Mjg1ODY1MDg2MTAsInVubG9hZEV2ZW50U3RhcnQiOjAsInVubG9hZEV2ZW50RW5kIjowLCJyZWRpcmVjdFN0YXJ0IjowLCJyZWRpcmVjdEVuZCI6MCwiZmV0Y2hTdGFydCI6MTYyODU4NjUwODYxMCwiZG9tYWluTG9va3VwU3RhcnQiOjE2Mjg1ODY1MDg2MzcsImRvbWFpbkxvb2t1cEVuZCI6MTYyODU4NjUwODY5MSwiY29ubmVjdFN0YXJ0IjoxNjI4NTg2NTA4NjkxLCJjb25uZWN0RW5kIjoxNjI4NTg2NTA4NzYzLCJzZWN1cmVDb25uZWN0aW9uU3RhcnQiOjE2Mjg1ODY1MDg3MjEsInJlcXVlc3RTdGFydCI6MTYyODU4NjUwODc2MywicmVzcG9uc2VTdGFydCI6MTYyODU4NjUwODc5NywicmVzcG9uc2VFbmQiOjE2Mjg1ODY1MDg4MjEsImRvbUxvYWRpbmciOjE2Mjg1ODY1MDkwNzYsImRvbUludGVyYWN0aXZlIjoxNjI4NTg2NTA5MzgxLCJkb21Db250ZW50TG9hZGVkRXZlbnRTdGFydCI6MTYyODU4NjUwOTQwOCwiZG9tQ29udGVudExvYWRlZEV2ZW50RW5kIjoxNjI4NTg2NTA5NDE3LCJkb21Db21wbGV0ZSI6MTYyODU4NjUxMDMzMiwibG9hZEV2ZW50U3RhcnQiOjE2Mjg1ODY1MTAzMzIsImxvYWRFdmVudEVuZCI6MTYyODU4NjUxMDMzNH19XX0\"\
+    ,\n  \"vp\":\"745x1302\",\n  \"ds\":\"730x12393\",\n  \"vid\":\"1\",\n  \"sid\"\
+    :\"e7580b71-227b-4868-9ea9-322a263ce885\",\n  \"duid\":\"d54a1904-7798-401a-be0b-1a83bea73634\"\
+    ,\n  \"stm\":\"1628586512248\",\n  \"uid\":\"snow123\"\n};\n\nconst mockEventObject\
+    \ = {\n  \"event_name\":\"page_view\",\n  \"client_id\":\"d54a1904-7798-401a-be0b-1a83bea73634\"\
+    ,\n  \"language\":\"en-GB\",\n  \"page_encoding\":\"UTF-8\",\n  \"page_hostname\"\
+    :\"snowplowanalytics.com\",\n  \"page_location\":\"https://snowplowanalytics.com/\"\
+    ,\n  \"page_path\":\"/\",\n  \"page_referrer\":\"referer\",\n  \"page_title\"\
+    :\"Collect, manage and operationalize behavioral data at scale | Snowplow\",\n\
+    \  \"screen_resolution\":\"1920x1080\",\n  \"user_id\":\"snow123\",\n  \"viewport_size\"\
+    :\"745x1302\",\n  \"user_agent\":\"user-agent\",\n  \"origin\":\"origin\",\n \
+    \ \"host\":\"host\",\n  \"x-sp-tp2\": mockSnowplowEvent,\n  \"x-sp-anonymous\"\
+    :undefined,\n  \"x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1\"\
+    : {\n    \"id\":\"a86c42e5-b831-45c8-b706-e214c26b4b3d\"\n  },\n  \"x-sp-context_org_w3_PerformanceTiming_jsonschema_1\"\
+    :{\n    \"navigationStart\":1628586508610,\n    \"unloadEventStart\":0,\n    \"\
+    unloadEventEnd\":0,\n    \"redirectStart\":0,\n    \"redirectEnd\":0,\n    \"\
+    fetchStart\":1628586508610,\n    \"domainLookupStart\":1628586508637,\n    \"\
+    domainLookupEnd\":1628586508691,\n    \"connectStart\":1628586508691,\n    \"\
+    connectEnd\":1628586508763,\n    \"secureConnectionStart\":1628586508721,\n  \
+    \  \"requestStart\":1628586508763,\n    \"responseStart\":1628586508797,\n   \
+    \ \"responseEnd\":1628586508821,\n    \"domLoading\":1628586509076,\n    \"domInteractive\"\
+    :1628586509381,\n    \"domContentLoadedEventStart\":1628586509408,\n    \"domContentLoadedEventEnd\"\
+    :1628586509417,\n    \"domComplete\":1628586510332,\n    \"loadEventStart\":1628586510332,\n\
+    \    \"loadEventEnd\":1628586510334\n  },\n  \"x-sp-contexts\": [\n    {\n   \
+    \   \"schema\":\"iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0\"\
+    ,\n      \"data\": {\n        \"id\":\"a86c42e5-b831-45c8-b706-e214c26b4b3d\"\n\
+    \      }\n    },\n    {\n      \"schema\":\"iglu:org.w3/PerformanceTiming/jsonschema/1-0-0\"\
+    ,\n      \"data\":{\n        \"navigationStart\":1628586508610,\n        \"unloadEventStart\"\
+    :0,\n        \"unloadEventEnd\":0,\n        \"redirectStart\":0,\n        \"redirectEnd\"\
+    :0,\n        \"fetchStart\":1628586508610,\n        \"domainLookupStart\":1628586508637,\n\
+    \        \"domainLookupEnd\":1628586508691,\n        \"connectStart\":1628586508691,\n\
+    \        \"connectEnd\":1628586508763,\n        \"secureConnectionStart\":1628586508721,\n\
+    \        \"requestStart\":1628586508763,\n        \"responseStart\":1628586508797,\n\
+    \        \"responseEnd\":1628586508821,\n        \"domLoading\":1628586509076,\n\
+    \        \"domInteractive\":1628586509381,\n        \"domContentLoadedEventStart\"\
+    :1628586509408,\n        \"domContentLoadedEventEnd\":1628586509417,\n       \
+    \ \"domComplete\":1628586510332,\n        \"loadEventStart\":1628586510332,\n\
+    \        \"loadEventEnd\":1628586510334\n      }\n    }\n  ],\n  \"ga_session_id\"\
+    :\"e7580b71-227b-4868-9ea9-322a263ce885\",\n  \"ga_session_number\":\"1\",\n \
+    \ \"x-ga-mp2-seg\":\"1\",\n  \"x-ga-protocol_version\":\"2\",\n  \"x-ga-page_id\"\
+    :\"a86c42e5-b831-45c8-b706-e214c26b4b3d\",\n};\n\nconst payloadSchema = 'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';\n\
+    const postPath = 'com.snowplowanalytics.snowplow/tp2';\n\nconst collectorUrl =\
+    \ 'collector.test.com';\nconst cookieName = 'sp';\n\nconst expectedPostUrl = 'https://'\
+    \ + collectorUrl + '/' + postPath;\n\nconst mockData = {\n  \"encodeBase64\":true,\n\
+    \  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\":false,\n  \"cookieOverrideEnabled\"\
+    :false,\n  \"collectorUrl\":\"collector.test.com\",\n  \"defineAsSelfDescribing\"\
+    :false\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
+    \n// mock API\nmock('getAllEventData', mockEventObject);\nmock('sendHttpRequest',\
+    \ function() { \n  logToConsole(arguments);\n  argUrl = arguments[0];\n  argCallback\
+    \ = arguments[1];\n  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\
+    \n// Call runCode to run the template's code.\nrunCode(mockData);\n\n// Assert\n\
+    assertApi('sendHttpRequest').wasCalled();\nassertThat(argUrl).isStrictlyEqualTo(expectedPostUrl);\n\
+    \nassertThat(argOptions.method).isStrictlyEqualTo('POST');\nassertThat(argOptions.timeout).isStrictlyEqualTo(5000);\n\
+    assertThat(argOptions.headers).isObject();\nassertThat(argOptions.headers['Content-Type']).isStrictlyEqualTo('application/json');\n\
+    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('user-agent');\n\
+    \nconst body = jsonApi.parse(argBody);\nassertThat(body).isObject();\nassertThat(body.schema).isStrictlyEqualTo(payloadSchema);\n\
+    assertThat(body.data).isArray();\n\nconst actEvent = body.data[0];\nassertThat(actEvent).isObject();\n\
+    assertThat(actEvent.e).isStrictlyEqualTo(mockSnowplowEvent.e);\nassertThat(actEvent.url).isStrictlyEqualTo(mockSnowplowEvent.url);\n\
+    assertThat(actEvent.page).isStrictlyEqualTo(mockSnowplowEvent.page);\nassertThat(actEvent.tv).isStrictlyEqualTo(mockSnowplowEvent.tv);\n\
+    assertThat(actEvent.tna).isStrictlyEqualTo(mockSnowplowEvent.tna);\nassertThat(actEvent.aid).isStrictlyEqualTo(mockSnowplowEvent.aid);\n\
+    assertThat(actEvent.p).isStrictlyEqualTo(mockSnowplowEvent.p);\nassertThat(actEvent.tz).isStrictlyEqualTo(mockSnowplowEvent.tz);\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo(mockSnowplowEvent.lang);\nassertThat(actEvent.cs).isStrictlyEqualTo(mockSnowplowEvent.cs);\n\
+    assertThat(actEvent.res).isStrictlyEqualTo(mockSnowplowEvent.res);\nassertThat(actEvent.cd).isStrictlyEqualTo(mockSnowplowEvent.cd);\n\
+    assertThat(actEvent.cookie).isStrictlyEqualTo(mockSnowplowEvent.cookie);\nassertThat(actEvent.eid).isStrictlyEqualTo(mockSnowplowEvent.eid);\n\
+    assertThat(actEvent.dtm).isStrictlyEqualTo(mockSnowplowEvent.dtm);\nassertThat(actEvent.cx).isStrictlyEqualTo(mockSnowplowEvent.cx);\n\
+    assertThat(actEvent.vp).isStrictlyEqualTo(mockSnowplowEvent.vp);\nassertThat(actEvent.ds).isStrictlyEqualTo(mockSnowplowEvent.ds);\n\
+    assertThat(actEvent.vid).isStrictlyEqualTo(mockSnowplowEvent.vid);\nassertThat(actEvent.sid).isStrictlyEqualTo(mockSnowplowEvent.sid);\n\
+    assertThat(actEvent.duid).isStrictlyEqualTo(mockSnowplowEvent.duid);\nassertThat(actEvent.stm).isStrictlyEqualTo(mockSnowplowEvent.stm);\n\
+    assertThat(actEvent.uid).isStrictlyEqualTo(mockSnowplowEvent.uid);\n\nassertThat(actEvent.ip).isUndefined();\n"
+- name: Test Snowplow page_view event with ip_override
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockSnowplowEvent = {\n  \"e\":\"pv\",\n  \"url\":\"https://snowplowanalytics.com/\"\
+    ,\n  \"page\":\"Collect, manage and operationalize behavioral data at scale |\
+    \ Snowplow\",\n  \"tv\":\"js-2.18.1\",\n  \"tna\":\"sp\",\n  \"aid\":\"website\"\
+    ,\n  \"p\":\"web\",\n  \"tz\":\"Europe/London\",\n  \"lang\":\"en-GB\",\n  \"\
+    cs\":\"UTF-8\",\n  \"res\":\"1920x1080\",\n  \"cd\":\"24\",\n  \"cookie\":\"1\"\
+    ,\n  \"eid\":\"8676de79-0eba-4435-ad95-8a41a8a0129c\",\n  \"dtm\":\"1628586512246\"\
+    ,\n    \"cx\":\"eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uc25vd3Bsb3dhbmFseXRpY3Muc25vd3Bsb3cvd2ViX3BhZ2UvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsiaWQiOiJhODZjNDJlNS1iODMxLTQ1YzgtYjcwNi1lMjE0YzI2YjRiM2QifX0seyJzY2hlbWEiOiJpZ2x1Om9yZy53My9QZXJmb3JtYW5jZVRpbWluZy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJuYXZpZ2F0aW9uU3RhcnQiOjE2Mjg1ODY1MDg2MTAsInVubG9hZEV2ZW50U3RhcnQiOjAsInVubG9hZEV2ZW50RW5kIjowLCJyZWRpcmVjdFN0YXJ0IjowLCJyZWRpcmVjdEVuZCI6MCwiZmV0Y2hTdGFydCI6MTYyODU4NjUwODYxMCwiZG9tYWluTG9va3VwU3RhcnQiOjE2Mjg1ODY1MDg2MzcsImRvbWFpbkxvb2t1cEVuZCI6MTYyODU4NjUwODY5MSwiY29ubmVjdFN0YXJ0IjoxNjI4NTg2NTA4NjkxLCJjb25uZWN0RW5kIjoxNjI4NTg2NTA4NzYzLCJzZWN1cmVDb25uZWN0aW9uU3RhcnQiOjE2Mjg1ODY1MDg3MjEsInJlcXVlc3RTdGFydCI6MTYyODU4NjUwODc2MywicmVzcG9uc2VTdGFydCI6MTYyODU4NjUwODc5NywicmVzcG9uc2VFbmQiOjE2Mjg1ODY1MDg4MjEsImRvbUxvYWRpbmciOjE2Mjg1ODY1MDkwNzYsImRvbUludGVyYWN0aXZlIjoxNjI4NTg2NTA5MzgxLCJkb21Db250ZW50TG9hZGVkRXZlbnRTdGFydCI6MTYyODU4NjUwOTQwOCwiZG9tQ29udGVudExvYWRlZEV2ZW50RW5kIjoxNjI4NTg2NTA5NDE3LCJkb21Db21wbGV0ZSI6MTYyODU4NjUxMDMzMiwibG9hZEV2ZW50U3RhcnQiOjE2Mjg1ODY1MTAzMzIsImxvYWRFdmVudEVuZCI6MTYyODU4NjUxMDMzNH19XX0\"\
+    ,\n  \"vp\":\"745x1302\",\n  \"ds\":\"730x12393\",\n  \"vid\":\"1\",\n  \"sid\"\
+    :\"e7580b71-227b-4868-9ea9-322a263ce885\",\n  \"duid\":\"d54a1904-7798-401a-be0b-1a83bea73634\"\
+    ,\n  \"stm\":\"1628586512248\",\n  \"uid\":\"snow123\"\n};\n\nconst mockEventObject\
+    \ = {\n  \"event_name\":\"page_view\",\n  \"client_id\":\"d54a1904-7798-401a-be0b-1a83bea73634\"\
+    ,\n  \"language\":\"en-GB\",\n  \"page_encoding\":\"UTF-8\",\n  \"page_hostname\"\
+    :\"snowplowanalytics.com\",\n  \"page_location\":\"https://snowplowanalytics.com/\"\
+    ,\n  \"page_path\":\"/\",\n  \"page_referrer\":\"referer\",\n  \"page_title\"\
+    :\"Collect, manage and operationalize behavioral data at scale | Snowplow\",\n\
+    \  \"screen_resolution\":\"1920x1080\",\n  \"user_id\":\"snow123\",\n  \"viewport_size\"\
+    :\"745x1302\",\n  \"user_agent\":\"user-agent\",\n  \"origin\":\"origin\",\n \
+    \ \"host\":\"host\",\n  \"x-sp-tp2\": mockSnowplowEvent,\n  \"x-sp-anonymous\"\
+    :undefined,\n  \"x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1\"\
+    : {\n    \"id\":\"a86c42e5-b831-45c8-b706-e214c26b4b3d\"\n  },\n  \"x-sp-context_org_w3_PerformanceTiming_jsonschema_1\"\
+    :{\n    \"navigationStart\":1628586508610,\n    \"unloadEventStart\":0,\n    \"\
+    unloadEventEnd\":0,\n    \"redirectStart\":0,\n    \"redirectEnd\":0,\n    \"\
+    fetchStart\":1628586508610,\n    \"domainLookupStart\":1628586508637,\n    \"\
+    domainLookupEnd\":1628586508691,\n    \"connectStart\":1628586508691,\n    \"\
+    connectEnd\":1628586508763,\n    \"secureConnectionStart\":1628586508721,\n  \
+    \  \"requestStart\":1628586508763,\n    \"responseStart\":1628586508797,\n   \
+    \ \"responseEnd\":1628586508821,\n    \"domLoading\":1628586509076,\n    \"domInteractive\"\
+    :1628586509381,\n    \"domContentLoadedEventStart\":1628586509408,\n    \"domContentLoadedEventEnd\"\
+    :1628586509417,\n    \"domComplete\":1628586510332,\n    \"loadEventStart\":1628586510332,\n\
+    \    \"loadEventEnd\":1628586510334\n  },\n  \"x-sp-contexts\": [\n    {\n   \
+    \   \"schema\":\"iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0\"\
+    ,\n      \"data\": {\n        \"id\":\"a86c42e5-b831-45c8-b706-e214c26b4b3d\"\n\
+    \      }\n    },\n    {\n      \"schema\":\"iglu:org.w3/PerformanceTiming/jsonschema/1-0-0\"\
+    ,\n      \"data\":{\n        \"navigationStart\":1628586508610,\n        \"unloadEventStart\"\
+    :0,\n        \"unloadEventEnd\":0,\n        \"redirectStart\":0,\n        \"redirectEnd\"\
+    :0,\n        \"fetchStart\":1628586508610,\n        \"domainLookupStart\":1628586508637,\n\
+    \        \"domainLookupEnd\":1628586508691,\n        \"connectStart\":1628586508691,\n\
+    \        \"connectEnd\":1628586508763,\n        \"secureConnectionStart\":1628586508721,\n\
+    \        \"requestStart\":1628586508763,\n        \"responseStart\":1628586508797,\n\
+    \        \"responseEnd\":1628586508821,\n        \"domLoading\":1628586509076,\n\
+    \        \"domInteractive\":1628586509381,\n        \"domContentLoadedEventStart\"\
+    :1628586509408,\n        \"domContentLoadedEventEnd\":1628586509417,\n       \
+    \ \"domComplete\":1628586510332,\n        \"loadEventStart\":1628586510332,\n\
+    \        \"loadEventEnd\":1628586510334\n      }\n    }\n  ],\n  \"ga_session_id\"\
+    :\"e7580b71-227b-4868-9ea9-322a263ce885\",\n  \"ga_session_number\":\"1\",\n \
+    \ \"x-ga-mp2-seg\":\"1\",\n  \"x-ga-protocol_version\":\"2\",\n  \"x-ga-page_id\"\
+    :\"a86c42e5-b831-45c8-b706-e214c26b4b3d\",\n  \"ip_override\":\"1.2.3.4\"\n};\n\
+    \nconst collectorUrl = 'collector.test.com';\nconst cookieName = 'sp';\n\nconst\
+    \ mockData = {\n  \"encodeBase64\":true,\n  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\"\
+    :false,\n  \"cookieOverrideEnabled\":false,\n  \"collectorUrl\":\"collector.test.com\"\
+    ,\n  \"defineAsSelfDescribing\":false\n};\n\n// to assert on\nlet argUrl, argCallback,\
+    \ argOptions, argBody;\n\n// mock API\nmock('getAllEventData', mockEventObject);\n\
+    mock('sendHttpRequest', function() { \n  logToConsole(arguments);\n  argUrl =\
+    \ arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
+    \  argBody = arguments[3];\n});\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\n\
+    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\nassertThat(actEvent.ip).isDefined();\n\
+    assertThat(actEvent.ip).isEqualTo(mockEventObject.ip_override);\n"
+- name: Test overriding login event
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = {\"event_name\":\"login\",\"engagement_time_msec\":2,\"method\"\
+    :\"Google\",\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAA\"\
+    ,\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1075258766,\"screen_resolution\"\
+    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
+    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
+    :2,\"ip_override\":\"1.2.3.4\",\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64)\
+    \ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"\
+    x-ga-js_client_id\":\"1182338296.1632069552\"};\n\nmock('getAllEventData', mockEv);\n\
+    const mockData = {\n  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\":false,\n\
+    \  \"cookieOverrideEnabled\":false,\n  \"collectorUrl\":\"test\",\n  \"encodeBase64\"\
+    :false,\n  \"customEventData\":[\n    {\n      \"eventName\":\"login\",\n    \
+    \  \"snowplowPropName\":\"method\",\n      \"type\": \"string\",\n      \"ref\"\
+    :\"eventProperty\",\n      \"value\":\"method\"\n    }\n  ],\n  \"defineAsSelfDescribing\"\
+    :true,\n  \"customEventSchemas\":[\n    {\n      \"eventName\":\"login\",\n  \
+    \    \"eventSchema\":\"com.google.tag-manager.server-side/jsonschema/1-0-0\"\n\
+    \    }\n  ]\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
+    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
+    \ { \n  logToConsole(arguments);\n  argUrl = arguments[0];\n  argCallback = arguments[1];\n\
+    \  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\n// Call runCode\
+    \ to run the template's code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
+    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isStrictlyEqualTo('1.2.3.4');\nassertThat(actEvent.ue_pr).isDefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
+    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.data.method).isStrictlyEqualTo('Google');\n"
+- name: Test custom structured event mp1
+  code: "const logToConsole = require('logToConsole');\nconst jsonApi = require('JSON');\n\
+    \nconst mockEv = {\"x-ga-protocol_version\":\"1\",\"x-ga-measurement_id\":\"UA-XXXXX-Y\"\
+    ,\"client_id\":\"3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI=\",\"event_category\"\
+    :\"video\",\"event_action\":\"play\",\"event_label\":\"holiday\",\"x-ga-mp1-ev\"\
+    :\"300\",\"event_name\":\"play\",\"user_agent\":\"Mozilla/5.0 (X11; Ubuntu; Linux\
+    \ x86_64; rv:92.0) Gecko/20100101 Firefox/92.0\",\"x-ga-path\":\"c\",\"x-ga-js_client_id\"\
+    :\"555\"};\n\nconst mockData = {\n  \"encodeBase64\":true,\n  \"userIdCookie\"\
+    :\"sp\",\n  \"defineAsStructured\":true,\n  \"cookieOverrideEnabled\":false,\n\
+    \  \"collectorUrl\":\"test\",\n  \"customStructuredDefs\":[\"play\"],\n  \"defineAsSelfDescribing\"\
+    :false\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
+    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
+    \ { \n  logToConsole(arguments);\n  argUrl = arguments[0];\n  argCallback = arguments[1];\n\
+    \  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\n// Call runCode\
+    \ to run the template's code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
+    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('se');\n\
+    assertThat(actEvent.duid).isStrictlyEqualTo('3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI=');\n\
+    assertThat(actEvent.ue_pr).isUndefined();\nassertThat(actEvent.ue_px).isUndefined();\n\
+    \nassertThat(actEvent.se_ac).isStrictlyEqualTo('play');\nassertThat(actEvent.se_ca).isStrictlyEqualTo('video');\n\
+    assertThat(actEvent.se_la).isStrictlyEqualTo('holiday');\nassertThat(actEvent.se_pr).isUndefined();\n\
+    assertThat(actEvent.se_va).isUndefined();\n"
+- name: Test custom structured event mp2
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = {\"event_name\":\"video_auto_play_start\",\"engagement_time_msec\"\
+    :2,\"event_label\":\"My promotional video\",\"event_category\":\"video_auto_play\"\
+    ,\"non_interaction\":\"true\",\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
+    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1075258766,\"\
+    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
+    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
+    :2,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
+    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
+    };\n\nmock('getAllEventData', mockEv);\n\nconst mockData = {\n  \"userIdCookie\"\
+    :\"sp\",\n  \"defineAsStructured\":true,\n  \"cookieOverrideEnabled\":false,\n\
+    \  \"collectorUrl\":\"test\",\n  \"encodeBase64\":false,\n  \"customStructuredDefs\"\
+    :[\"video_auto_play_start\"],\n  \"defineAsSelfDescribing\":false\n};\n\n// to\
+    \ assert on\nlet argUrl, argCallback, argOptions, argBody;\n\n// mock API\nmock('getAllEventData',\
+    \ mockEv);\nmock('sendHttpRequest', function() { \n  logToConsole(arguments);\n\
+    \  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
+    \  argBody = arguments[3];\n});\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst\
+    \ body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('se');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isUndefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n\nassertThat(actEvent.se_ac).isStrictlyEqualTo('video_auto_play_start');\n\
+    assertThat(actEvent.se_ca).isStrictlyEqualTo('video_auto_play');\nassertThat(actEvent.se_la).isStrictlyEqualTo('My\
+    \ promotional video');\nassertThat(actEvent.se_pr).isUndefined();\nassertThat(actEvent.se_va).isUndefined();\n"
+- name: Test custom unstructured event
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = \n{\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"\
+    G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1912195137,\"screen_resolution\"\
+    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"x-ga-request_count\":2,\"page_location\":\"http://localhost/\",\"page_title\"\
+    :\"\",\"ga_session_id\":\"1632169709\",\"ga_session_number\":8,\"x-ga-mp2-seg\"\
+    :\"1\",\"event_name\":\"foo\",\"engagement_time_msec\":3118,\"age\":55,\"avg_page_load_time\"\
+    :1,\"x-ga-mp2-richsstsse\":\"\",\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64)\
+    \ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"\
+    x-ga-js_client_id\":\"1182338296.1632069552\"};\n\nconst mockData = {\n  \"encodeBase64\"\
+    :false,\n  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\":false,\n  \"cookieOverrideEnabled\"\
+    :false,\n  \"collectorUrl\":\"test\",\n  \"customEventData\":[\n    {\n      \"\
+    eventName\":\"foo\",\n      \"snowplowPropName\":\"foo_age\",\n      \"type\"\
+    :\"number\",\n      \"ref\": \"eventProperty\",\n      \"value\":\"age\"\n   \
+    \ },\n    {\n      \"eventName\":\"foo\",\n      \"snowplowPropName\":\"avg_load_time\"\
+    ,\n      \"type\": \"number\",\n      \"ref\":\"eventProperty\",\n      \"value\"\
+    :\"avg_page_load_time\"\n    },{\n      \"eventName\":\"foo\",\n      \"snowplowPropName\"\
+    :\"additionalData.isDebugMode\",\n      \"type\":\"boolean\",\n      \"ref\":\
+    \ \"userSet\",\n      \"value\":true\n    }\n  ],\n  \"defineAsSelfDescribing\"\
+    :true,\n  \"customEventSchemas\":[\n    {\n      \"eventName\":\"foo\",\n    \
+    \  \"eventSchema\":\"com.acme.test/foo/jsonschema/1-0-0\"\n    }\n  ]\n};\n\n\
+    // to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\n// mock API\n\
+    mock('getAllEventData', mockEv);\nmock('sendHttpRequest', function() { \n  logToConsole(arguments);\n\
+    \  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
+    \  argBody = arguments[3];\n});\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst\
+    \ body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
+    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.acme.test/foo/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.data.foo_age).isStrictlyEqualTo(55);\nassertThat(actSD.data.data.avg_load_time).isStrictlyEqualTo(1);\n\
+    assertThat(actSD.data.data.additionalData.isDebugMode).isTrue();\n"
+- name: Test boolean type with exception event
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = {\"event_name\":\"exception\",\"engagement_time_msec\":1,\"description\"\
+    :\"no clue\",\"fatal\":1,\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
+    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1013445257,\"\
+    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
+    :\"1632157946\",\"ga_session_number\":5,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
+    :5,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
+    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
+    };\n\nconst mockData = {\n  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\"\
+    :false,\n  \"cookieOverrideEnabled\":false,\n  \"collectorUrl\":\"test\",\n  \"\
+    encodeBase64\":false,\n  \"defineAsSelfDescribing\":false\n};\n\n// to assert\
+    \ on\nlet argUrl, argCallback, argOptions, argBody;\n\n// mock API\nmock('getAllEventData',\
+    \ mockEv);\nmock('sendHttpRequest', function() { \n  logToConsole(arguments);\n\
+    \  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
+    \  argBody = arguments[3];\n});\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst\
+    \ body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
+    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/exception/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.data.description).isStrictlyEqualTo('no clue');\nassertThat(actSD.data.data.fatal).isTrue();\n"
+- name: Test with purchase event
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = {\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAAAA\"\
+    ,\"x-ga-gtm_version\":\"2oe9k0\",\"x-ga-page_id\":1319137026,\"screen_resolution\"\
+    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814\"\
+    ,\"x-ga-request_count\":3,\"page_location\":\"http://localhost/\",\"page_title\"\
+    :\"\",\"currency\":\"USD\",\"ga_session_id\":\"1632251814\",\"ga_session_number\"\
+    :1,\"x-ga-mp2-seg\":\"0\",\"event_name\":\"purchase\",\"x-ga-system_properties\"\
+    :{\"c\":\"1\"},\"engagement_time_msec\":2907,\"items\":[{\"item_id\":\"sku123\"\
+    ,\"item_name\":\"myItemA\",\"affiliation\":\"Google store\",\"coupon\":\"myCouponA\"\
+    ,\"discount\":5,\"index\":0,\"item_brand\":\"myItemBrandA\",\"item_category\"\
+    :\"myItemCategoryA1\",\"item_category2\":\"myItemCategoryA2\",\"item_category3\"\
+    :\"myItemCategoryA3\",\"item_category4\":\"myItemCategoryA4\",\"item_category5\"\
+    :\"myItemCategoryA5\",\"item_list_id\":\"abc123\",\"item_list_name\":\"listA\"\
+    ,\"item_variant\":\"blue\",\"location_id\":\"locA\",\"price\":10.5,\"quantity\"\
+    :3,\"currency\":\"USD\"},{\"item_id\":\"sku456\",\"item_name\":\"myItemB\",\"\
+    affiliation\":\"Apple store\",\"coupon\":\"myCouponB\",\"discount\":15,\"index\"\
+    :9,\"item_brand\":\"myItemBrandB\",\"item_category\":\"myItemCategoryB1\",\"item_category2\"\
+    :\"myItemCategoryB2\",\"item_category3\":\"myItemCategoryB3\",\"item_category4\"\
+    :\"myItemCategoryB4\",\"item_category5\":\"myItemCategoryB5\",\"item_list_id\"\
+    :\"abc123\",\"item_list_name\":\"listB\",\"item_variant\":\"red\",\"location_id\"\
+    :\"locB\",\"price\":30.5,\"quantity\":12,\"currency\":\"USD\"}],\"transaction_id\"\
+    :\"TR1234\",\"value\":10,\"affiliation\":\"myAffiliation\",\"coupon\":\"ABCD\"\
+    ,\"shipping\":1,\"tax\":0.1,\"x-ga-mp2-richsstsse\":\"\",\"user_agent\":\"Mozilla/5.0\
+    \ (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82\
+    \ Safari/537.36\",\"x-ga-js_client_id\":\"1542781271.1632251814\"};\n\nconst mockData\
+    \ = {\n  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\":false,\n  \"cookieOverrideEnabled\"\
+    :false,\n  \"collectorUrl\":\"test\",\n  \"encodeBase64\":false,\n  \"defineAsSelfDescribing\"\
+    :false\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
+    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
+    \ { \n  logToConsole(arguments);\n  argUrl = arguments[0];\n  argCallback = arguments[1];\n\
+    \  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\n// Call runCode\
+    \ to run the template's code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
+    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
+    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
+    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/purchase/jsonschema/1-0-0');\n\
+    \nassertThat(actSD.data.data.currency).isStrictlyEqualTo('USD');\nassertThat(actSD.data.data.transaction_id).isStrictlyEqualTo('TR1234');\n\
+    assertThat(actSD.data.data.value).isStrictlyEqualTo(10.0);\nassertThat(actSD.data.data.affiliation).isStrictlyEqualTo('myAffiliation');\n\
+    assertThat(actSD.data.data.coupon).isStrictlyEqualTo('ABCD');\nassertThat(actSD.data.data.shipping).isStrictlyEqualTo(1.0);\n\
+    assertThat(actSD.data.data.tax).isStrictlyEqualTo(0.1);\n\nconst expectedItems\
+    \ = [\n  {\n    'item_id': 'sku123',\n    'item_name': 'myItemA',\n    'affiliation':\
+    \ 'Google store',\n    'coupon': 'myCouponA',\n    'currency': 'USD',\n    'discount':\
+    \ 5.0,\n    'index': 0,\n    'item_brand': 'myItemBrandA',\n    'item_category':\
+    \ 'myItemCategoryA1',\n    'item_category2': 'myItemCategoryA2',\n    'item_category3':\
+    \ 'myItemCategoryA3',\n    'item_category4': 'myItemCategoryA4',\n    'item_category5':\
+    \ 'myItemCategoryA5',\n    'item_list_id': 'abc123',\n    'item_list_name': 'listA',\n\
+    \    'item_variant': 'blue',\n    'location_id': 'locA',\n    'price': 10.5,\n\
+    \    'quantity': 3\n  },\n  {\n    'item_id': 'sku456',\n    'item_name': 'myItemB',\n\
+    \    'affiliation': 'Apple store',\n    'coupon': 'myCouponB',\n    'currency':\
+    \ 'USD',\n    'discount': 15.0,\n    'index': 9,\n    'item_brand': 'myItemBrandB',\n\
+    \    'item_category': 'myItemCategoryB1',\n    'item_category2': 'myItemCategoryB2',\n\
+    \    'item_category3': 'myItemCategoryB3',\n    'item_category4': 'myItemCategoryB4',\n\
+    \    'item_category5': 'myItemCategoryB5',\n    'item_list_id': 'abc123',\n  \
+    \  'item_list_name': 'listB',\n    'item_variant': 'red',\n    'location_id':\
+    \ 'locB',\n    'price': 30.5,\n    'quantity': 12\n  }\n];\n\nconst actualItems\
+    \ = actSD.data.data.items;\n\nassertThat(actualItems).isArray();\nassertThat(actualItems).isEqualTo(expectedItems);\n"
+- name: Test platform identifier
+  code: "const logToConsole = require('logToConsole');\nconst jsonApi = require('JSON');\n\
+    \nconst mockEv = {\"event_name\":\"exception\",\"engagement_time_msec\":1,\"description\"\
+    :\"no clue\",\"fatal\":1,\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
+    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1013445257,\"\
+    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
+    :\"1632157946\",\"ga_session_number\":5,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
+    :5,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
+    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
+    };\n\nconst mockData = {\n  \"platform\": \"iot\",\n  \"encodeBase64\":true,\n\
+    \  \"userIdCookie\":\"sp\",\n  \"defineAsStructured\":false,\n  \"cookieOverrideEnabled\"\
+    :false,\n  \"collectorUrl\":\"test\",\n  \"defineAsSelfDescribing\":false\n};\n\
+    \n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\n// mock API\n\
+    mock('getAllEventData', mockEv);\nmock('sendHttpRequest', function() { \n  logToConsole(arguments);\n\
+    \  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
+    \  argBody = arguments[3];\n});\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst\
+    \ body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.p).isStrictlyEqualTo('iot');\n\
+    \n"
 
 
 ___NOTES___
 
-Created on 23/08/2021, 16:56:07
-
-
+Created on 9/21/2021, 3:59:19 AM
