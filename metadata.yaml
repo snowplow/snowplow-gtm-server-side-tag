@@ -1,0 +1,7 @@
+homepage: "https://www.snowplowanalytics.com"
+documentation: "https://docs.snowplowanalytics.com/docs"
+versions:
+  # Latest version
+  - sha: 129cb895c8ea9d5baac56bda4e7168ef6eb87452
+    changeNotes: Initial Version
+  # Older versions
