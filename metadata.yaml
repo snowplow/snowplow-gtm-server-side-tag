@@ -2,6 +2,8 @@ homepage: "https://www.snowplowanalytics.com"
 documentation: "https://docs.snowplowanalytics.com/docs/forwarding-events-to-destinations/forwarding-events/google-tag-manager-server-side/snowplow-tag-for-gtm-ss/"
 versions:
   # Latest version
+  - sha: bf3cd5eac1bc05e36fceae4e2ec843586eb4df7b
+    changeNotes: Update Documentation Links (#2)
+  # Older versions
   - sha: 129cb895c8ea9d5baac56bda4e7168ef6eb87452
     changeNotes: Initial Version
-  # Older versions
