@@ -459,7 +459,7 @@ const toBase64 = require('toBase64');
 const spPayloadDataSchema = 'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
 const spSelfDescribingSchema = 'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
-const spVersion = 'gtmss-0.1.0';
+const spVersion = 'gtmss-0.2.0';
 
 // event data mappings for self-describing Snowplow events
 const videoDataMappings = [
@@ -508,6 +508,9 @@ const videoDataMappings = [
 ];
 
 const spDefaultCustomDefs = {
+  page_view: {
+    eventType: 'pv'
+  },
   // server side
   add_payment_info: {
     eventType: 'ue',
@@ -1027,6 +1030,10 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
 
   if (!customDefs.hasOwnProperty(eventName)) {
     return undefined;
+  }
+  
+  if (customDefs[eventName].eventType === 'pv') {
+    return mkStandardPairs(evObj, 'pv', tagConfig);
   }
 
   if (customDefs[eventName].eventType === 'ue') {
@@ -1636,8 +1643,33 @@ scenarios:
     runCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst\
     \ body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.p).isStrictlyEqualTo('iot');\n\
     \n"
+- name: Test non-Snowplow page_view
+  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
+    \nconst mockEv = {\"event_name\":\"page_view\",\"non_interaction\":\"true\",\"\
+    x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAAA\",\"x-ga-gtm_version\"\
+    :\"2oe9f0\",\"x-ga-page_id\":1075258766,\"screen_resolution\":\"1920x1080\",\"\
+    language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
+    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
+    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
+    :2,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
+    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
+    };\n\nmock('getAllEventData', mockEv);\n\nconst mockData = {\n  \"userIdCookie\"\
+    :\"sp\",\n  \"defineAsStructured\":false,\n  \"cookieOverrideEnabled\":false,\n\
+    \  \"collectorUrl\":\"test\",\n  \"encodeBase64\":false,\n  \"defineAsSelfDescribing\"\
+    :false\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
+    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
+    \ { \n  logToConsole(arguments);\n  argUrl = arguments[0];\n  argCallback = arguments[1];\n\
+    \  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\n// Call runCode\
+    \ to run the template's code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
+    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('pv');\n\
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
+    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isUndefined();\n\
+    assertThat(actEvent.ue_px).isUndefined();\n"
 
 
 ___NOTES___
 
 Created on 9/21/2021, 3:59:19 AM
+
+
