@@ -488,8 +488,10 @@ const getRequestHeader = require('getRequestHeader');
 const getContainerVersion = require('getContainerVersion');
 
 // Constants
-const spPayloadDataSchema = 'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
-const spSelfDescribingSchema = 'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0';
+const spPayloadDataSchema =
+  'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
+const spSelfDescribingSchema =
+  'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
 const spVersion = 'gtmss-0.2.0';
 const tagName = 'Snowplow';
@@ -500,148 +502,177 @@ const videoDataMappings = [
     spPropName: 'video_current_time',
     type: 'number',
     ref: 'eventProperty',
-    value: 'video_current_time'
+    value: 'video_current_time',
   },
   {
     spPropName: 'video_duration',
     type: 'number',
     ref: 'eventProperty',
-    value: 'video_duration'
+    value: 'video_duration',
   },
   {
     spPropName: 'video_percent',
     type: 'number',
     ref: 'eventProperty',
-    value: 'video_percent'
+    value: 'video_percent',
   },
   {
     spPropName: 'video_provider',
     type: 'string',
     ref: 'eventProperty',
-    value: 'video_provider'
+    value: 'video_provider',
   },
   {
     spPropName: 'video_title',
     type: 'string',
     ref: 'eventProperty',
-    value: 'video_title'
+    value: 'video_title',
   },
   {
     spPropName: 'video_url',
     type: 'string',
     ref: 'eventProperty',
-    value: 'video_url'
+    value: 'video_url',
   },
   {
     spPropName: 'visible',
     type: 'boolean',
     ref: 'eventProperty',
-    value: 'visible'
-  }
+    value: 'visible',
+  },
 ];
 
 const spDefaultCustomDefs = {
   page_view: {
-    eventType: 'pv'
+    eventType: 'pv',
   },
   // server side
   add_payment_info: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/add_payment_info/jsonschema/1-0-0',
-    eventDataMappings: ['currency', 'value', 'coupon', 'payment_type', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/add_payment_info/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'coupon', 'payment_type', 'items'],
   },
   add_to_cart: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/add_to_cart/jsonschema/1-0-0',
-    eventDataMappings: ['currency', 'value', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/add_to_cart/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'items'],
   },
   add_to_wishlist: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/add_to_wishlist/jsonschema/1-0-0',
-    eventDataMappings: ['currency', 'value', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/add_to_wishlist/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'items'],
   },
   begin_checkout: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/begin_checkout/jsonschema/1-0-0',
-    eventDataMappings: ['currency', 'value', 'coupon', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/begin_checkout/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'coupon', 'items'],
   },
   exception: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/exception/jsonschema/1-0-0',
+    eventSchema:
+      'com.google.tag-manager.server-side/exception/jsonschema/1-0-0',
     eventDataMappings: [
       {
         spPropName: 'description',
         type: 'string',
         ref: 'eventProperty',
-        value: 'description'
+        value: 'description',
       },
       {
         spPropName: 'fatal',
         type: 'boolean',
         ref: 'eventProperty',
-        value: 'fatal'
-      }
-    ]
+        value: 'fatal',
+      },
+    ],
   },
   generate_lead: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/generate_lead/jsonschema/1-0-0',
-    eventDataMappings : ['currency', 'value']
+    eventSchema:
+      'com.google.tag-manager.server-side/generate_lead/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value'],
   },
   join_group: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/join_group/jsonschema/1-0-0',
-    eventDataMappings : ['group_id']
+    eventSchema:
+      'com.google.tag-manager.server-side/join_group/jsonschema/1-0-0',
+    eventDataMappings: ['group_id'],
   },
   login: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/login/jsonschema/1-0-0',
-    eventDataMappings : ['method']
+    eventDataMappings: ['method'],
   },
   purchase: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/purchase/jsonschema/1-0-0',
-    eventDataMappings : ['currency', 'transaction_id', 'value', 'affiliation', 'coupon', 'shipping', 'tax', 'items']
+    eventDataMappings: [
+      'currency',
+      'transaction_id',
+      'value',
+      'affiliation',
+      'coupon',
+      'shipping',
+      'tax',
+      'items',
+    ],
   },
   refund: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/refund/jsonschema/1-0-0',
-    eventDataMappings : ['currency', 'transaction_id', 'value', 'affiliation', 'coupon', 'shipping', 'tax', 'items']
+    eventDataMappings: [
+      'currency',
+      'transaction_id',
+      'value',
+      'affiliation',
+      'coupon',
+      'shipping',
+      'tax',
+      'items',
+    ],
   },
   search: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/search/jsonschema/1-0-0',
-    eventDataMappings : ['search_term']
+    eventDataMappings: ['search_term'],
   },
   select_content: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/select_content/jsonschema/1-0-0',
-    eventDataMappings : ['content_type', 'item_id']
+    eventSchema:
+      'com.google.tag-manager.server-side/select_content/jsonschema/1-0-0',
+    eventDataMappings: ['content_type', 'item_id'],
   },
   share: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/share/jsonschema/1-0-0',
-    eventDataMappings : ['method', 'content_type', 'item_id']
+    eventDataMappings: ['method', 'content_type', 'item_id'],
   },
   sign_up: {
     eventType: 'ue',
     eventSchema: 'com.google.tag-manager.server-side/sign_up/jsonschema/1-0-0',
-    eventDataMappings : ['method']
+    eventDataMappings: ['method'],
   },
   view_item: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/view_item/jsonschema/1-0-0',
-    eventDataMappings : ['currency', 'value', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/view_item/jsonschema/1-0-0',
+    eventDataMappings: ['currency', 'value', 'items'],
   },
   view_item_list: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/view_item_list/jsonschema/1-0-0',
-    eventDataMappings : ['item_list_id', 'item_list_name', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/view_item_list/jsonschema/1-0-0',
+    eventDataMappings: ['item_list_id', 'item_list_name', 'items'],
   },
   view_search_results: {
     eventType: 'ue',
-    eventSchema: 'com.google.tag-manager.server-side/view_search_results/jsonschema/1-0-0',
-    eventDataMappings : ['search_term', 'items']
+    eventSchema:
+      'com.google.tag-manager.server-side/view_search_results/jsonschema/1-0-0',
+    eventDataMappings: ['search_term', 'items'],
   },
   // enhanced measurement
   click: {
@@ -652,77 +683,88 @@ const spDefaultCustomDefs = {
         spPropName: 'link_classes',
         type: 'string',
         ref: 'eventProperty',
-        value: 'link_classes'
+        value: 'link_classes',
       },
       {
         spPropName: 'link_domain',
         type: 'string',
         ref: 'eventProperty',
-        value: 'link_domain'
+        value: 'link_domain',
       },
       {
         spPropName: 'link_id',
         type: 'string',
         ref: 'eventProperty',
-        value: 'link_id'
+        value: 'link_id',
       },
       {
         spPropName: 'link_url',
         type: 'string',
         ref: 'eventProperty',
-        value: 'link_url'
+        value: 'link_url',
       },
       {
         spPropName: 'outbound',
         type: 'boolean',
         ref: 'eventProperty',
-        value: 'outbound'
-      }
-    ]
+        value: 'outbound',
+      },
+    ],
   },
   file_download: {
     eventType: 'ue',
-    eventSchema: 'com.google.ga4.enhanced-measurement/file_download/jsonschema/1-0-0',
-    eventDataMappings : ['file_extention', 'file_name', 'link_classes', 'link_domain', 'link_id', 'link_text', 'link_url']
+    eventSchema:
+      'com.google.ga4.enhanced-measurement/file_download/jsonschema/1-0-0',
+    eventDataMappings: [
+      'file_extention',
+      'file_name',
+      'link_classes',
+      'link_domain',
+      'link_id',
+      'link_text',
+      'link_url',
+    ],
   },
   scroll: {
     eventType: 'ue',
     eventSchema: 'com.google.ga4.enhanced-measurement/scroll/jsonschema/1-0-0',
-    eventDataMappings : []
+    eventDataMappings: [],
   },
   video_complete: {
     eventType: 'ue',
-    eventSchema: 'com.google.ga4.enhanced-measurement/video_complete/jsonschema/1-0-0',
-    eventDataMappings : videoDataMappings
+    eventSchema:
+      'com.google.ga4.enhanced-measurement/video_complete/jsonschema/1-0-0',
+    eventDataMappings: videoDataMappings,
   },
   video_progress: {
     eventType: 'ue',
-    eventSchema: 'com.google.ga4.enhanced-measurement/video_progress/jsonschema/1-0-0',
-    eventDataMappings : videoDataMappings
+    eventSchema:
+      'com.google.ga4.enhanced-measurement/video_progress/jsonschema/1-0-0',
+    eventDataMappings: videoDataMappings,
   },
   video_start: {
     eventType: 'ue',
-    eventSchema: 'com.google.ga4.enhanced-measurement/video_start/jsonschema/1-0-0',
-    eventDataMappings : videoDataMappings
+    eventSchema:
+      'com.google.ga4.enhanced-measurement/video_start/jsonschema/1-0-0',
+    eventDataMappings: videoDataMappings,
   },
   // ga4 automatically collected
   first_visit: {
     eventType: 'ue',
     eventSchema: 'com.google.ga4/first_visit/jsonschema/1-0-0',
-    eventDataMappings : []
+    eventDataMappings: [],
   },
   session_start: {
     eventType: 'ue',
     eventSchema: 'com.google.ga4/session_start/jsonschema/1-0-0',
-    eventDataMappings : []
+    eventDataMappings: [],
   },
   user_engagement: {
     eventType: 'ue',
     eventSchema: 'com.google.ga4/user_engagement/jsonschema/1-0-0',
-    eventDataMappings : ['engagement_time_msec']
+    eventDataMappings: ['engagement_time_msec'],
   },
 };
-
 
 // Helpers
 
@@ -762,10 +804,10 @@ const determineIsLoggingEnabled = (logType) => {
  */
 const doLogging = (typeName, stdInfo, logInfo) => {
   const logMessage = {
-    'Name': stdInfo.tagName,
-    'Type': typeName,
-    'TraceId': stdInfo.traceId,
-    'EventName': stdInfo.eventName,
+    Name: stdInfo.tagName,
+    Type: typeName,
+    TraceId: stdInfo.traceId,
+    EventName: stdInfo.eventName,
   };
 
   switch (typeName) {
@@ -807,7 +849,8 @@ const fail = (logsEnabled, stdInfo, logInfo) => {
 };
 
 const replaceAll = (str, substr, newSubstr) => {
-  let finished = false, result = str;
+  let finished = false,
+    result = str;
   while (!finished) {
     const newStr = result.replace(substr, newSubstr);
     if (result === newStr) {
@@ -823,10 +866,11 @@ const base64urlencode = (data) => {
     return data;
   }
   const base64Enc = toBase64(data);
-  const urlBase64Enc = replaceAll(replaceAll(replaceAll(base64Enc,
-                                                        '=', ''),
-                                             '+', '-'),
-                                  '/', '_');
+  const urlBase64Enc = replaceAll(
+    replaceAll(replaceAll(base64Enc, '=', ''), '+', '-'),
+    '/',
+    '_'
+  );
   return urlBase64Enc;
 };
 
@@ -841,7 +885,9 @@ const parseCookie = (str) =>
     .map((value) => value.split('='))
     .reduce((acc, value) => {
       if (value.length > 1) {
-        acc[decodeUriComponent(value[0].trim())] = decodeUriComponent(value[1].trim());
+        acc[decodeUriComponent(value[0].trim())] = decodeUriComponent(
+          value[1].trim()
+        );
       } else {
         acc[decodeUriComponent(value[0].trim())] = true;
       }
@@ -879,7 +925,11 @@ const setCookieFrom = (headers, data) => {
     };
   }
 
-  setCookie(data.userIdCookie, cookieValues[data.userIdCookie], cookieProperties);
+  setCookie(
+    data.userIdCookie,
+    cookieValues[data.userIdCookie],
+    cookieProperties
+  );
 };
 
 const getHeaders = (event) => {
@@ -938,7 +988,7 @@ const mkCustomDefs = (data, definitions) => {
     data.customStructuredDefs.forEach((evName) => {
       if (evName) {
         definitions[evName] = {
-          eventType: 'se'
+          eventType: 'se',
         };
       }
     });
@@ -954,13 +1004,13 @@ const mkCustomDefs = (data, definitions) => {
             spPropName: m.snowplowPropName,
             type: m.type,
             ref: m.ref,
-            value: makeString(m.value)
+            value: makeString(m.value),
           };
         });
       definitions[evName] = {
         eventType: 'ue',
         eventSchema: row.eventSchema,
-        eventDataMappings: mappings
+        eventDataMappings: mappings,
       };
     });
   }
@@ -1058,7 +1108,7 @@ const mkStandardPairs = (evObj, evType, tagConfig) => {
     res: evObj.screen_resolution,
     uid: evObj.user_id,
     vp: evObj.viewport_size,
-    ip: evObj.ip_override
+    ip: evObj.ip_override,
   };
 };
 
@@ -1089,8 +1139,8 @@ const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
     schema: spSelfDescribingSchema,
     data: {
       schema: evSchema,
-      data: selfDescData
-    }
+      data: selfDescData,
+    },
   });
 
   const encodeBase64 = tagConfig.encodeBase64;
@@ -1165,8 +1215,8 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
  *  - or makes a Snowplow event
  */
 const buildSpEvent = (evObj, tagConfig) => {
-  if (evObj["x-sp-tp2"]) {
-    const spEvent = evObj["x-sp-tp2"];
+  if (evObj['x-sp-tp2']) {
+    const spEvent = evObj['x-sp-tp2'];
     spEvent.ip = evObj.ip_override;
 
     return spEvent;
@@ -1185,7 +1235,7 @@ const mkSnowplowPayload = (snowplowEvent) => {
   if (snowplowEvent) {
     const snowplowPayload = {
       schema: spPayloadDataSchema,
-      data: [ snowplowEvent ]
+      data: [snowplowEvent],
     };
     return snowplowPayload;
   }
@@ -1200,11 +1250,13 @@ const traceIdHeader = loggingEnabled ? getRequestHeader('trace-id') : undefined;
 const stdLogInfo = {
   tagName: tagName,
   traceId: traceIdHeader,
-  eventName: eventData.event_name
+  eventName: eventData.event_name,
 };
 
 if (!data.collectorUrl) {
-  return fail(loggingEnabled, stdLogInfo, {msg: 'A collector URL must be specified'});
+  return fail(loggingEnabled, stdLogInfo, {
+    msg: 'A collector URL must be specified',
+  });
 }
 
 const collectorUrl = asCollectorUrl(data.collectorUrl);
@@ -1215,7 +1267,7 @@ const snowplowPayload = mkSnowplowPayload(snowplowEvent);
 const requestHeaders = {
   headers: getHeaders(eventData),
   method: 'POST',
-  timeout: 5000
+  timeout: 5000,
 };
 
 if (snowplowPayload) {
@@ -1229,30 +1281,32 @@ if (snowplowPayload) {
   }
 
   sendHttpRequest(
-      url,
-      (statusCode, headers, body) => {
-        if (loggingEnabled) {
-          doLogging('Response', stdLogInfo, {
-            responseStatusCode: statusCode,
-            responseHeaders: headers,
-            responseBody: body
-          });
-        }
+    url,
+    (statusCode, headers, body) => {
+      if (loggingEnabled) {
+        doLogging('Response', stdLogInfo, {
+          responseStatusCode: statusCode,
+          responseHeaders: headers,
+          responseBody: body,
+        });
+      }
 
-        if (statusCode >= 200 && statusCode < 300) {
-          if (headers['set-cookie']) {
-            setCookieFrom(headers, data);
-          }
-          data.gtmOnSuccess();
-          return;
+      if (statusCode >= 200 && statusCode < 300) {
+        if (headers['set-cookie']) {
+          setCookieFrom(headers, data);
         }
-        data.gtmOnFailure();
-      },
-      requestHeaders,
-      JSON.stringify(snowplowPayload));
-
+        data.gtmOnSuccess();
+        return;
+      }
+      data.gtmOnFailure();
+    },
+    requestHeaders,
+    JSON.stringify(snowplowPayload)
+  );
 } else {
-  fail(loggingEnabled, stdLogInfo, {msg: 'Unable to build Snowplow event from supplied Client event'});
+  fail(loggingEnabled, stdLogInfo, {
+    msg: 'Unable to build Snowplow event from supplied Client event',
+  });
 }
 
 
@@ -1494,318 +1548,953 @@ ___TESTS___
 
 scenarios:
 - name: Test Snowplow page_view event
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ collectorUrl = 'collector.test.com';\nconst expectedPostUrl = 'https://' + collectorUrl\
-    \ + spDefaultPostPath;\n\nconst mockData = {\n  \"encodeBase64\": true,\n  \"\
-    userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": collectorUrl,\n  \"defineAsSelfDescribing\": false,\n\
-    \  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions,\
-    \ argBody;\n\n// mock API\nmock('getAllEventData', setMockEventObjectFromSpPv);\n\
-    mock('sendHttpRequest', function() { \n  argUrl = arguments[0];\n  argCallback\
-    \ = arguments[1];\n  argOptions = arguments[2];\n  argBody = arguments[3];\n});\n\
-    mock('getContainerVersion', function() {\n  let containerVersion = {\n    debugMode:\
-    \ true,previewMode:true\n  };\n  return containerVersion;\n});\n\n// Call runCode to run the template's\
-    \ code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
-    assertThat(argUrl).isStrictlyEqualTo(expectedPostUrl);\n\nassertThat(argOptions.method).isStrictlyEqualTo('POST');\n\
-    assertThat(argOptions.timeout).isStrictlyEqualTo(5000);\nassertThat(argOptions.headers).isObject();\n\
-    assertThat(argOptions.headers['Content-Type']).isStrictlyEqualTo('application/json');\n\
-    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('user-agent');\n\
-    \nconst body = jsonApi.parse(argBody);\nassertThat(body).isObject();\nassertThat(body.schema).isStrictlyEqualTo(spPayloadSchema);\n\
-    assertThat(body.data).isArray();\n\nconst actEvent = body.data[0];\nassertThat(actEvent).isObject();\n\
-    assertThat(actEvent.e).isStrictlyEqualTo(mockSnowplowEvent.e);\nassertThat(actEvent.url).isStrictlyEqualTo(mockSnowplowEvent.url);\n\
-    assertThat(actEvent.page).isStrictlyEqualTo(mockSnowplowEvent.page);\nassertThat(actEvent.tv).isStrictlyEqualTo(mockSnowplowEvent.tv);\n\
-    assertThat(actEvent.tna).isStrictlyEqualTo(mockSnowplowEvent.tna);\nassertThat(actEvent.aid).isStrictlyEqualTo(mockSnowplowEvent.aid);\n\
-    assertThat(actEvent.p).isStrictlyEqualTo(mockSnowplowEvent.p);\nassertThat(actEvent.tz).isStrictlyEqualTo(mockSnowplowEvent.tz);\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo(mockSnowplowEvent.lang);\nassertThat(actEvent.cs).isStrictlyEqualTo(mockSnowplowEvent.cs);\n\
-    assertThat(actEvent.res).isStrictlyEqualTo(mockSnowplowEvent.res);\nassertThat(actEvent.cd).isStrictlyEqualTo(mockSnowplowEvent.cd);\n\
-    assertThat(actEvent.cookie).isStrictlyEqualTo(mockSnowplowEvent.cookie);\nassertThat(actEvent.eid).isStrictlyEqualTo(mockSnowplowEvent.eid);\n\
-    assertThat(actEvent.dtm).isStrictlyEqualTo(mockSnowplowEvent.dtm);\nassertThat(actEvent.cx).isStrictlyEqualTo(mockSnowplowEvent.cx);\n\
-    assertThat(actEvent.vp).isStrictlyEqualTo(mockSnowplowEvent.vp);\nassertThat(actEvent.ds).isStrictlyEqualTo(mockSnowplowEvent.ds);\n\
-    assertThat(actEvent.vid).isStrictlyEqualTo(mockSnowplowEvent.vid);\nassertThat(actEvent.sid).isStrictlyEqualTo(mockSnowplowEvent.sid);\n\
-    assertThat(actEvent.duid).isStrictlyEqualTo(mockSnowplowEvent.duid);\nassertThat(actEvent.stm).isStrictlyEqualTo(mockSnowplowEvent.stm);\n\
-    assertThat(actEvent.uid).isStrictlyEqualTo(mockSnowplowEvent.uid);\n\nassertThat(actEvent.ip).isUndefined();\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const collectorUrl = 'collector.test.com';
+    const expectedPostUrl = 'https://' + collectorUrl + spDefaultPostPath;
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: collectorUrl,
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', setMockEventObjectFromSpPv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    assertThat(argUrl).isStrictlyEqualTo(expectedPostUrl);
+
+    assertThat(argOptions.method).isStrictlyEqualTo('POST');
+    assertThat(argOptions.timeout).isStrictlyEqualTo(5000);
+    assertThat(argOptions.headers).isObject();
+    assertThat(argOptions.headers['Content-Type']).isStrictlyEqualTo(
+      'application/json'
+    );
+    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('user-agent');
+
+    const body = jsonApi.parse(argBody);
+    assertThat(body).isObject();
+    assertThat(body.schema).isStrictlyEqualTo(spPayloadSchema);
+    assertThat(body.data).isArray();
+
+    const actEvent = body.data[0];
+    assertThat(actEvent).isObject();
+    assertThat(actEvent.e).isStrictlyEqualTo(mockSnowplowEvent.e);
+    assertThat(actEvent.url).isStrictlyEqualTo(mockSnowplowEvent.url);
+    assertThat(actEvent.page).isStrictlyEqualTo(mockSnowplowEvent.page);
+    assertThat(actEvent.tv).isStrictlyEqualTo(mockSnowplowEvent.tv);
+    assertThat(actEvent.tna).isStrictlyEqualTo(mockSnowplowEvent.tna);
+    assertThat(actEvent.aid).isStrictlyEqualTo(mockSnowplowEvent.aid);
+    assertThat(actEvent.p).isStrictlyEqualTo(mockSnowplowEvent.p);
+    assertThat(actEvent.tz).isStrictlyEqualTo(mockSnowplowEvent.tz);
+    assertThat(actEvent.lang).isStrictlyEqualTo(mockSnowplowEvent.lang);
+    assertThat(actEvent.cs).isStrictlyEqualTo(mockSnowplowEvent.cs);
+    assertThat(actEvent.res).isStrictlyEqualTo(mockSnowplowEvent.res);
+    assertThat(actEvent.cd).isStrictlyEqualTo(mockSnowplowEvent.cd);
+    assertThat(actEvent.cookie).isStrictlyEqualTo(mockSnowplowEvent.cookie);
+    assertThat(actEvent.eid).isStrictlyEqualTo(mockSnowplowEvent.eid);
+    assertThat(actEvent.dtm).isStrictlyEqualTo(mockSnowplowEvent.dtm);
+    assertThat(actEvent.cx).isStrictlyEqualTo(mockSnowplowEvent.cx);
+    assertThat(actEvent.vp).isStrictlyEqualTo(mockSnowplowEvent.vp);
+    assertThat(actEvent.ds).isStrictlyEqualTo(mockSnowplowEvent.ds);
+    assertThat(actEvent.vid).isStrictlyEqualTo(mockSnowplowEvent.vid);
+    assertThat(actEvent.sid).isStrictlyEqualTo(mockSnowplowEvent.sid);
+    assertThat(actEvent.duid).isStrictlyEqualTo(mockSnowplowEvent.duid);
+    assertThat(actEvent.stm).isStrictlyEqualTo(mockSnowplowEvent.stm);
+    assertThat(actEvent.uid).isStrictlyEqualTo(mockSnowplowEvent.uid);
+
+    assertThat(actEvent.ip).isUndefined();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test Snowplow page_view event with ip_override
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst mockEventObjectIpOverride\
-    \ = jsonApi.parse(jsonApi.stringify(setMockEventObjectFromSpPv));\nmockEventObjectIpOverride.ip_override\
-    \ = \"1.2.3.4\";\n\nconst collectorUrl = 'collector.test.com';\n\nconst mockData\
-    \ = {\n  \"encodeBase64\": true,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\"\
-    : false,\n  \"cookieOverrideEnabled\": false,\n  \"collectorUrl\": collectorUrl,\n\
-    \  \"defineAsSelfDescribing\": false,\n  \"logType\": \"no\"\n};\n\n// to assert\
-    \ on\nlet argUrl, argCallback, argOptions, argBody;\n\n// mock API\nmock('getAllEventData',\
-    \ mockEventObjectIpOverride);\nmock('sendHttpRequest', function() { \n  argUrl\
-    \ = arguments[0];\n  argCallback = arguments[1];\n  argOptions = arguments[2];\n\
-    \  argBody = arguments[3];\n});\nmock('getContainerVersion', function() {\n  let\
-    \ containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return containerVersion;\n\
-    });\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\n// Assert\n\
-    assertApi('sendHttpRequest').wasCalled();\n\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\nassertThat(actEvent.ip).isDefined();\nassertThat(actEvent.ip).isEqualTo(mockEventObjectIpOverride.ip_override);\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObjectIpOverride = jsonApi.parse(
+      jsonApi.stringify(setMockEventObjectFromSpPv)
+    );
+    mockEventObjectIpOverride.ip_override = '1.2.3.4';
+
+    const collectorUrl = 'collector.test.com';
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: collectorUrl,
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEventObjectIpOverride);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+    assertThat(actEvent.ip).isDefined();
+    assertThat(actEvent.ip).isEqualTo(mockEventObjectIpOverride.ip_override);
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test overriding login event
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = {\"event_name\":\"login\",\"engagement_time_msec\":2,\"method\"\
-    :\"Google\",\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAA\"\
-    ,\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1075258766,\"screen_resolution\"\
-    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
-    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
-    :2,\"ip_override\":\"1.2.3.4\",\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64)\
-    \ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"\
-    x-ga-js_client_id\":\"1182338296.1632069552\"};\n\nmock('getAllEventData', mockEv);\n\
-    const mockData = {\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n\
-    \  \"cookieOverrideEnabled\": false,\n  \"collectorUrl\": \"test\",\n  \"encodeBase64\"\
-    : false,\n  \"customEventData\": [\n    {\n      \"eventName\": \"login\",\n \
-    \     \"snowplowPropName\": \"method\",\n      \"type\": \"string\",\n      \"\
-    ref\": \"eventProperty\",\n      \"value\": \"method\"\n    }\n  ],\n  \"defineAsSelfDescribing\"\
-    : true,\n  \"customEventSchemas\": [\n    {\n      \"eventName\": \"login\",\n\
-    \      \"eventSchema\": \"com.google.tag-manager.server-side/jsonschema/1-0-0\"\
-    \n    }\n  ],\n  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback,\
-    \ argOptions, argBody;\n\n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isStrictlyEqualTo('1.2.3.4');\nassertThat(actEvent.ue_pr).isDefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
-    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.data.method).isStrictlyEqualTo('Google');\n\nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      event_name: 'login',
+      engagement_time_msec: 2,
+      method: 'Google',
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1075258766,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632072119',
+      ga_session_number: 2,
+      'x-ga-mp2-seg': '1',
+      'x-ga-request_count': 2,
+      ip_override: '1.2.3.4',
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    mock('getAllEventData', mockEv);
+    const mockData = {
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      encodeBase64: false,
+      customEventData: [
+        {
+          eventName: 'login',
+          snowplowPropName: 'method',
+          type: 'string',
+          ref: 'eventProperty',
+          value: 'method',
+        },
+      ],
+      defineAsSelfDescribing: true,
+      customEventSchemas: [
+        {
+          eventName: 'login',
+          eventSchema: 'com.google.tag-manager.server-side/jsonschema/1-0-0',
+        },
+      ],
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('ue');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isStrictlyEqualTo('1.2.3.4');
+    assertThat(actEvent.ue_pr).isDefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    const actSD = jsonApi.parse(actEvent.ue_pr);
+    assertThat(actSD.schema).isStrictlyEqualTo(
+      'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.schema).isStrictlyEqualTo(
+      'iglu:com.google.tag-manager.server-side/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.data.method).isStrictlyEqualTo('Google');
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test custom structured event mp1
-  code: "const logToConsole = require('logToConsole');\nconst jsonApi = require('JSON');\n\
-    \nconst mockEv = {\"x-ga-protocol_version\":\"1\",\"x-ga-measurement_id\":\"UA-XXXXX-Y\"\
-    ,\"client_id\":\"3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI=\",\"event_category\"\
-    :\"video\",\"event_action\":\"play\",\"event_label\":\"holiday\",\"x-ga-mp1-ev\"\
-    :\"300\",\"event_name\":\"play\",\"user_agent\":\"Mozilla/5.0 (X11; Ubuntu; Linux\
-    \ x86_64; rv:92.0) Gecko/20100101 Firefox/92.0\",\"x-ga-path\":\"c\",\"x-ga-js_client_id\"\
-    :\"555\"};\n\nconst mockData = {\n  \"encodeBase64\": true,\n  \"userIdCookie\"\
-    : \"sp\",\n  \"defineAsStructured\": true,\n  \"cookieOverrideEnabled\": false,\n\
-    \  \"collectorUrl\": \"test\",\n  \"customStructuredDefs\": [\"play\"],\n  \"\
-    defineAsSelfDescribing\": false,\n  \"logType\": \"no\"\n};\n\n// to assert on\n\
-    let argUrl, argCallback, argOptions, argBody;\n\n// mock API\nmock('getAllEventData',\
-    \ mockEv);\nmock('sendHttpRequest', function() { \n  argUrl = arguments[0];\n\
-    \  argCallback = arguments[1];\n  argOptions = arguments[2];\n  argBody = arguments[3];\n\
-    });\nmock('getContainerVersion', function() {\n  let containerVersion = {\n  \
-    \  debugMode: true,previewMode:true\n  };\n  return containerVersion;\n});\n\n// Call runCode to\
-    \ run the template's code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
-    const body = jsonApi.parse(argBody);\nconst actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('se');\n\
-    assertThat(actEvent.duid).isStrictlyEqualTo('3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI=');\n\
-    assertThat(actEvent.ue_pr).isUndefined();\nassertThat(actEvent.ue_px).isUndefined();\n\
-    \nassertThat(actEvent.se_ac).isStrictlyEqualTo('play');\nassertThat(actEvent.se_ca).isStrictlyEqualTo('video');\n\
-    assertThat(actEvent.se_la).isStrictlyEqualTo('holiday');\nassertThat(actEvent.se_pr).isUndefined();\n\
-    assertThat(actEvent.se_va).isUndefined();\n\nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const logToConsole = require('logToConsole');
+    const jsonApi = require('JSON');
+
+    const mockEv = {
+      'x-ga-protocol_version': '1',
+      'x-ga-measurement_id': 'UA-XXXXX-Y',
+      client_id: '3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI=',
+      event_category: 'video',
+      event_action: 'play',
+      event_label: 'holiday',
+      'x-ga-mp1-ev': '300',
+      event_name: 'play',
+      user_agent:
+        'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0',
+      'x-ga-path': 'c',
+      'x-ga-js_client_id': '555',
+    };
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: true,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      customStructuredDefs: ['play'],
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('se');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      '3/t9e1OhwcZH4azSIsc8lyqxt8xgnyL1cCs8ciDouGI='
+    );
+    assertThat(actEvent.ue_pr).isUndefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    assertThat(actEvent.se_ac).isStrictlyEqualTo('play');
+    assertThat(actEvent.se_ca).isStrictlyEqualTo('video');
+    assertThat(actEvent.se_la).isStrictlyEqualTo('holiday');
+    assertThat(actEvent.se_pr).isUndefined();
+    assertThat(actEvent.se_va).isUndefined();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test custom structured event mp2
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = {\"event_name\":\"video_auto_play_start\",\"engagement_time_msec\"\
-    :2,\"event_label\":\"My promotional video\",\"event_category\":\"video_auto_play\"\
-    ,\"non_interaction\":\"true\",\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
-    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1075258766,\"\
-    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
-    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
-    :2,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
-    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
-    };\n\nmock('getAllEventData', mockEv);\n\nconst mockData = {\n  \"userIdCookie\"\
-    : \"sp\",\n  \"defineAsStructured\": true,\n  \"cookieOverrideEnabled\": false,\n\
-    \  \"collectorUrl\": \"test\",\n  \"encodeBase64\": false,\n  \"customStructuredDefs\"\
-    :[\"video_auto_play_start\"],\n  \"defineAsSelfDescribing\": false,\n  \"logType\"\
-    : \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
-    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
-    \ { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions =\
-    \ arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion', function()\
-    \ {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return containerVersion;\n\
-    });\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\n// Assert\n\
-    assertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('se');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isUndefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nassertThat(actEvent.se_ac).isStrictlyEqualTo('video_auto_play_start');\n\
-    assertThat(actEvent.se_ca).isStrictlyEqualTo('video_auto_play');\nassertThat(actEvent.se_la).isStrictlyEqualTo('My\
-    \ promotional video');\nassertThat(actEvent.se_pr).isUndefined();\nassertThat(actEvent.se_va).isUndefined();\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      event_name: 'video_auto_play_start',
+      engagement_time_msec: 2,
+      event_label: 'My promotional video',
+      event_category: 'video_auto_play',
+      non_interaction: 'true',
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1075258766,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632072119',
+      ga_session_number: 2,
+      'x-ga-mp2-seg': '1',
+      'x-ga-request_count': 2,
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    mock('getAllEventData', mockEv);
+
+    const mockData = {
+      userIdCookie: 'sp',
+      defineAsStructured: true,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      encodeBase64: false,
+      customStructuredDefs: ['video_auto_play_start'],
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('se');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent.ue_pr).isUndefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    assertThat(actEvent.se_ac).isStrictlyEqualTo('video_auto_play_start');
+    assertThat(actEvent.se_ca).isStrictlyEqualTo('video_auto_play');
+    assertThat(actEvent.se_la).isStrictlyEqualTo('My promotional video');
+    assertThat(actEvent.se_pr).isUndefined();
+    assertThat(actEvent.se_va).isUndefined();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test custom unstructured event
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = \n{\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"\
-    G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1912195137,\"screen_resolution\"\
-    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"x-ga-request_count\":2,\"page_location\":\"http://localhost/\",\"page_title\"\
-    :\"\",\"ga_session_id\":\"1632169709\",\"ga_session_number\":8,\"x-ga-mp2-seg\"\
-    :\"1\",\"event_name\":\"foo\",\"engagement_time_msec\":3118,\"age\":55,\"avg_page_load_time\"\
-    :1,\"x-ga-mp2-richsstsse\":\"\",\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64)\
-    \ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"\
-    x-ga-js_client_id\":\"1182338296.1632069552\"};\n\nconst mockData = {\n  \"encodeBase64\"\
-    : false,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"\
-    cookieOverrideEnabled\": false,\n  \"collectorUrl\": \"test\",\n  \"customEventData\"\
-    : [\n    {\n      \"eventName\": \"foo\",\n      \"snowplowPropName\": \"foo_age\"\
-    ,\n      \"type\": \"number\",\n      \"ref\": \"eventProperty\",\n      \"value\"\
-    : \"age\"\n    },\n    {\n      \"eventName\": \"foo\",\n      \"snowplowPropName\"\
-    : \"avg_load_time\",\n      \"type\": \"number\",\n      \"ref\": \"eventProperty\"\
-    ,\n      \"value\": \"avg_page_load_time\"\n    },{\n      \"eventName\": \"foo\"\
-    ,\n      \"snowplowPropName\": \"additionalData.isDebugMode\",\n      \"type\"\
-    : \"boolean\",\n      \"ref\": \"userSet\",\n      \"value\": true\n    }\n  ],\n\
-    \  \"defineAsSelfDescribing\": true,\n  \"customEventSchemas\": [\n    {\n   \
-    \   \"eventName\": \"foo\",\n      \"eventSchema\": \"com.acme.test/foo/jsonschema/1-0-0\"\
-    \n    }\n  ],\n  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback,\
-    \ argOptions, argBody;\n\n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
-    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.acme.test/foo/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.data.foo_age).isStrictlyEqualTo(55);\nassertThat(actSD.data.data.avg_load_time).isStrictlyEqualTo(1);\n\
-    assertThat(actSD.data.data.additionalData.isDebugMode).isTrue();\n\nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1912195137,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      'x-ga-request_count': 2,
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632169709',
+      ga_session_number: 8,
+      'x-ga-mp2-seg': '1',
+      event_name: 'foo',
+      engagement_time_msec: 3118,
+      age: 55,
+      avg_page_load_time: 1,
+      'x-ga-mp2-richsstsse': '',
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    const mockData = {
+      encodeBase64: false,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      customEventData: [
+        {
+          eventName: 'foo',
+          snowplowPropName: 'foo_age',
+          type: 'number',
+          ref: 'eventProperty',
+          value: 'age',
+        },
+        {
+          eventName: 'foo',
+          snowplowPropName: 'avg_load_time',
+          type: 'number',
+          ref: 'eventProperty',
+          value: 'avg_page_load_time',
+        },
+        {
+          eventName: 'foo',
+          snowplowPropName: 'additionalData.isDebugMode',
+          type: 'boolean',
+          ref: 'userSet',
+          value: true,
+        },
+      ],
+      defineAsSelfDescribing: true,
+      customEventSchemas: [
+        {
+          eventName: 'foo',
+          eventSchema: 'com.acme.test/foo/jsonschema/1-0-0',
+        },
+      ],
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('ue');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent.ue_pr).isDefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    const actSD = jsonApi.parse(actEvent.ue_pr);
+    assertThat(actSD.schema).isStrictlyEqualTo(
+      'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.schema).isStrictlyEqualTo(
+      'iglu:com.acme.test/foo/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.data.foo_age).isStrictlyEqualTo(55);
+    assertThat(actSD.data.data.avg_load_time).isStrictlyEqualTo(1);
+    assertThat(actSD.data.data.additionalData.isDebugMode).isTrue();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test boolean type with exception event
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = {\"event_name\":\"exception\",\"engagement_time_msec\":1,\"description\"\
-    :\"no clue\",\"fatal\":1,\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
-    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1013445257,\"\
-    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
-    :\"1632157946\",\"ga_session_number\":5,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
-    :5,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
-    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
-    };\n\nconst mockData = {\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\"\
-    : false,\n  \"cookieOverrideEnabled\": false,\n  \"collectorUrl\": \"test\",\n\
-    \  \"encodeBase64\": false,\n  \"defineAsSelfDescribing\": false,\n  \"logType\"\
-    : \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
-    \n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest', function()\
-    \ { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions =\
-    \ arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion', function()\
-    \ {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return containerVersion;\n\
-    });\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\n// Assert\n\
-    assertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
-    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/exception/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.data.description).isStrictlyEqualTo('no clue');\nassertThat(actSD.data.data.fatal).isTrue();\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      event_name: 'exception',
+      engagement_time_msec: 1,
+      description: 'no clue',
+      fatal: 1,
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1013445257,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632157946',
+      ga_session_number: 5,
+      'x-ga-mp2-seg': '1',
+      'x-ga-request_count': 5,
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    const mockData = {
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      encodeBase64: false,
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('ue');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent.ue_pr).isDefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    const actSD = jsonApi.parse(actEvent.ue_pr);
+    assertThat(actSD.schema).isStrictlyEqualTo(
+      'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.schema).isStrictlyEqualTo(
+      'iglu:com.google.tag-manager.server-side/exception/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.data.description).isStrictlyEqualTo('no clue');
+    assertThat(actSD.data.data.fatal).isTrue();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test with purchase event
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = {\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAAAA\"\
-    ,\"x-ga-gtm_version\":\"2oe9k0\",\"x-ga-page_id\":1319137026,\"screen_resolution\"\
-    :\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814\"\
-    ,\"x-ga-request_count\":3,\"page_location\":\"http://localhost/\",\"page_title\"\
-    :\"\",\"currency\":\"USD\",\"ga_session_id\":\"1632251814\",\"ga_session_number\"\
-    :1,\"x-ga-mp2-seg\":\"0\",\"event_name\":\"purchase\",\"x-ga-system_properties\"\
-    :{\"c\":\"1\"},\"engagement_time_msec\":2907,\"items\":[{\"item_id\":\"sku123\"\
-    ,\"item_name\":\"myItemA\",\"affiliation\":\"Google store\",\"coupon\":\"myCouponA\"\
-    ,\"discount\":5,\"index\":0,\"item_brand\":\"myItemBrandA\",\"item_category\"\
-    :\"myItemCategoryA1\",\"item_category2\":\"myItemCategoryA2\",\"item_category3\"\
-    :\"myItemCategoryA3\",\"item_category4\":\"myItemCategoryA4\",\"item_category5\"\
-    :\"myItemCategoryA5\",\"item_list_id\":\"abc123\",\"item_list_name\":\"listA\"\
-    ,\"item_variant\":\"blue\",\"location_id\":\"locA\",\"price\":10.5,\"quantity\"\
-    :3,\"currency\":\"USD\"},{\"item_id\":\"sku456\",\"item_name\":\"myItemB\",\"\
-    affiliation\":\"Apple store\",\"coupon\":\"myCouponB\",\"discount\":15,\"index\"\
-    :9,\"item_brand\":\"myItemBrandB\",\"item_category\":\"myItemCategoryB1\",\"item_category2\"\
-    :\"myItemCategoryB2\",\"item_category3\":\"myItemCategoryB3\",\"item_category4\"\
-    :\"myItemCategoryB4\",\"item_category5\":\"myItemCategoryB5\",\"item_list_id\"\
-    :\"abc123\",\"item_list_name\":\"listB\",\"item_variant\":\"red\",\"location_id\"\
-    :\"locB\",\"price\":30.5,\"quantity\":12,\"currency\":\"USD\"}],\"transaction_id\"\
-    :\"TR1234\",\"value\":10,\"affiliation\":\"myAffiliation\",\"coupon\":\"ABCD\"\
-    ,\"shipping\":1,\"tax\":0.1,\"x-ga-mp2-richsstsse\":\"\",\"user_agent\":\"Mozilla/5.0\
-    \ (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82\
-    \ Safari/537.36\",\"x-ga-js_client_id\":\"1542781271.1632251814\"};\n\nconst mockData\
-    \ = {\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"test\",\n  \"encodeBase64\": false,\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback,\
-    \ argOptions, argBody;\n\n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('ue');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isDefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nconst actSD = jsonApi.parse(actEvent.ue_pr);\n\
-    assertThat(actSD.schema).isStrictlyEqualTo('iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0');\n\
-    assertThat(actSD.data.schema).isStrictlyEqualTo('iglu:com.google.tag-manager.server-side/purchase/jsonschema/1-0-0');\n\
-    \nassertThat(actSD.data.data.currency).isStrictlyEqualTo('USD');\nassertThat(actSD.data.data.transaction_id).isStrictlyEqualTo('TR1234');\n\
-    assertThat(actSD.data.data.value).isStrictlyEqualTo(10.0);\nassertThat(actSD.data.data.affiliation).isStrictlyEqualTo('myAffiliation');\n\
-    assertThat(actSD.data.data.coupon).isStrictlyEqualTo('ABCD');\nassertThat(actSD.data.data.shipping).isStrictlyEqualTo(1.0);\n\
-    assertThat(actSD.data.data.tax).isStrictlyEqualTo(0.1);\n\nconst expectedItems\
-    \ = [\n  {\n    'item_id': 'sku123',\n    'item_name': 'myItemA',\n    'affiliation':\
-    \ 'Google store',\n    'coupon': 'myCouponA',\n    'currency': 'USD',\n    'discount':\
-    \ 5.0,\n    'index': 0,\n    'item_brand': 'myItemBrandA',\n    'item_category':\
-    \ 'myItemCategoryA1',\n    'item_category2': 'myItemCategoryA2',\n    'item_category3':\
-    \ 'myItemCategoryA3',\n    'item_category4': 'myItemCategoryA4',\n    'item_category5':\
-    \ 'myItemCategoryA5',\n    'item_list_id': 'abc123',\n    'item_list_name': 'listA',\n\
-    \    'item_variant': 'blue',\n    'location_id': 'locA',\n    'price': 10.5,\n\
-    \    'quantity': 3\n  },\n  {\n    'item_id': 'sku456',\n    'item_name': 'myItemB',\n\
-    \    'affiliation': 'Apple store',\n    'coupon': 'myCouponB',\n    'currency':\
-    \ 'USD',\n    'discount': 15.0,\n    'index': 9,\n    'item_brand': 'myItemBrandB',\n\
-    \    'item_category': 'myItemCategoryB1',\n    'item_category2': 'myItemCategoryB2',\n\
-    \    'item_category3': 'myItemCategoryB3',\n    'item_category4': 'myItemCategoryB4',\n\
-    \    'item_category5': 'myItemCategoryB5',\n    'item_list_id': 'abc123',\n  \
-    \  'item_list_name': 'listB',\n    'item_variant': 'red',\n    'location_id':\
-    \ 'locB',\n    'price': 30.5,\n    'quantity': 12\n  }\n];\n\nconst actualItems\
-    \ = actSD.data.data.items;\n\nassertThat(actualItems).isArray();\nassertThat(actualItems).isEqualTo(expectedItems);\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAAA',
+      'x-ga-gtm_version': '2oe9k0',
+      'x-ga-page_id': 1319137026,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814',
+      'x-ga-request_count': 3,
+      page_location: 'http://localhost/',
+      page_title: '',
+      currency: 'USD',
+      ga_session_id: '1632251814',
+      ga_session_number: 1,
+      'x-ga-mp2-seg': '0',
+      event_name: 'purchase',
+      'x-ga-system_properties': { c: '1' },
+      engagement_time_msec: 2907,
+      items: [
+        {
+          item_id: 'sku123',
+          item_name: 'myItemA',
+          affiliation: 'Google store',
+          coupon: 'myCouponA',
+          discount: 5,
+          index: 0,
+          item_brand: 'myItemBrandA',
+          item_category: 'myItemCategoryA1',
+          item_category2: 'myItemCategoryA2',
+          item_category3: 'myItemCategoryA3',
+          item_category4: 'myItemCategoryA4',
+          item_category5: 'myItemCategoryA5',
+          item_list_id: 'abc123',
+          item_list_name: 'listA',
+          item_variant: 'blue',
+          location_id: 'locA',
+          price: 10.5,
+          quantity: 3,
+          currency: 'USD',
+        },
+        {
+          item_id: 'sku456',
+          item_name: 'myItemB',
+          affiliation: 'Apple store',
+          coupon: 'myCouponB',
+          discount: 15,
+          index: 9,
+          item_brand: 'myItemBrandB',
+          item_category: 'myItemCategoryB1',
+          item_category2: 'myItemCategoryB2',
+          item_category3: 'myItemCategoryB3',
+          item_category4: 'myItemCategoryB4',
+          item_category5: 'myItemCategoryB5',
+          item_list_id: 'abc123',
+          item_list_name: 'listB',
+          item_variant: 'red',
+          location_id: 'locB',
+          price: 30.5,
+          quantity: 12,
+          currency: 'USD',
+        },
+      ],
+      transaction_id: 'TR1234',
+      value: 10,
+      affiliation: 'myAffiliation',
+      coupon: 'ABCD',
+      shipping: 1,
+      tax: 0.1,
+      'x-ga-mp2-richsstsse': '',
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1542781271.1632251814',
+    };
+
+    const mockData = {
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      encodeBase64: false,
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('ue');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'r3R5aWLgblV9g+c7gLfLyCKbKGJNHNbkpziyFhjiFPc=.1632251814'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent.ue_pr).isDefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    const actSD = jsonApi.parse(actEvent.ue_pr);
+    assertThat(actSD.schema).isStrictlyEqualTo(
+      'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0'
+    );
+    assertThat(actSD.data.schema).isStrictlyEqualTo(
+      'iglu:com.google.tag-manager.server-side/purchase/jsonschema/1-0-0'
+    );
+
+    assertThat(actSD.data.data.currency).isStrictlyEqualTo('USD');
+    assertThat(actSD.data.data.transaction_id).isStrictlyEqualTo('TR1234');
+    assertThat(actSD.data.data.value).isStrictlyEqualTo(10.0);
+    assertThat(actSD.data.data.affiliation).isStrictlyEqualTo('myAffiliation');
+    assertThat(actSD.data.data.coupon).isStrictlyEqualTo('ABCD');
+    assertThat(actSD.data.data.shipping).isStrictlyEqualTo(1.0);
+    assertThat(actSD.data.data.tax).isStrictlyEqualTo(0.1);
+
+    const expectedItems = [
+      {
+        item_id: 'sku123',
+        item_name: 'myItemA',
+        affiliation: 'Google store',
+        coupon: 'myCouponA',
+        currency: 'USD',
+        discount: 5.0,
+        index: 0,
+        item_brand: 'myItemBrandA',
+        item_category: 'myItemCategoryA1',
+        item_category2: 'myItemCategoryA2',
+        item_category3: 'myItemCategoryA3',
+        item_category4: 'myItemCategoryA4',
+        item_category5: 'myItemCategoryA5',
+        item_list_id: 'abc123',
+        item_list_name: 'listA',
+        item_variant: 'blue',
+        location_id: 'locA',
+        price: 10.5,
+        quantity: 3,
+      },
+      {
+        item_id: 'sku456',
+        item_name: 'myItemB',
+        affiliation: 'Apple store',
+        coupon: 'myCouponB',
+        currency: 'USD',
+        discount: 15.0,
+        index: 9,
+        item_brand: 'myItemBrandB',
+        item_category: 'myItemCategoryB1',
+        item_category2: 'myItemCategoryB2',
+        item_category3: 'myItemCategoryB3',
+        item_category4: 'myItemCategoryB4',
+        item_category5: 'myItemCategoryB5',
+        item_list_id: 'abc123',
+        item_list_name: 'listB',
+        item_variant: 'red',
+        location_id: 'locB',
+        price: 30.5,
+        quantity: 12,
+      },
+    ];
+
+    const actualItems = actSD.data.data.items;
+
+    assertThat(actualItems).isArray();
+    assertThat(actualItems).isEqualTo(expectedItems);
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test platform identifier
-  code: "const logToConsole = require('logToConsole');\nconst jsonApi = require('JSON');\n\
-    \nconst mockEv = {\"event_name\":\"exception\",\"engagement_time_msec\":1,\"description\"\
-    :\"no clue\",\"fatal\":1,\"x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\"\
-    :\"G-AAAAAAAAA\",\"x-ga-gtm_version\":\"2oe9f0\",\"x-ga-page_id\":1013445257,\"\
-    screen_resolution\":\"1920x1080\",\"language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
-    :\"1632157946\",\"ga_session_number\":5,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
-    :5,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
-    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
-    };\n\nconst mockData = {\n  \"platform\": \"iot\",\n  \"encodeBase64\": true,\n\
-    \  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"test\",\n  \"defineAsSelfDescribing\": false,\n\
-    \  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions,\
-    \ argBody;\n\n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.p).isStrictlyEqualTo('iot');\n\
-    \nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const logToConsole = require('logToConsole');
+    const jsonApi = require('JSON');
+
+    const mockEv = {
+      event_name: 'exception',
+      engagement_time_msec: 1,
+      description: 'no clue',
+      fatal: 1,
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1013445257,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632157946',
+      ga_session_number: 5,
+      'x-ga-mp2-seg': '1',
+      'x-ga-request_count': 5,
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    const mockData = {
+      platform: 'iot',
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.p).isStrictlyEqualTo('iot');
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test non-Snowplow page_view
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \nconst mockEv = {\"event_name\":\"page_view\",\"non_interaction\":\"true\",\"\
-    x-ga-protocol_version\":\"2\",\"x-ga-measurement_id\":\"G-AAAAAAAAA\",\"x-ga-gtm_version\"\
-    :\"2oe9f0\",\"x-ga-page_id\":1075258766,\"screen_resolution\":\"1920x1080\",\"\
-    language\":\"en-us\",\"client_id\":\"lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552\"\
-    ,\"page_location\":\"http://localhost/\",\"page_title\":\"\",\"ga_session_id\"\
-    :\"1632072119\",\"ga_session_number\":2,\"x-ga-mp2-seg\":\"1\",\"x-ga-request_count\"\
-    :2,\"user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,\
-    \ like Gecko) Chrome/93.0.4577.82 Safari/537.36\",\"x-ga-js_client_id\":\"1182338296.1632069552\"\
-    };\n\nmock('getAllEventData', mockEv);\n\nconst mockData = {\n  \"userIdCookie\"\
-    : \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\": false,\n\
-    \  \"collectorUrl\": \"test\",\n  \"encodeBase64\": false,\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"no\"\n};\n\n// to assert on\nlet argUrl, argCallback,\
-    \ argOptions, argBody;\n\n// mock API\nmock('getAllEventData', mockEv);\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: true,previewMode:true\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nconst body = jsonApi.parse(argBody);\n\
-    const actEvent = body.data[0];\n\nassertThat(actEvent.e).isStrictlyEqualTo('pv');\n\
-    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');\nassertThat(actEvent.duid).isStrictlyEqualTo('lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552');\n\
-    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');\nassertThat(actEvent.res).isStrictlyEqualTo('1920x1080');\n\
-    assertThat(actEvent.ip).isUndefined();\nassertThat(actEvent.ue_pr).isUndefined();\n\
-    assertThat(actEvent.ue_px).isUndefined();\n\nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    const mockEv = {
+      event_name: 'page_view',
+      non_interaction: 'true',
+      'x-ga-protocol_version': '2',
+      'x-ga-measurement_id': 'G-AAAAAAAAA',
+      'x-ga-gtm_version': '2oe9f0',
+      'x-ga-page_id': 1075258766,
+      screen_resolution: '1920x1080',
+      language: 'en-us',
+      client_id: 'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552',
+      page_location: 'http://localhost/',
+      page_title: '',
+      ga_session_id: '1632072119',
+      ga_session_number: 2,
+      'x-ga-mp2-seg': '1',
+      'x-ga-request_count': 2,
+      user_agent:
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+      'x-ga-js_client_id': '1182338296.1632069552',
+    };
+
+    mock('getAllEventData', mockEv);
+
+    const mockData = {
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'test',
+      encodeBase64: false,
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEv);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    assertThat(actEvent.e).isStrictlyEqualTo('pv');
+    assertThat(actEvent.url).isStrictlyEqualTo('http://localhost/');
+    assertThat(actEvent.duid).isStrictlyEqualTo(
+      'lyqi3wb1lPr5UDBKiFVZgj7ZFM8yptEK98924tMNsv0=.1632069552'
+    );
+    assertThat(actEvent.lang).isStrictlyEqualTo('en-us');
+    assertThat(actEvent.res).isStrictlyEqualTo('1920x1080');
+    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent.ue_pr).isUndefined();
+    assertThat(actEvent.ue_px).isUndefined();
+
+    assertApi('logToConsole').wasNotCalled();
 - name: Test logs settings - default is debug
   code: |
     const jsonApi = require('JSON');
@@ -1816,24 +2505,24 @@ scenarios:
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
-      "encodeBase64": true,
-      "userIdCookie": "sp",
-      "defineAsStructured": false,
-      "cookieOverrideEnabled": false,
-      "collectorUrl": "collector.test.com",
-      "defineAsSelfDescribing": false
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'collector.test.com',
+      defineAsSelfDescribing: false,
       // logType undefined
     };
 
     // mock API
     mock('getAllEventData', mockEventObject);
-    mock('sendHttpRequest', function() {
+    mock('sendHttpRequest', function () {
       return true;
     });
-    mock('getContainerVersion', function() {
+    mock('getContainerVersion', function () {
       let containerVersion = {
         debugMode: true,
-        previewMode:true
+        previewMode: true,
       };
       return containerVersion;
     });
@@ -1845,83 +2534,250 @@ scenarios:
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasCalled();
 - name: Test logs settings - debug does not log on prod
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ mockEventObject = setMockEventObjectFromSpPv;\n\nconst mockData = {\n  \"encodeBase64\"\
-    : true,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"collector.test.com\",\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"debug\"\n};\n\n// mock API\nmock('getAllEventData',\
-    \ mockEventObject);\nmock('sendHttpRequest', function() { \n  return true;\n});\n\
-    mock('getContainerVersion', function() {\n  let containerVersion = {\n    debugMode:\
-    \ false,previewMode:false\n  };\n  return containerVersion;\n});\n\n// Call runCode to run the template's\
-    \ code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
-    assertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObject = setMockEventObjectFromSpPv;
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'collector.test.com',
+      defineAsSelfDescribing: false,
+      logType: 'debug',
+    };
+
+    // mock API
+    mock('getAllEventData', mockEventObject);
+    mock('sendHttpRequest', function () {
+      return true;
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: false,
+        previewMode: false,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    assertApi('logToConsole').wasNotCalled();
 - name: Test logs settings - no does not log on prod
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ mockEventObject = setMockEventObjectFromSpPv;\n\nconst mockData = {\n  \"encodeBase64\"\
-    : true,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"collector.test.com\",\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"no\"\n};\n\n// mock API\nmock('getAllEventData', mockEventObject);\n\
-    mock('sendHttpRequest', function() { \n  return true;\n});\nmock('getContainerVersion',\
-    \ function() {\n  let containerVersion = {\n    debugMode: false,previewMode:false\n  };\n  return\
-    \ containerVersion;\n});\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \n// Assert\nassertApi('sendHttpRequest').wasCalled();\nassertApi('logToConsole').wasNotCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObject = setMockEventObjectFromSpPv;
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'collector.test.com',
+      defineAsSelfDescribing: false,
+      logType: 'no',
+    };
+
+    // mock API
+    mock('getAllEventData', mockEventObject);
+    mock('sendHttpRequest', function () {
+      return true;
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: false,
+        previewMode: false,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    assertApi('logToConsole').wasNotCalled();
 - name: Test logs settings - always (1)
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ mockEventObject = setMockEventObjectFromSpPv;\n\nconst mockData = {\n  \"encodeBase64\"\
-    : true,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"collector.test.com\",\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"always\"\n};\n\n// mock API\nmock('getAllEventData',\
-    \ mockEventObject);\nmock('sendHttpRequest', function() { \n  return true;\n});\n\
-    mock('getContainerVersion', function() {\n  let containerVersion = {\n    debugMode:\
-    \ false,previewMode:false\n  };\n  return containerVersion;\n});\n\n// Call runCode to run the template's\
-    \ code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
-    assertApi('logToConsole').wasCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObject = setMockEventObjectFromSpPv;
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'collector.test.com',
+      defineAsSelfDescribing: false,
+      logType: 'always',
+    };
+
+    // mock API
+    mock('getAllEventData', mockEventObject);
+    mock('sendHttpRequest', function () {
+      return true;
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: false,
+        previewMode: false,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    assertApi('logToConsole').wasCalled();
 - name: Test logs settings - always (2)
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ mockEventObject = setMockEventObjectFromSpPv;\n\nconst mockData = {\n  \"encodeBase64\"\
-    : true,\n  \"userIdCookie\": \"sp\",\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\"\
-    : false,\n  \"collectorUrl\": \"collector.test.com\",\n  \"defineAsSelfDescribing\"\
-    : false,\n  \"logType\": \"always\"\n};\n\n// mock API\nmock('getAllEventData',\
-    \ mockEventObject);\nmock('sendHttpRequest', function() { \n  return true;\n});\n\
-    mock('getContainerVersion', function() {\n  let containerVersion = {\n    debugMode:\
-    \ true,previewMode:true\n  };\n  return containerVersion;\n});\n\n// Call runCode to run the template's\
-    \ code.\nrunCode(mockData);\n\n// Assert\nassertApi('sendHttpRequest').wasCalled();\n\
-    assertApi('logToConsole').wasCalled();\n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObject = setMockEventObjectFromSpPv;
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: 'collector.test.com',
+      defineAsSelfDescribing: false,
+      logType: 'always',
+    };
+
+    // mock API
+    mock('getAllEventData', mockEventObject);
+    mock('sendHttpRequest', function () {
+      return true;
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+    assertApi('logToConsole').wasCalled();
 - name: Test logs - Request and Response
-  code: "const jsonApi = require('JSON');\nconst logToConsole = require('logToConsole');\n\
-    \n// test constants\nconst mockSnowplowEvent = setMockRawSnowplowPageView;\nconst\
-    \ mockEventObject = setMockEventObjectFromSpPv;\nconst testCollector = \"collector.test.com\"\
-    ;\n\nconst mockData = {\n  \"encodeBase64\": true,\n  \"userIdCookie\": \"sp\"\
-    ,\n  \"defineAsStructured\": false,\n  \"cookieOverrideEnabled\": false,\n  \"\
-    collectorUrl\": testCollector,\n  \"defineAsSelfDescribing\": false,\n  \"logType\"\
-    : \"debug\"\n};\n\n// to assert on\nlet argUrl, argCallback, argOptions, argBody;\n\
-    \n// mock API\nmock('getAllEventData', mockEventObject);\n\nmock('sendHttpRequest',\
-    \ function() { \n  argUrl = arguments[0];\n  argCallback = arguments[1];\n  argOptions\
-    \ = arguments[2];\n  argBody = arguments[3];\n  \n  // mock response\n  let respStatusCode\
-    \ = 200;\n  let respHeaders = {foo: \"bar\"};\n  let respBody = 'ok';\n  \n  //\
-    \ and call the callback with mock response\n  argCallback(respStatusCode, respHeaders,\
-    \ respBody);\n});\nmock('getContainerVersion', function() {\n  let containerVersion\
-    \ = {\n    debugMode: true,previewMode:true\n  };\n  return containerVersion;\n});\nmock('getRequestHeader',\
-    \ function(key) {\n  // only interested for trace-id\n  const headers = {\n  \
-    \  'trace-id': 'someTestTraceId'\n  };\n  // naive\n  return headers[key];\n});\n\
-    \n// Call runCode to run the template's code.\nrunCode(mockData);\n\n// Assert\n\
-    assertApi('sendHttpRequest').wasCalled();\n\nconst expectedUrl = \"https://\"\
-    \ + testCollector + spDefaultPostPath;\nconst expectedHeaders = {\n  \"Content-Type\"\
-    :\"application/json\",\n  \"User-Agent\":\"user-agent\"\n};\nconst expectedRequestLog\
-    \ = jsonApi.stringify({\n  \"Name\": \"Snowplow\",\n  \"Type\": \"Request\",\n\
-    \  \"TraceId\": \"someTestTraceId\",\n  \"EventName\": \"page_view\",\n  \"RequestMethod\"\
-    : \"POST\",\n  \"RequestUrl\": expectedUrl,\n  \"RequestHeaders\": expectedHeaders,\n\
-    \  \"RequestBody\":{\n    \"schema\": spPayloadSchema,\n    \"data\": [mockSnowplowEvent]\n\
-    \  }\n});\n\nconst expectedResponseLog = jsonApi.stringify({\n  \"Name\":\"Snowplow\"\
-    ,\n  \"Type\":\"Response\",\n  \"TraceId\": \"someTestTraceId\",\n  \"EventName\"\
-    : \"page_view\",\n  \"ResponseStatusCode\":200,\n  \"ResponseHeaders\":{\"foo\"\
-    :\"bar\"},\n  \"ResponseBody\":\"ok\"\n});\nassertApi('logToConsole').wasCalled();\n\
-    assertApi('logToConsole').wasCalledWith(expectedRequestLog);\nassertApi('logToConsole').wasCalledWith(expectedResponseLog);\n\
-    \n"
+  code: |
+    const jsonApi = require('JSON');
+    const logToConsole = require('logToConsole');
+
+    // test constants
+    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockEventObject = setMockEventObjectFromSpPv;
+    const testCollector = 'collector.test.com';
+
+    const mockData = {
+      encodeBase64: true,
+      userIdCookie: 'sp',
+      defineAsStructured: false,
+      cookieOverrideEnabled: false,
+      collectorUrl: testCollector,
+      defineAsSelfDescribing: false,
+      logType: 'debug',
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockEventObject);
+
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+
+      // mock response
+      let respStatusCode = 200;
+      let respHeaders = { foo: 'bar' };
+      let respBody = 'ok';
+
+      // and call the callback with mock response
+      argCallback(respStatusCode, respHeaders, respBody);
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+    mock('getRequestHeader', function (key) {
+      // only interested for trace-id
+      const headers = {
+        'trace-id': 'someTestTraceId',
+      };
+      // naive
+      return headers[key];
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+
+    const expectedUrl = 'https://' + testCollector + spDefaultPostPath;
+    const expectedHeaders = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'user-agent',
+    };
+    const expectedRequestLog = jsonApi.stringify({
+      Name: 'Snowplow',
+      Type: 'Request',
+      TraceId: 'someTestTraceId',
+      EventName: 'page_view',
+      RequestMethod: 'POST',
+      RequestUrl: expectedUrl,
+      RequestHeaders: expectedHeaders,
+      RequestBody: {
+        schema: spPayloadSchema,
+        data: [mockSnowplowEvent],
+      },
+    });
+
+    const expectedResponseLog = jsonApi.stringify({
+      Name: 'Snowplow',
+      Type: 'Response',
+      TraceId: 'someTestTraceId',
+      EventName: 'page_view',
+      ResponseStatusCode: 200,
+      ResponseHeaders: { foo: 'bar' },
+      ResponseBody: 'ok',
+    });
+    assertApi('logToConsole').wasCalled();
+    assertApi('logToConsole').wasCalledWith(expectedRequestLog);
+    assertApi('logToConsole').wasCalledWith(expectedResponseLog);
 - name: Test logs - containerVersion undefined
   code: |
     const jsonApi = require('JSON');
@@ -1938,7 +2794,7 @@ scenarios:
       cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
       defineAsSelfDescribing: false,
-      logType: 'debug', // to assert on fallback for undefined containerVersion
+      logType: 'debug',  // so that we assert on fallback for undefined containerVersion()
     };
 
     // mock API
@@ -1957,120 +2813,124 @@ scenarios:
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasNotCalled();
 setup: |-
-  const spPayloadSchema = "iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4";
+  const spPayloadSchema =
+    'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
   const spDefaultPostPath = '/com.snowplowanalytics.snowplow/tp2';
   const setMockRawSnowplowPageView = {
-    "e":"pv",
-    "url":"https://snowplowanalytics.com/",
-    "page":"Collect, manage and operationalize behavioral data at scale | Snowplow",
-    "tv":"js-3.1.4",
-    "tna":"sp",
-    "aid":"website",
-    "p":"web",
-    "tz":"Europe/London",
-    "lang":"en-GB",
-    "cs":"UTF-8",
-    "res":"1920x1080",
-    "cd":"24",
-    "cookie":"1",
-    "eid":"8676de79-0eba-4435-ad95-8a41a8a0129c",
-    "dtm":"1628586512246",
-      "cx":"eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uc25vd3Bsb3dhbmFseXRpY3Muc25vd3Bsb3cvd2ViX3BhZ2UvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsiaWQiOiJhODZjNDJlNS1iODMxLTQ1YzgtYjcwNi1lMjE0YzI2YjRiM2QifX0seyJzY2hlbWEiOiJpZ2x1Om9yZy53My9QZXJmb3JtYW5jZVRpbWluZy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJuYXZpZ2F0aW9uU3RhcnQiOjE2Mjg1ODY1MDg2MTAsInVubG9hZEV2ZW50U3RhcnQiOjAsInVubG9hZEV2ZW50RW5kIjowLCJyZWRpcmVjdFN0YXJ0IjowLCJyZWRpcmVjdEVuZCI6MCwiZmV0Y2hTdGFydCI6MTYyODU4NjUwODYxMCwiZG9tYWluTG9va3VwU3RhcnQiOjE2Mjg1ODY1MDg2MzcsImRvbWFpbkxvb2t1cEVuZCI6MTYyODU4NjUwODY5MSwiY29ubmVjdFN0YXJ0IjoxNjI4NTg2NTA4NjkxLCJjb25uZWN0RW5kIjoxNjI4NTg2NTA4NzYzLCJzZWN1cmVDb25uZWN0aW9uU3RhcnQiOjE2Mjg1ODY1MDg3MjEsInJlcXVlc3RTdGFydCI6MTYyODU4NjUwODc2MywicmVzcG9uc2VTdGFydCI6MTYyODU4NjUwODc5NywicmVzcG9uc2VFbmQiOjE2Mjg1ODY1MDg4MjEsImRvbUxvYWRpbmciOjE2Mjg1ODY1MDkwNzYsImRvbUludGVyYWN0aXZlIjoxNjI4NTg2NTA5MzgxLCJkb21Db250ZW50TG9hZGVkRXZlbnRTdGFydCI6MTYyODU4NjUwOTQwOCwiZG9tQ29udGVudExvYWRlZEV2ZW50RW5kIjoxNjI4NTg2NTA5NDE3LCJkb21Db21wbGV0ZSI6MTYyODU4NjUxMDMzMiwibG9hZEV2ZW50U3RhcnQiOjE2Mjg1ODY1MTAzMzIsImxvYWRFdmVudEVuZCI6MTYyODU4NjUxMDMzNH19XX0",
-    "vp":"745x1302",
-    "ds":"730x12393",
-    "vid":"1",
-    "sid":"e7580b71-227b-4868-9ea9-322a263ce885",
-    "duid":"d54a1904-7798-401a-be0b-1a83bea73634",
-    "stm":"1628586512248",
-    "uid":"snow123"
+    e: 'pv',
+    url: 'https://snowplowanalytics.com/',
+    page: 'Collect, manage and operationalize behavioral data at scale | Snowplow',
+    tv: 'js-3.1.4',
+    tna: 'sp',
+    aid: 'website',
+    p: 'web',
+    tz: 'Europe/London',
+    lang: 'en-GB',
+    cs: 'UTF-8',
+    res: '1920x1080',
+    cd: '24',
+    cookie: '1',
+    eid: '8676de79-0eba-4435-ad95-8a41a8a0129c',
+    dtm: '1628586512246',
+    cx: 'eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uc25vd3Bsb3dhbmFseXRpY3Muc25vd3Bsb3cvd2ViX3BhZ2UvanNvbnNjaGVtYS8xLTAtMCIsImRhdGEiOnsiaWQiOiJhODZjNDJlNS1iODMxLTQ1YzgtYjcwNi1lMjE0YzI2YjRiM2QifX0seyJzY2hlbWEiOiJpZ2x1Om9yZy53My9QZXJmb3JtYW5jZVRpbWluZy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJuYXZpZ2F0aW9uU3RhcnQiOjE2Mjg1ODY1MDg2MTAsInVubG9hZEV2ZW50U3RhcnQiOjAsInVubG9hZEV2ZW50RW5kIjowLCJyZWRpcmVjdFN0YXJ0IjowLCJyZWRpcmVjdEVuZCI6MCwiZmV0Y2hTdGFydCI6MTYyODU4NjUwODYxMCwiZG9tYWluTG9va3VwU3RhcnQiOjE2Mjg1ODY1MDg2MzcsImRvbWFpbkxvb2t1cEVuZCI6MTYyODU4NjUwODY5MSwiY29ubmVjdFN0YXJ0IjoxNjI4NTg2NTA4NjkxLCJjb25uZWN0RW5kIjoxNjI4NTg2NTA4NzYzLCJzZWN1cmVDb25uZWN0aW9uU3RhcnQiOjE2Mjg1ODY1MDg3MjEsInJlcXVlc3RTdGFydCI6MTYyODU4NjUwODc2MywicmVzcG9uc2VTdGFydCI6MTYyODU4NjUwODc5NywicmVzcG9uc2VFbmQiOjE2Mjg1ODY1MDg4MjEsImRvbUxvYWRpbmciOjE2Mjg1ODY1MDkwNzYsImRvbUludGVyYWN0aXZlIjoxNjI4NTg2NTA5MzgxLCJkb21Db250ZW50TG9hZGVkRXZlbnRTdGFydCI6MTYyODU4NjUwOTQwOCwiZG9tQ29udGVudExvYWRlZEV2ZW50RW5kIjoxNjI4NTg2NTA5NDE3LCJkb21Db21wbGV0ZSI6MTYyODU4NjUxMDMzMiwibG9hZEV2ZW50U3RhcnQiOjE2Mjg1ODY1MTAzMzIsImxvYWRFdmVudEVuZCI6MTYyODU4NjUxMDMzNH19XX0',
+    vp: '745x1302',
+    ds: '730x12393',
+    vid: '1',
+    sid: 'e7580b71-227b-4868-9ea9-322a263ce885',
+    duid: 'd54a1904-7798-401a-be0b-1a83bea73634',
+    stm: '1628586512248',
+    uid: 'snow123',
   };
 
   const setMockEventObjectFromSpPv = {
-    "event_name":"page_view",
-    "client_id":"d54a1904-7798-401a-be0b-1a83bea73634",
-    "language":"en-GB",
-    "page_encoding":"UTF-8",
-    "page_hostname":"snowplowanalytics.com",
-    "page_location":"https://snowplowanalytics.com/",
-    "page_path":"/",
-    "page_referrer":"referer",
-    "page_title":"Collect, manage and operationalize behavioral data at scale | Snowplow",
-    "screen_resolution":"1920x1080",
-    "user_id":"snow123",
-    "viewport_size":"745x1302",
-    "user_agent":"user-agent",
-    "origin":"origin",
-    "host":"host",
-    "x-sp-tp2": setMockRawSnowplowPageView,
-    "x-sp-anonymous":undefined,
-    "x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1": {
-      "id":"a86c42e5-b831-45c8-b706-e214c26b4b3d"
+    event_name: 'page_view',
+    client_id: 'd54a1904-7798-401a-be0b-1a83bea73634',
+    language: 'en-GB',
+    page_encoding: 'UTF-8',
+    page_hostname: 'snowplowanalytics.com',
+    page_location: 'https://snowplowanalytics.com/',
+    page_path: '/',
+    page_referrer: 'referer',
+    page_title:
+      'Collect, manage and operationalize behavioral data at scale | Snowplow',
+    screen_resolution: '1920x1080',
+    user_id: 'snow123',
+    viewport_size: '745x1302',
+    user_agent: 'user-agent',
+    origin: 'origin',
+    host: 'host',
+    'x-sp-tp2': setMockRawSnowplowPageView,
+    'x-sp-anonymous': undefined,
+    'x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1': {
+      id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
     },
-    "x-sp-context_org_w3_PerformanceTiming_jsonschema_1":{
-      "navigationStart":1628586508610,
-      "unloadEventStart":0,
-      "unloadEventEnd":0,
-      "redirectStart":0,
-      "redirectEnd":0,
-      "fetchStart":1628586508610,
-      "domainLookupStart":1628586508637,
-      "domainLookupEnd":1628586508691,
-      "connectStart":1628586508691,
-      "connectEnd":1628586508763,
-      "secureConnectionStart":1628586508721,
-      "requestStart":1628586508763,
-      "responseStart":1628586508797,
-      "responseEnd":1628586508821,
-      "domLoading":1628586509076,
-      "domInteractive":1628586509381,
-      "domContentLoadedEventStart":1628586509408,
-      "domContentLoadedEventEnd":1628586509417,
-      "domComplete":1628586510332,
-      "loadEventStart":1628586510332,
-      "loadEventEnd":1628586510334
+    'x-sp-context_org_w3_PerformanceTiming_jsonschema_1': {
+      navigationStart: 1628586508610,
+      unloadEventStart: 0,
+      unloadEventEnd: 0,
+      redirectStart: 0,
+      redirectEnd: 0,
+      fetchStart: 1628586508610,
+      domainLookupStart: 1628586508637,
+      domainLookupEnd: 1628586508691,
+      connectStart: 1628586508691,
+      connectEnd: 1628586508763,
+      secureConnectionStart: 1628586508721,
+      requestStart: 1628586508763,
+      responseStart: 1628586508797,
+      responseEnd: 1628586508821,
+      domLoading: 1628586509076,
+      domInteractive: 1628586509381,
+      domContentLoadedEventStart: 1628586509408,
+      domContentLoadedEventEnd: 1628586509417,
+      domComplete: 1628586510332,
+      loadEventStart: 1628586510332,
+      loadEventEnd: 1628586510334,
     },
-    "x-sp-contexts": [
+    'x-sp-contexts': [
       {
-        "schema":"iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0",
-        "data": {
-          "id":"a86c42e5-b831-45c8-b706-e214c26b4b3d"
-        }
+        schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+        data: {
+          id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
+        },
       },
       {
-        "schema":"iglu:org.w3/PerformanceTiming/jsonschema/1-0-0",
-        "data":{
-          "navigationStart":1628586508610,
-          "unloadEventStart":0,
-          "unloadEventEnd":0,
-          "redirectStart":0,
-          "redirectEnd":0,
-          "fetchStart":1628586508610,
-          "domainLookupStart":1628586508637,
-          "domainLookupEnd":1628586508691,
-          "connectStart":1628586508691,
-          "connectEnd":1628586508763,
-          "secureConnectionStart":1628586508721,
-          "requestStart":1628586508763,
-          "responseStart":1628586508797,
-          "responseEnd":1628586508821,
-          "domLoading":1628586509076,
-          "domInteractive":1628586509381,
-          "domContentLoadedEventStart":1628586509408,
-          "domContentLoadedEventEnd":1628586509417,
-          "domComplete":1628586510332,
-          "loadEventStart":1628586510332,
-          "loadEventEnd":1628586510334
-        }
-      }
+        schema: 'iglu:org.w3/PerformanceTiming/jsonschema/1-0-0',
+        data: {
+          navigationStart: 1628586508610,
+          unloadEventStart: 0,
+          unloadEventEnd: 0,
+          redirectStart: 0,
+          redirectEnd: 0,
+          fetchStart: 1628586508610,
+          domainLookupStart: 1628586508637,
+          domainLookupEnd: 1628586508691,
+          connectStart: 1628586508691,
+          connectEnd: 1628586508763,
+          secureConnectionStart: 1628586508721,
+          requestStart: 1628586508763,
+          responseStart: 1628586508797,
+          responseEnd: 1628586508821,
+          domLoading: 1628586509076,
+          domInteractive: 1628586509381,
+          domContentLoadedEventStart: 1628586509408,
+          domContentLoadedEventEnd: 1628586509417,
+          domComplete: 1628586510332,
+          loadEventStart: 1628586510332,
+          loadEventEnd: 1628586510334,
+        },
+      },
     ],
-    "ga_session_id":"e7580b71-227b-4868-9ea9-322a263ce885",
-    "ga_session_number":"1",
-    "x-ga-mp2-seg":"1",
-    "x-ga-protocol_version":"2",
-    "x-ga-page_id":"a86c42e5-b831-45c8-b706-e214c26b4b3d",
+    ga_session_id: 'e7580b71-227b-4868-9ea9-322a263ce885',
+    ga_session_number: '1',
+    'x-ga-mp2-seg': '1',
+    'x-ga-protocol_version': '2',
+    'x-ga-page_id': 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
   };
 
 
 ___NOTES___
 
 Created on 9/21/2021, 3:59:19 AM
+
+
