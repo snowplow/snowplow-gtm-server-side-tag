@@ -30,7 +30,10 @@ In addition, users can change the default or add custom event definitions accord
 
 ### Installing from the Google Tag Manager Template Gallery
 
-Coming Soon
+1. From the Templates tab in GTM Server Side, click "Search Gallery" in the Tag Templates section
+2. Search for "Snowplow" and select the official "By Snowplow" tag
+3. Click Add to Workspace
+4. Accept the permissions dialog by clicking "Add"
 
 ### Manual Installation
 
