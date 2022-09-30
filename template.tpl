@@ -481,6 +481,7 @@ const JSON = require('JSON');
 const log = require('logToConsole');
 const makeNumber = require('makeNumber');
 const makeString = require('makeString');
+const Math = require('Math');
 const sendHttpRequest = require('sendHttpRequest');
 const setCookie = require('setCookie');
 const toBase64 = require('toBase64');
@@ -848,6 +849,24 @@ const fail = (logsEnabled, stdInfo, logInfo) => {
   return data.gtmOnFailure();
 };
 
+const merge = (args) => {
+  let target = {};
+
+  const addToTarget = (obj) => {
+    for (let prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        target[prop] = obj[prop];
+      }
+    }
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    addToTarget(args[i]);
+  }
+
+  return target;
+};
+
 const replaceAll = (str, substr, newSubstr) => {
   let finished = false,
     result = str;
@@ -983,21 +1002,22 @@ const asBoolean = (val) => {
  * Does not validate data - assumes the non-empty validation rule.
  * Guarantees that for any custom self-describing mapping m, m.value is a string.
  */
-const mkCustomDefs = (data, definitions) => {
-  if (data.defineAsStructured) {
-    data.customStructuredDefs.forEach((evName) => {
+const mkCustomDefs = (tagConfig, defaultDefinitions) => {
+  const newDefinitions = {};
+  if (tagConfig.defineAsStructured) {
+    tagConfig.customStructuredDefs.forEach((evName) => {
       if (evName) {
-        definitions[evName] = {
+        newDefinitions[evName] = {
           eventType: 'se',
         };
       }
     });
   }
 
-  if (data.defineAsSelfDescribing) {
-    data.customEventSchemas.forEach((row) => {
+  if (tagConfig.defineAsSelfDescribing) {
+    tagConfig.customEventSchemas.forEach((row) => {
       const evName = row.eventName;
-      const mappings = data.customEventData
+      const mappings = tagConfig.customEventData
         .filter((r) => r.eventName === evName)
         .map((m) => {
           return {
@@ -1007,7 +1027,7 @@ const mkCustomDefs = (data, definitions) => {
             value: makeString(m.value),
           };
         });
-      definitions[evName] = {
+      newDefinitions[evName] = {
         eventType: 'ue',
         eventSchema: row.eventSchema,
         eventDataMappings: mappings,
@@ -1015,17 +1035,56 @@ const mkCustomDefs = (data, definitions) => {
     });
   }
 
-  return definitions;
+  return merge([defaultDefinitions, newDefinitions]);
+};
+
+/*
+ * Helper that wraps mkCustomDefs and returns a function that closes over the
+ * provided event definitions.
+ */
+const withDefinitions = (definitions) => {
+  return function(tagConfig) {
+    return mkCustomDefs(tagConfig, definitions);
+  };
+};
+
+/*
+ * Returns whether a string can be parsed as an integer.
+ *
+ * @param x {string} - the string to check
+ * @returns - boolean
+ */
+const isInt = (x) => {
+  const y = Math.floor(x);
+  if (y === 0) {
+    return true;
+  }
+  return !!y;
+};
+
+/*
+ * Splits a string as a path where path components are separated by dots.
+ * (used by both getFromPath and setFromPath)
+ *
+ * @param stringPath {string} - the string to split
+ * @returns - the array of path components
+ */
+const splitStringPath = (stringPath) => {
+  return stringPath.split('.').filter((p) => !!p);
 };
 
 /*
  * Gets the value in obj from path.
- * Path denotes a nested property string path separated by '.'
- *  e.g. getFromPath('a.b', {a: {b: 0}}) => 0
+ * Path must be a string denoting a (nested) property path separated by '.'
+ *  e.g. getFromPath('a.b', {a: {b: 2}}) => 2
+ *
+ * @param path {string} - the string to replace into
+ * @param obj {Object} - the object to look into
+ * @returns - the corresponding value or undefined
  */
 const getFromPath = (path, obj) => {
   if (getType(path) === 'string') {
-    const splitPath = path.split('.').filter((prop) => !!prop);
+    const splitPath = splitStringPath(path);
     return splitPath.reduce((acc, curr) => acc && acc[curr], obj);
   }
   return undefined;
@@ -1034,27 +1093,43 @@ const getFromPath = (path, obj) => {
 /*
  * Sets the value in obj from path (side-effects).
  * Overwrites if encounters existing properties, and creates nesting if needed.
+ * Examples:
  *  e.g. setFromPath('a.b.c', 3, {a: {b: 0}}) => {a: {b: {c: 3}}}
+ *       setFromPath('a.0.x', 4, {a: {b: 0}}) => {a: [{x: 4}]}
+ *       setFromPath('a.0',   4, {a: {b: 0}}) => {a: [4]}
+ *       setFromPath('a.2',   5, {a: [1,1,1]}) => {a: [1,1,5]}
+ *
+ * @param path {string | array} - the string to replace into
+ * @param val {string} - the substring to replace
+ * @param obj {Object} - the object to mutate
+ * @param target {Object} - (optional) the object that the path refers to
+ * @returns - the object mutated with the value set
  */
 const setFromPath = (path, val, obj, target) => {
+  const numAsIdx = true;
   if (!target) {
     target = obj;
   }
-
   if (getType(path) === 'string') {
-    path = path.split('.').filter((p) => !!p);
+    path = splitStringPath(path);
   }
-
   if (path.length === 1) {
     target[path[0]] = val;
     return obj;
-  } else {
-    const nestKey = path[0];
-    const nestPath = path.slice(1);
-    if (getType(target[nestKey]) !== 'object') {
-      target[nestKey] = {};
+  } else if (path.length > 1) {
+    const currKey = path[0];
+    const currType = getType(target[currKey]);
+    const nextKey = path[1];
+    const isNextNum = isInt(nextKey);
+    if (
+      (!isNextNum && currType !== 'object') ||
+      (isNextNum && !numAsIdx && currType !== 'object')
+    ) {
+      target[currKey] = {};
+    } else if (isNextNum && numAsIdx && currType !== 'array') {
+      target[currKey] = [];
     }
-    return setFromPath(nestPath, val, obj, target[nestKey]);
+    return setFromPath(path.slice(1), val, obj, target[currKey]);
   }
   return obj;
 };
@@ -1214,7 +1289,7 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
  *  - gets the Snowplow event from 'x-sp-tp2' (by Snowplow client)
  *  - or makes a Snowplow event
  */
-const buildSpEvent = (evObj, tagConfig) => {
+const buildSpEvent = (evObj, tagConfig, definerFunction) => {
   if (evObj['x-sp-tp2']) {
     const spEvent = evObj['x-sp-tp2'];
     spEvent.ip = evObj.ip_override;
@@ -1222,7 +1297,7 @@ const buildSpEvent = (evObj, tagConfig) => {
     return spEvent;
   }
 
-  const spCustomDefs = mkCustomDefs(tagConfig, spDefaultCustomDefs);
+  const spCustomDefs = definerFunction(tagConfig);
   const rawEvent = mkSnowplowEvent(evObj, spCustomDefs, tagConfig);
 
   return rawEvent ? rawEvent : undefined;
@@ -1262,9 +1337,11 @@ if (!data.collectorUrl) {
 const collectorUrl = asCollectorUrl(data.collectorUrl);
 const url = collectorUrl + spPostPath;
 
-const snowplowEvent = buildSpEvent(eventData, data);
+const definer = withDefinitions(spDefaultCustomDefs);
+const snowplowEvent = buildSpEvent(eventData, data, definer);
 const snowplowPayload = mkSnowplowPayload(snowplowEvent);
-const requestHeaders = {
+
+const requestOptions = {
   headers: getHeaders(eventData),
   method: 'POST',
   timeout: 5000,
@@ -1273,9 +1350,9 @@ const requestHeaders = {
 if (snowplowPayload) {
   if (loggingEnabled) {
     doLogging('Request', stdLogInfo, {
-      requestMethod: requestHeaders.method,
+      requestMethod: requestOptions.method,
       requestUrl: url,
-      requestHeaders: requestHeaders.headers,
+      requestHeaders: requestOptions.headers,
       requestBody: snowplowPayload,
     });
   }
@@ -1300,7 +1377,7 @@ if (snowplowPayload) {
       }
       data.gtmOnFailure();
     },
-    requestHeaders,
+    requestOptions,
     JSON.stringify(snowplowPayload)
   );
 } else {
@@ -2932,5 +3009,3 @@ setup: |-
 ___NOTES___
 
 Created on 9/21/2021, 3:59:19 AM
-
-
