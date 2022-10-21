@@ -186,252 +186,604 @@ ___TEMPLATE_PARAMETERS___
     "groupStyle": "ZIPPY_CLOSED",
     "subParams": [
       {
-        "type": "CHECKBOX",
-        "name": "defineAsSelfDescribing",
-        "checkboxText": "Define events to be sent as Snowplow Self-Describing Events",
-        "simpleValueType": true,
+        "type": "GROUP",
+        "name": "structuredGroup",
+        "displayName": "Structured events",
+        "groupStyle": "ZIPPY_OPEN",
         "subParams": [
           {
-            "type": "PARAM_TABLE",
-            "name": "customEventSchemas",
-            "displayName": "Event Name to Schema",
-            "paramTableColumns": [
+            "type": "CHECKBOX",
+            "name": "defineAsStructured",
+            "checkboxText": "Send selected events as Snowplow Structured Events",
+            "simpleValueType": true,
+            "subParams": [
               {
-                "param": {
-                  "type": "TEXT",
-                  "name": "eventName",
-                  "displayName": "Event Name",
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": true
-              },
-              {
-                "param": {
-                  "type": "TEXT",
-                  "name": "eventSchema",
-                  "displayName": "Event Schema",
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": true
+                "type": "TEXT",
+                "name": "customStructuredDefs",
+                "displayName": "Event name(s) selected",
+                "simpleValueType": true,
+                "enablingConditions": [
+                  {
+                    "paramName": "defineAsStructured",
+                    "paramValue": true,
+                    "type": "EQUALS"
+                  }
+                ],
+                "textAsList": true,
+                "lineCount": 2,
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ],
+                "help": "Add the event names (in separate lines) to be tracked as custom structured Snowplow events."
               }
             ],
-            "enablingConditions": [
-              {
-                "paramName": "defineAsSelfDescribing",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ],
-            "help": "A table of the events (event names and corresponding schemas) to be tracked as custom self-describing Snowplow events."
-          },
-          {
-            "type": "PARAM_TABLE",
-            "name": "customEventData",
-            "displayName": "Event Definitions",
-            "paramTableColumns": [
-              {
-                "param": {
-                  "type": "TEXT",
-                  "name": "eventName",
-                  "displayName": "Event Name",
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": false
-              },
-              {
-                "param": {
-                  "type": "TEXT",
-                  "name": "snowplowPropName",
-                  "displayName": "Snowplow property name",
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": false
-              },
-              {
-                "param": {
-                  "type": "SELECT",
-                  "name": "type",
-                  "displayName": "Type",
-                  "macrosInSelect": false,
-                  "selectItems": [
-                    {
-                      "value": "default",
-                      "displayValue": "Default"
-                    },
-                    {
-                      "value": "string",
-                      "displayValue": "String"
-                    },
-                    {
-                      "value": "boolean",
-                      "displayValue": "Boolean"
-                    },
-                    {
-                      "value": "number",
-                      "displayValue": "Number"
-                    }
-                  ],
-                  "simpleValueType": true
-                },
-                "isUnique": false
-              },
-              {
-                "param": {
-                  "type": "SELECT",
-                  "name": "ref",
-                  "displayName": "Reference",
-                  "macrosInSelect": false,
-                  "selectItems": [
-                    {
-                      "value": "eventProperty",
-                      "displayValue": "Client Event Property"
-                    },
-                    {
-                      "value": "userSet",
-                      "displayValue": "Constant or Variable"
-                    }
-                  ],
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": false
-              },
-              {
-                "param": {
-                  "type": "TEXT",
-                  "name": "value",
-                  "displayName": "Value",
-                  "simpleValueType": true,
-                  "valueValidators": [
-                    {
-                      "type": "NON_EMPTY"
-                    }
-                  ]
-                },
-                "isUnique": false
-              }
-            ],
-            "enablingConditions": [
-              {
-                "paramName": "defineAsSelfDescribing",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ],
-            "help": "A table of definitions for self-describing data properties. Each row maps a single data property of a custom self-describing Snowplow event to its value."
+            "help": "Enable this to allow setting custom structured events."
           }
-        ],
-        "help": "Enable this to allow custom self-describing event definitions."
+        ]
       },
       {
-        "type": "CHECKBOX",
-        "name": "defineAsStructured",
-        "checkboxText": "Send selected events as Snowplow Structured Events",
-        "simpleValueType": true,
+        "type": "GROUP",
+        "name": "selfDescGroup",
+        "displayName": "Self-describing events",
+        "groupStyle": "ZIPPY_OPEN",
         "subParams": [
           {
-            "type": "TEXT",
-            "name": "customStructuredDefs",
-            "displayName": "Event name(s) selected",
+            "type": "CHECKBOX",
+            "name": "defineAsSelfDescribing",
+            "checkboxText": "Define events to be sent as Snowplow Self-Describing Events",
             "simpleValueType": true,
-            "enablingConditions": [
+            "subParams": [
               {
-                "paramName": "defineAsStructured",
-                "paramValue": true,
-                "type": "EQUALS"
+                "type": "PARAM_TABLE",
+                "name": "customEventSchemas",
+                "displayName": "Event Name to Schema",
+                "paramTableColumns": [
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "eventName",
+                      "displayName": "Event Name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": true
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "eventSchema",
+                      "displayName": "Event Schema",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": true
+                  }
+                ],
+                "enablingConditions": [
+                  {
+                    "paramName": "defineAsSelfDescribing",
+                    "paramValue": true,
+                    "type": "EQUALS"
+                  }
+                ],
+                "help": "A table of the events (event names and corresponding schemas) to be tracked as custom self-describing Snowplow events."
+              },
+              {
+                "type": "PARAM_TABLE",
+                "name": "customEventData",
+                "displayName": "Event Definitions",
+                "paramTableColumns": [
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "eventName",
+                      "displayName": "Event Name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "snowplowPropName",
+                      "displayName": "Snowplow property name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "type",
+                      "displayName": "Type",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "default",
+                          "displayValue": "Default"
+                        },
+                        {
+                          "value": "string",
+                          "displayValue": "String"
+                        },
+                        {
+                          "value": "boolean",
+                          "displayValue": "Boolean"
+                        },
+                        {
+                          "value": "number",
+                          "displayValue": "Number"
+                        }
+                      ],
+                      "simpleValueType": true
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "ref",
+                      "displayName": "Reference",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "eventProperty",
+                          "displayValue": "Client Event Property"
+                        },
+                        {
+                          "value": "userSet",
+                          "displayValue": "Constant or Variable"
+                        }
+                      ],
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "value",
+                      "displayName": "Value",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  }
+                ],
+                "enablingConditions": [
+                  {
+                    "paramName": "defineAsSelfDescribing",
+                    "paramValue": true,
+                    "type": "EQUALS"
+                  }
+                ],
+                "help": "A table of definitions for self-describing data properties. Each row maps a single data property of a custom self-describing Snowplow event to its value."
               }
             ],
-            "textAsList": true,
-            "lineCount": 2,
+            "help": "Enable this to allow custom self-describing event definitions."
+          }
+        ]
+      },
+      {
+        "type": "GROUP",
+        "name": "entitiesGroup",
+        "displayName": "Context entities",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "CHECKBOX",
+            "name": "applyToSp",
+            "checkboxText": "Apply context entities settings also to Snowplow events",
+            "simpleValueType": true,
+            "help": "Enable this tick box to also apply custom entities settings to raw Snowplow events.",
+            "defaultValue": false
+          },
+          {
+            "type": "GROUP",
+            "name": "customEntitiesGroup",
+            "displayName": "Custom context entities",
+            "groupStyle": "ZIPPY_CLOSED",
+            "subParams": [
+              {
+                "type": "CHECKBOX",
+                "name": "customUseVariables",
+                "checkboxText": "Use variables to define custom context entities",
+                "simpleValueType": true,
+                "help": "Enabling this setting allows you to set custom context entities using a variable that returns the entities \u003cstrong\u003earray\u003c/strong\u003e to attach to the event."
+              },
+              {
+                "type": "PARAM_TABLE",
+                "name": "customEntities",
+                "displayName": "Define custom context entities",
+                "paramTableColumns": [
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "eventName",
+                      "displayName": "Event Name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "ctxSchema",
+                      "displayName": "Entity schema",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "ctxProp",
+                      "displayName": "Entity Property Name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "type",
+                      "displayName": "Type",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "default",
+                          "displayValue": "Default"
+                        },
+                        {
+                          "value": "string",
+                          "displayValue": "String"
+                        },
+                        {
+                          "value": "boolean",
+                          "displayValue": "Boolean"
+                        },
+                        {
+                          "value": "number",
+                          "displayValue": "Number"
+                        }
+                      ],
+                      "simpleValueType": true,
+                      "defaultValue": "default"
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "ref",
+                      "displayName": "Reference",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "eventProperty",
+                          "displayValue": "Client Event Property"
+                        },
+                        {
+                          "value": "userSet",
+                          "displayValue": "Constant or Variable"
+                        }
+                      ],
+                      "simpleValueType": true,
+                      "defaultValue": "eventProperty"
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "value",
+                      "displayName": "Value",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  }
+                ],
+                "enablingConditions": [
+                  {
+                    "paramName": "customUseVariables",
+                    "paramValue": false,
+                    "type": "EQUALS"
+                  }
+                ]
+              },
+              {
+                "type": "SIMPLE_TABLE",
+                "name": "customEntitiesFromVar",
+                "displayName": "Set custom context entities through variables",
+                "simpleTableColumns": [
+                  {
+                    "defaultValue": "",
+                    "displayName": "Event Name",
+                    "name": "eventName",
+                    "type": "TEXT",
+                    "valueValidators": [
+                      {
+                        "type": "NON_EMPTY"
+                      }
+                    ],
+                    "isUnique": true
+                  },
+                  {
+                    "defaultValue": "",
+                    "displayName": "Custom Entities Array",
+                    "name": "customContexts",
+                    "type": "TEXT",
+                    "valueValidators": [
+                      {
+                        "type": "NON_EMPTY"
+                      }
+                    ]
+                  }
+                ],
+                "enablingConditions": [
+                  {
+                    "paramName": "customUseVariables",
+                    "paramValue": true,
+                    "type": "EQUALS"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "GROUP",
+            "name": "globalEntitiesGroup",
+            "displayName": "Global context entities",
+            "groupStyle": "ZIPPY_CLOSED",
+            "subParams": [
+              {
+                "type": "CHECKBOX",
+                "name": "globalUseVariable",
+                "checkboxText": "Use a variable to define global context entities",
+                "simpleValueType": true,
+                "defaultValue": false,
+                "help": "Enabling this setting allows you to set global context entities using a variable that returns the entities \u003cstrong\u003earray\u003c/strong\u003e to attach to the event."
+              },
+              {
+                "type": "PARAM_TABLE",
+                "name": "globalEntities",
+                "displayName": "Define global context entities",
+                "paramTableColumns": [
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "ctxSchema",
+                      "displayName": "Entity schema",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "ctxProp",
+                      "displayName": "Entity Property Name",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "type",
+                      "displayName": "Type",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "default",
+                          "displayValue": "Default"
+                        },
+                        {
+                          "value": "string",
+                          "displayValue": "String"
+                        },
+                        {
+                          "value": "boolean",
+                          "displayValue": "Boolean"
+                        },
+                        {
+                          "value": "number",
+                          "displayValue": "Number"
+                        }
+                      ],
+                      "simpleValueType": true,
+                      "defaultValue": "default"
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "SELECT",
+                      "name": "ref",
+                      "displayName": "Reference",
+                      "macrosInSelect": false,
+                      "selectItems": [
+                        {
+                          "value": "eventProperty",
+                          "displayValue": "Client Event Property"
+                        },
+                        {
+                          "value": "userSet",
+                          "displayValue": "Constant or Variable"
+                        }
+                      ],
+                      "simpleValueType": true,
+                      "defaultValue": "eventProperty"
+                    },
+                    "isUnique": false
+                  },
+                  {
+                    "param": {
+                      "type": "TEXT",
+                      "name": "value",
+                      "displayName": "Value",
+                      "simpleValueType": true,
+                      "valueValidators": [
+                        {
+                          "type": "NON_EMPTY"
+                        }
+                      ]
+                    },
+                    "isUnique": false
+                  }
+                ],
+                "enablingConditions": [
+                  {
+                    "paramName": "globalUseVariable",
+                    "paramValue": false,
+                    "type": "EQUALS"
+                  }
+                ]
+              },
+              {
+                "type": "TEXT",
+                "name": "globalEntitiesFromVar",
+                "displayName": "Set global context entities through variable",
+                "simpleValueType": true,
+                "enablingConditions": [
+                  {
+                    "paramName": "globalUseVariable",
+                    "paramValue": true,
+                    "type": "EQUALS"
+                  }
+                ],
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "GROUP",
+        "name": "additionalSettingsGroup",
+        "displayName": "Additional event settings",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "CHECKBOX",
+            "name": "encodeBase64",
+            "checkboxText": "Base64 encoding",
+            "simpleValueType": true,
             "valueValidators": [
               {
                 "type": "NON_EMPTY"
               }
             ],
-            "help": "Add the event names (in separate lines) to be tracked as custom structured Snowplow events."
+            "defaultValue": true,
+            "help": "Whether to encode the custom self-describing event data."
+          },
+          {
+            "type": "SELECT",
+            "name": "platform",
+            "displayName": "Platform identifier",
+            "macrosInSelect": false,
+            "selectItems": [
+              {
+                "value": "web",
+                "displayValue": "Web"
+              },
+              {
+                "value": "mob",
+                "displayValue": "Mobile"
+              },
+              {
+                "value": "pc",
+                "displayValue": "Desktop/Laptop"
+              },
+              {
+                "value": "srv",
+                "displayValue": "Server-side"
+              },
+              {
+                "value": "app",
+                "displayValue": "General App"
+              },
+              {
+                "value": "tv",
+                "displayValue": "Connected TV"
+              },
+              {
+                "value": "cnsl",
+                "displayValue": "Games Console"
+              },
+              {
+                "value": "iot",
+                "displayValue": "Internet of things"
+              }
+            ],
+            "simpleValueType": true,
+            "help": "The application platform",
+            "defaultValue": "srv"
           }
-        ],
-        "help": "Enable this to allow setting custom structured events."
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "encodeBase64",
-        "checkboxText": "Base64 encoding",
-        "simpleValueType": true,
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          }
-        ],
-        "defaultValue": true,
-        "help": "Whether to encode the custom self-describing event data."
-      },
-      {
-        "type": "SELECT",
-        "name": "platform",
-        "displayName": "Platform identifier",
-        "macrosInSelect": false,
-        "selectItems": [
-          {
-            "value": "web",
-            "displayValue": "Web"
-          },
-          {
-            "value": "mob",
-            "displayValue": "Mobile"
-          },
-          {
-            "value": "pc",
-            "displayValue": "Desktop/Laptop"
-          },
-          {
-            "value": "srv",
-            "displayValue": "Server-side"
-          },
-          {
-            "value": "app",
-            "displayValue": "General App"
-          },
-          {
-            "value": "tv",
-            "displayValue": "Connected TV"
-          },
-          {
-            "value": "cnsl",
-            "displayValue": "Games Console"
-          },
-          {
-            "value": "iot",
-            "displayValue": "Internet of things"
-          }
-        ],
-        "simpleValueType": true,
-        "help": "The application platform",
-        "defaultValue": "srv"
+        ]
       }
     ]
   },
@@ -493,6 +845,8 @@ const spPayloadDataSchema =
   'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
 const spSelfDescribingSchema =
   'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0';
+const spContextsSchema =
+  'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
 const spVersion = 'gtmss-0.2.0';
 const tagName = 'Snowplow';
@@ -1043,7 +1397,7 @@ const mkCustomDefs = (tagConfig, defaultDefinitions) => {
  * provided event definitions.
  */
 const withDefinitions = (definitions) => {
-  return function(tagConfig) {
+  return function (tagConfig) {
     return mkCustomDefs(tagConfig, definitions);
   };
 };
@@ -1285,6 +1639,110 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
 };
 
 /*
+ * Helper to ensure an array is returned.
+ */
+const asArray = (x) => {
+  if (getType(x) !== 'array') {
+    return [];
+  }
+  return x;
+};
+
+/*
+ * Gets context entities from the configuration option that allows
+ * settings custom and/or global contexts using variables.
+ */
+const getEntitiesFromVariables = (evObj, tagConfig) => {
+  const globalCtxFromVar = asArray(tagConfig.globalEntitiesFromVar);
+  const customWithVars = asArray(tagConfig.customEntitiesFromVar).filter(
+    (row) => row.eventName === evObj.event_name
+  );
+
+  // this specific table requires column values to be unique,
+  // so there can be at most one relevant row
+  if (customWithVars.length === 1) {
+    const customCtxFromVar = asArray(customWithVars[0].customContexts);
+    return customCtxFromVar.concat(globalCtxFromVar);
+  }
+  return globalCtxFromVar;
+};
+
+/*
+ * Makes the context entities to attach to the event.
+ */
+const mkEntities = (evObj, tagConfig) => {
+  const eventName = evObj.event_name;
+  const customEntities = asArray(tagConfig.customEntities);
+  const globalEntities = asArray(tagConfig.globalEntities);
+
+  const initMap = {};
+  const initEntities = customEntities
+    .filter((r) => r.eventName === eventName)
+    .concat(globalEntities)
+    .reduce((acc, curr) => {
+      const setPath = [asIgluSchema(curr.ctxSchema)].concat(
+        splitStringPath(curr.ctxProp)
+      );
+      const setVal = interpret(curr.value, curr.type, curr.ref, evObj);
+      return setFromPath(setPath, setVal, acc);
+    }, initMap);
+
+  const constructedEntities = [];
+  for (let prop in initEntities) {
+    if (initEntities.hasOwnProperty(prop)) {
+      constructedEntities.push({
+        schema: prop,
+        data: initEntities[prop],
+      });
+    }
+  }
+
+  const entitiesFromVar = getEntitiesFromVariables(evObj, tagConfig);
+  const finalEntities = constructedEntities.concat(entitiesFromVar);
+
+  return finalEntities.length > 0 ? finalEntities : undefined;
+};
+
+/*
+ * Determines whether to apply base64 url encoding. It is being used
+ * when contexts are added to a Snowplow event, and so we may need to
+ * match any existing encoding.
+ */
+const determineSpEncoding = (spEvent, tagConfig) => {
+  if (spEvent.ue_px) {
+    return true;
+  }
+  if (spEvent.ue_pr) {
+    return false;
+  }
+  return tagConfig.encodeBase64;
+};
+
+/*
+ * Adds the configured context entities to the given snowplow event.
+ */
+const addContextEntities = (spEvent, evObj, tagConfig) => {
+  if (!spEvent) {
+    return undefined;
+  }
+  const entities = mkEntities(evObj, tagConfig);
+  if (entities) {
+    const co = JSON.stringify({
+      schema: spContextsSchema,
+      data: entities,
+    });
+
+    const encode = determineSpEncoding(spEvent, tagConfig);
+    if (encode) {
+      spEvent.cx = base64urlencode(co);
+    } else {
+      spEvent.co = co;
+    }
+  }
+  return spEvent;
+};
+
+/*
  * Given the client event object,
  *  - gets the Snowplow event from 'x-sp-tp2' (by Snowplow client)
  *  - or makes a Snowplow event
@@ -1294,11 +1752,19 @@ const buildSpEvent = (evObj, tagConfig, definerFunction) => {
     const spEvent = evObj['x-sp-tp2'];
     spEvent.ip = evObj.ip_override;
 
+    if (tagConfig.applyToSp) {
+      return addContextEntities(spEvent, evObj, tagConfig);
+    }
+
     return spEvent;
   }
 
   const spCustomDefs = definerFunction(tagConfig);
-  const rawEvent = mkSnowplowEvent(evObj, spCustomDefs, tagConfig);
+  const rawEvent = addContextEntities(
+    mkSnowplowEvent(evObj, spCustomDefs, tagConfig),
+    evObj,
+    tagConfig
+  );
 
   return rawEvent ? rawEvent : undefined;
 };
@@ -1626,21 +2092,26 @@ ___TESTS___
 scenarios:
 - name: Test Snowplow page_view event
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const collectorUrl = 'collector.test.com';
     const expectedPostUrl = 'https://' + collectorUrl + spDefaultPostPath;
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: collectorUrl,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -1714,9 +2185,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test Snowplow page_view event with ip_override
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObjectIpOverride = jsonApi.parse(
       jsonApi.stringify(setMockEventObjectFromSpPv)
@@ -1726,12 +2194,20 @@ scenarios:
     const collectorUrl = 'collector.test.com';
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: collectorUrl,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -1768,9 +2244,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test overriding login event
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       event_name: 'login',
       engagement_time_msec: 2,
@@ -1795,12 +2268,21 @@ scenarios:
     };
 
     mock('getAllEventData', mockEv);
+
     const mockData = {
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
-      encodeBase64: false,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
+      defineAsSelfDescribing: true,
+      customEventSchemas: [
+        {
+          eventName: 'login',
+          eventSchema: 'com.google.tag-manager.server-side/login/jsonschema/1-0-0',
+        },
+      ],
       customEventData: [
         {
           eventName: 'login',
@@ -1810,13 +2292,13 @@ scenarios:
           value: 'method',
         },
       ],
-      defineAsSelfDescribing: true,
-      customEventSchemas: [
-        {
-          eventName: 'login',
-          eventSchema: 'com.google.tag-manager.server-side/jsonschema/1-0-0',
-        },
-      ],
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -1863,16 +2345,13 @@ scenarios:
       'iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0'
     );
     assertThat(actSD.data.schema).isStrictlyEqualTo(
-      'iglu:com.google.tag-manager.server-side/jsonschema/1-0-0'
+      'iglu:com.google.tag-manager.server-side/login/jsonschema/1-0-0'
     );
     assertThat(actSD.data.data.method).isStrictlyEqualTo('Google');
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test custom structured event mp1
   code: |
-    const logToConsole = require('logToConsole');
-    const jsonApi = require('JSON');
-
     const mockEv = {
       'x-ga-protocol_version': '1',
       'x-ga-measurement_id': 'UA-XXXXX-Y',
@@ -1889,13 +2368,21 @@ scenarios:
     };
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: true,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: true,
       customStructuredDefs: ['play'],
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -1942,9 +2429,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test custom structured event mp2
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       event_name: 'video_auto_play_start',
       engagement_time_msec: 2,
@@ -1972,13 +2456,21 @@ scenarios:
     mock('getAllEventData', mockEv);
 
     const mockData = {
-      userIdCookie: 'sp',
-      defineAsStructured: true,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
-      encodeBase64: false,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: true,
       customStructuredDefs: ['video_auto_play_start'],
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2029,9 +2521,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test custom unstructured event
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       'x-ga-protocol_version': '2',
       'x-ga-measurement_id': 'G-AAAAAAAAA',
@@ -2057,11 +2546,19 @@ scenarios:
     };
 
     const mockData = {
-      encodeBase64: false,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
+      defineAsSelfDescribing: true,
+      customEventSchemas: [
+        {
+          eventName: 'foo',
+          eventSchema: 'com.acme.test/foo/jsonschema/1-0-0',
+        },
+      ],
       customEventData: [
         {
           eventName: 'foo',
@@ -2085,13 +2582,13 @@ scenarios:
           value: true,
         },
       ],
-      defineAsSelfDescribing: true,
-      customEventSchemas: [
-        {
-          eventName: 'foo',
-          eventSchema: 'com.acme.test/foo/jsonschema/1-0-0',
-        },
-      ],
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2147,9 +2644,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test boolean type with exception event
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       event_name: 'exception',
       engagement_time_msec: 1,
@@ -2174,12 +2668,20 @@ scenarios:
     };
 
     const mockData = {
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
-      encodeBase64: false,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2234,9 +2736,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test with purchase event
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       'x-ga-protocol_version': '2',
       'x-ga-measurement_id': 'G-AAAAAAAAAA',
@@ -2311,13 +2810,58 @@ scenarios:
       'x-ga-js_client_id': '1542781271.1632251814',
     };
 
+    const testVariable = [
+      {
+        schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+        data: { id: 'a948af5f-abbd-454e-b81e-04e69ff88106' },
+      },
+    ];
+
     const mockData = {
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
-      encodeBase64: false,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      // testing also custom entities
+      customEntities: [
+        {
+          eventName: 'purchase',
+          ctxSchema:
+            'com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'email_address',
+          type: 'string',
+          ref: 'userSet',
+          value: 'foo@bar.baz',
+        },
+        {
+          eventName: 'purchase',
+          ctxSchema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'address.postal_code',
+          type: 'default',
+          ref: 'eventProperty',
+          value: 'transaction_id',
+        },
+        {
+          eventName: 'some_other_event',
+          ctxSchema: 'iglu:com.acme/not/jsonschema/1-0-0',
+          ctxProp: 'someProp',
+          type: 'string',
+          ref: 'userSet',
+          value: 'shouldNotBe',
+        },
+      ],
+      globalUseVariable: true,
+      globalEntitiesFromVar: testVariable,
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2425,12 +2969,139 @@ scenarios:
     assertThat(actualItems).isArray();
     assertThat(actualItems).isEqualTo(expectedItems);
 
+    const expectedContexts = jsonApi.stringify({
+      schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+      data: [
+        {
+          schema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          data: {
+            email_address: 'foo@bar.baz',
+            address: { postal_code: 'TR1234' },
+          },
+        },
+        testVariable[0],
+      ],
+    });
+    assertThat(actEvent.co).isEqualTo(expectedContexts);
+    assertThat(actEvent.cx).isUndefined();
+
     assertApi('logToConsole').wasNotCalled();
+- name: Test contexts applying to tp2
+  code: |
+    // test constants
+    const mockSnowplowEvent = mockEventObjectSelfDesc;
+    const collectorUrl = 'test';
+    const expectedPostUrl = 'https://' + collectorUrl + spDefaultPostPath;
+
+    const mockData = {
+      collectorUrl: collectorUrl,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
+      defineAsSelfDescribing: false,
+
+      applyToSp: true,
+      customUseVariables: false,
+      customEntities: [
+        {
+          eventName: 'media_player_event',
+          ctxSchema:
+            'com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'email_address',
+          type: 'string',
+          ref: 'eventProperty',
+          value:
+            'x-sp-contexts_com_google_tag-manager_server-side_user_data_1.0.email_address',
+        },
+        {
+          eventName: 'media_player_event',
+          ctxSchema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'address.postal_code',
+          type: 'default',
+          ref: 'userSet',
+          value: 'foo',
+        },
+        {
+          eventName: 'some_other_event',
+          ctxSchema: 'iglu:com.acme/not/jsonschema/1-0-0',
+          ctxProp: 'someProp',
+          type: 'string',
+          ref: 'userSet',
+          value: 'shouldNotBe',
+        },
+      ],
+      globalUseVariable: false,
+      globalEntities: [
+        {
+          ctxSchema: 'com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'userSet',
+          value: 'a948af5f-abbd-454e-b81e-04e69ff88106',
+        },
+      ],
+
+      encodeBase64: false,
+      platform: 'srv',
+      // logType undefined - testing also default logType is debug
+    };
+
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
+
+    // mock API
+    mock('getAllEventData', mockSnowplowEvent);
+    mock('sendHttpRequest', function () {
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
+    });
+    mock('getContainerVersion', function () {
+      let containerVersion = {
+        debugMode: true,
+        previewMode: true,
+      };
+      return containerVersion;
+    });
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Assert
+    assertApi('sendHttpRequest').wasCalled();
+
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    const expectedContexts = jsonApi.stringify({
+      schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+      data: [
+        {
+          schema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          data: {
+            email_address: 'foo@test.io',
+            address: { postal_code: 'foo' },
+          },
+        },
+        {
+          schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          data: { id: 'a948af5f-abbd-454e-b81e-04e69ff88106' },
+        },
+      ],
+    });
+
+    assertThat(actEvent.co).isEqualTo(expectedContexts);
+    assertThat(actEvent.cx).isUndefined();
+
+    assertApi('logToConsole').wasCalled();
 - name: Test platform identifier
   code: |
-    const logToConsole = require('logToConsole');
-    const jsonApi = require('JSON');
-
     const mockEv = {
       event_name: 'exception',
       engagement_time_msec: 1,
@@ -2455,13 +3126,20 @@ scenarios:
     };
 
     const mockData = {
-      platform: 'iot',
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'iot',
       logType: 'no',
     };
 
@@ -2497,9 +3175,6 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test non-Snowplow page_view
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     const mockEv = {
       event_name: 'page_view',
       non_interaction: 'true',
@@ -2521,15 +3196,50 @@ scenarios:
       'x-ga-js_client_id': '1182338296.1632069552',
     };
 
+    const testVariable = [
+      {
+        schema:
+          'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+        data: {
+          email_address: 'foo@bar.baz',
+          address: { postal_code: 'TR1234' },
+        },
+      },
+    ];
+
     mock('getAllEventData', mockEv);
 
     const mockData = {
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'test',
-      encodeBase64: false,
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: true,
+      customEntitiesFromVar: [
+        {
+          eventName: 'page_view',
+          customContexts: testVariable,
+        },
+      ],
+
+      globalUseVariable: false,
+      globalEntities: [
+        {
+          ctxSchema: 'com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'userSet',
+          value: 'a948af5f-abbd-454e-b81e-04e69ff88106',
+        },
+      ],
+
+      encodeBase64: false,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2571,61 +3281,41 @@ scenarios:
     assertThat(actEvent.ue_pr).isUndefined();
     assertThat(actEvent.ue_px).isUndefined();
 
+    const expectedContexts = jsonApi.stringify({
+      schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+      data: [
+        {
+          schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          data: { id: 'a948af5f-abbd-454e-b81e-04e69ff88106' },
+        },
+        testVariable[0],
+      ],
+    });
+    assertThat(actEvent.co).isEqualTo(expectedContexts);
+    assertThat(actEvent.cx).isUndefined();
+
     assertApi('logToConsole').wasNotCalled();
-- name: Test logs settings - default is debug
-  code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
-    // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
-    const mockEventObject = setMockEventObjectFromSpPv;
-
-    const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
-      collectorUrl: 'collector.test.com',
-      defineAsSelfDescribing: false,
-      // logType undefined
-    };
-
-    // mock API
-    mock('getAllEventData', mockEventObject);
-    mock('sendHttpRequest', function () {
-      return true;
-    });
-    mock('getContainerVersion', function () {
-      let containerVersion = {
-        debugMode: true,
-        previewMode: true,
-      };
-      return containerVersion;
-    });
-
-    // Call runCode to run the template's code.
-    runCode(mockData);
-
-    // Assert
-    assertApi('sendHttpRequest').wasCalled();
-    assertApi('logToConsole').wasCalled();
 - name: Test logs settings - debug does not log on prod
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'debug',
     };
 
@@ -2650,20 +3340,25 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test logs settings - no does not log on prod
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'no',
     };
 
@@ -2688,20 +3383,25 @@ scenarios:
     assertApi('logToConsole').wasNotCalled();
 - name: Test logs settings - always (1)
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'always',
     };
 
@@ -2726,20 +3426,25 @@ scenarios:
     assertApi('logToConsole').wasCalled();
 - name: Test logs settings - always (2)
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
-      encodeBase64: true,
-      userIdCookie: 'sp',
-      defineAsStructured: false,
-      cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
+
+      userIdCookie: 'sp',
+      cookieOverrideEnabled: false,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'always',
     };
 
@@ -2764,21 +3469,26 @@ scenarios:
     assertApi('logToConsole').wasCalled();
 - name: Test logs - Request and Response
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
     const testCollector = 'collector.test.com';
 
     const mockData = {
-      encodeBase64: true,
+      collectorUrl: 'collector.test.com',
+
       userIdCookie: 'sp',
-      defineAsStructured: false,
       cookieOverrideEnabled: false,
-      collectorUrl: testCollector,
+
+      defineAsStructured: false,
       defineAsSelfDescribing: false,
+
+      applyToSp: false,
+      customUseVariables: false,
+      globalUseVariable: false,
+
+      encodeBase64: true,
+      platform: 'srv',
       logType: 'debug',
     };
 
@@ -2857,9 +3567,6 @@ scenarios:
     assertApi('logToConsole').wasCalledWith(expectedResponseLog);
 - name: Test logs - containerVersion undefined
   code: |
-    const jsonApi = require('JSON');
-    const logToConsole = require('logToConsole');
-
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
@@ -2871,7 +3578,7 @@ scenarios:
       cookieOverrideEnabled: false,
       collectorUrl: 'collector.test.com',
       defineAsSelfDescribing: false,
-      logType: 'debug',  // so that we assert on fallback for undefined containerVersion()
+      logType: 'debug', // so that we assert on fallback for undefined containerVersion()
     };
 
     // mock API
@@ -2890,6 +3597,9 @@ scenarios:
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasNotCalled();
 setup: |-
+  const jsonApi = require('JSON');
+  const logToConsole = require('logToConsole');
+
   const spPayloadSchema =
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
   const spDefaultPostPath = '/com.snowplowanalytics.snowplow/tp2';
@@ -3003,6 +3713,189 @@ setup: |-
     'x-ga-mp2-seg': '1',
     'x-ga-protocol_version': '2',
     'x-ga-page_id': 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
+  };
+
+  const mockEventObjectSelfDesc = {
+    event_name: 'media_player_event',
+    client_id: 'fd0e5288-e89b-45df-aad5-6d0c6eda6198',
+    language: 'en-US',
+    page_encoding: 'windows-1252',
+    page_hostname: 'localhost',
+    page_location: 'http://localhost:8000/',
+    page_path: '/',
+    screen_resolution: '1920x1080',
+    user_id: 'tester',
+    viewport_size: '1044x975',
+    user_agent: 'curl/7.81.0',
+    host: 'host',
+    'x-sp-app_id': 'media-test',
+    'x-sp-platform': 'web',
+    'x-sp-dvce_created_tstamp': '1658567928426',
+    'x-sp-event_id': 'c2084e30-5e4f-4d9c-86b2-e0bc3781509a',
+    'x-sp-name_tracker': 'spTest',
+    'x-sp-v_tracker': 'js-3.5.0',
+    'x-sp-domain_sessionid': '1ab28b79-bfdd-4855-9bf1-5199ce15beac',
+    'x-sp-domain_sessionidx': 1,
+    'x-sp-br_cookies': '1',
+    'x-sp-br_colordepth': '24',
+    'x-sp-br_viewwidth': 1044,
+    'x-sp-br_viewheight': 975,
+    'x-sp-dvce_screenwidth': 1920,
+    'x-sp-dvce_screenheight': 1080,
+    'x-sp-doc_charset': 'windows-1252',
+    'x-sp-doc_width': 1044,
+    'x-sp-doc_height': 975,
+    'x-sp-dvce_sent_tstamp': '1658567928427',
+    'x-sp-tp2': {
+      e: 'ue',
+      eid: 'c2084e30-5e4f-4d9c-86b2-e0bc3781509a',
+      tv: 'js-3.5.0',
+      tna: 'spTest',
+      aid: 'media-test',
+      p: 'web',
+      cookie: '1',
+      cs: 'windows-1252',
+      lang: 'en-US',
+      res: '1920x1080',
+      cd: '24',
+      tz: 'Europe/Athens',
+      dtm: '1658567928426',
+      vp: '1044x975',
+      ds: '1044x975',
+      vid: '1',
+      sid: '1ab28b79-bfdd-4855-9bf1-5199ce15beac',
+      duid: 'fd0e5288-e89b-45df-aad5-6d0c6eda6198',
+      uid: 'tester',
+      url: 'http://localhost:8000/',
+      ue_pr:
+        '{"schema":"iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0","data":{"schema":"iglu:com.snowplowanalytics.snowplow/media_player_event/jsonschema/1-0-0","data":{"type":"play"}}}',
+      co: '{"schema":"iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0","data":[{"schema":"iglu:com.youtube/youtube/jsonschema/1-0-0","data":{"autoPlay":false,"avaliablePlaybackRates":[0.25,0.5,0.75,1,1.25,1.5,1.75,2],"buffering":false,"controls":true,"cued":false,"loaded":3,"playbackQuality":"medium","playerId":"youtube-song","unstarted":false,"url":"https://www.youtube.com/watch?v=XCQK6LmhYqc","avaliableQualityLevels":["hd1080","hd720","large","medium","small","tiny","auto"]}},{"schema":"iglu:com.snowplowanalytics.snowplow/media_player/jsonschema/1-0-0","data":{"currentTime":0.015303093460083008,"duration":190.301,"ended":false,"loop":false,"muted":false,"paused":false,"playbackRate":1,"volume":100}},{"schema":"iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0","data":{"id":"68027aa2-34b1-4018-95e3-7176c62dbc84"}},{"schema":"iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0","data":{"email_address":"foo@test.io"}},{"schema":"iglu:com.snowplowanalytics.snowplow/client_session/jsonschema/1-0-2","data":{"userId":"fd0e5288-e89b-45df-aad5-6d0c6eda6198","sessionId":"1ab28b79-bfdd-4855-9bf1-5199ce15beac","eventIndex":24,"sessionIndex":1,"previousSessionId":null,"storageMechanism":"COOKIE_1","firstEventId":"40fbdb30-1b99-42a3-99f7-850dacf5be43","firstEventTimestamp":"2022-07-23T09:08:04.451Z"}}]}',
+      stm: '1658567928427',
+    },
+    'x-sp-self_describing_event_com_snowplowanalytics_snowplow_media_player_event_1':
+      { type: 'play' },
+    'x-sp-contexts_com_youtube_youtube_1': [
+      {
+        autoPlay: false,
+        avaliablePlaybackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+        buffering: false,
+        controls: true,
+        cued: false,
+        loaded: 3,
+        playbackQuality: 'medium',
+        playerId: 'youtube-song',
+        unstarted: false,
+        url: 'https://www.youtube.com/watch?v=XCQK6LmhYqc',
+        avaliableQualityLevels: [
+          'hd1080',
+          'hd720',
+          'large',
+          'medium',
+          'small',
+          'tiny',
+          'auto',
+        ],
+      },
+    ],
+    'x-sp-contexts_com_snowplowanalytics_snowplow_media_player_1': [
+      {
+        currentTime: 0.015303093460083008,
+        duration: 190.301,
+        ended: false,
+        loop: false,
+        muted: false,
+        paused: false,
+        playbackRate: 1,
+        volume: 100,
+      },
+    ],
+    'x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1': [
+      { id: '68027aa2-34b1-4018-95e3-7176c62dbc84' },
+    ],
+    'x-sp-contexts_com_google_tag-manager_server-side_user_data_1': [
+      { email_address: 'foo@test.io' },
+    ],
+    'x-sp-contexts_com_snowplowanalytics_snowplow_client_session_1': [
+      {
+        userId: 'fd0e5288-e89b-45df-aad5-6d0c6eda6198',
+        sessionId: '1ab28b79-bfdd-4855-9bf1-5199ce15beac',
+        eventIndex: 24,
+        sessionIndex: 1,
+        previousSessionId: null,
+        storageMechanism: 'COOKIE_1',
+        firstEventId: '40fbdb30-1b99-42a3-99f7-850dacf5be43',
+        firstEventTimestamp: '2022-07-23T09:08:04.451Z',
+      },
+    ],
+    'x-sp-contexts': [
+      {
+        schema: 'iglu:com.youtube/youtube/jsonschema/1-0-0',
+        data: {
+          autoPlay: false,
+          avaliablePlaybackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+          buffering: false,
+          controls: true,
+          cued: false,
+          loaded: 3,
+          playbackQuality: 'medium',
+          playerId: 'youtube-song',
+          unstarted: false,
+          url: 'https://www.youtube.com/watch?v=XCQK6LmhYqc',
+          avaliableQualityLevels: [
+            'hd1080',
+            'hd720',
+            'large',
+            'medium',
+            'small',
+            'tiny',
+            'auto',
+          ],
+        },
+      },
+      {
+        schema:
+          'iglu:com.snowplowanalytics.snowplow/media_player/jsonschema/1-0-0',
+        data: {
+          currentTime: 0.015303093460083008,
+          duration: 190.301,
+          ended: false,
+          loop: false,
+          muted: false,
+          paused: false,
+          playbackRate: 1,
+          volume: 100,
+        },
+      },
+      {
+        schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+        data: { id: '68027aa2-34b1-4018-95e3-7176c62dbc84' },
+      },
+      {
+        schema:
+          'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+        data: { email_address: 'foo@test.io' },
+      },
+      {
+        schema:
+          'iglu:com.snowplowanalytics.snowplow/client_session/jsonschema/1-0-2',
+        data: {
+          userId: 'fd0e5288-e89b-45df-aad5-6d0c6eda6198',
+          sessionId: '1ab28b79-bfdd-4855-9bf1-5199ce15beac',
+          eventIndex: 24,
+          sessionIndex: 1,
+          previousSessionId: null,
+          storageMechanism: 'COOKIE_1',
+          firstEventId: '40fbdb30-1b99-42a3-99f7-850dacf5be43',
+          firstEventTimestamp: '2022-07-23T09:08:04.451Z',
+        },
+      },
+    ],
+    user_data: { email_address: 'foo@test.io' },
+    ga_session_id: '1ab28b79-bfdd-4855-9bf1-5199ce15beac',
+    ga_session_number: '1',
+    'x-ga-mp2-seg': '1',
+    'x-ga-protocol_version': '2',
+    'x-ga-page_id': '68027aa2-34b1-4018-95e3-7176c62dbc84',
   };
 
 
