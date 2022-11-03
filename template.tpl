@@ -176,6 +176,66 @@ ___TEMPLATE_PARAMETERS___
             "type": "EQUALS"
           }
         ]
+      },
+      {
+        "type": "GROUP",
+        "name": "cookieHeadersGroup",
+        "displayName": "Cookie Headers",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "CHECKBOX",
+            "name": "forwardCookieHeaders",
+            "checkboxText": "Forward Cookies in the request headers",
+            "simpleValueType": true,
+            "help": "Enable this to allow forwarding selected cookies in the request headers.",
+            "defaultValue": false,
+            "alwaysInSummary": true
+          },
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "cookiesToForward",
+            "displayName": "Cookies to forward",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Cookie Name",
+                "name": "cookieName",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ],
+                "isUnique": true
+              },
+              {
+                "defaultValue": "no",
+                "displayName": "Decode",
+                "name": "decode",
+                "type": "SELECT",
+                "selectItems": [
+                  {
+                    "value": "no",
+                    "displayValue": "No"
+                  },
+                  {
+                    "value": "yes",
+                    "displayValue": "Yes"
+                  }
+                ]
+              }
+            ],
+            "help": "Specify the cookie names to forward and whether you want to decode the cookie value(s) before forwarding.",
+            "enablingConditions": [
+              {
+                "paramName": "forwardCookieHeaders",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -1317,6 +1377,60 @@ const setCookieFrom = (headers, data) => {
   );
 };
 
+/*
+ * Given name and value strings returns 'name=value'.
+ */
+const mkCookie = (name, value) => {
+  return makeString(name) + '=' + makeString(value);
+};
+
+/*
+ * Joins an array of cookie-pairs ('name=value' strings).
+ */
+const joinCookies = (args) => {
+  const separator = '; ';
+  return args.filter((c) => !!c).join(separator);
+};
+
+/*
+ * Creates a Cookie header value based on the cookiesToForward field
+ * of the tag configuration.
+ */
+const mkCookies = (tagConfig) => {
+  if (!tagConfig.forwardCookieHeaders) {
+    return '';
+  }
+
+  const cookiesToForward = tagConfig.cookiesToForward;
+  if (cookiesToForward && cookiesToForward.length > 0) {
+    const cookies = cookiesToForward
+      .map((row) => {
+        // cookieName cannot be empty (see validation rules)
+        const cookieName = row.cookieName;
+        const decode = row.decode === 'yes' ? true : false;
+
+        // getCookieValues returns empty array if no such cookie
+        const cookieValues = getCookieValues(cookieName, !decode);
+        return cookieValues.map((v) => (v ? mkCookie(cookieName, v) : ''));
+      })
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      }, []);
+    const cookieHeader = joinCookies(cookies);
+    return cookieHeader;
+  }
+  return '';
+};
+
+/*
+ * Creates the headers for the request. Namely:
+ *   - Content-Type
+ *   - User-Agent (if exists in event)
+ *   - Cookie:
+ *     - user id (based on userIdCookie field)
+ *     - selected cookies (from cookiesToForward field)
+ *   - SP-Anonymous
+ */
 const getHeaders = (event) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -1327,11 +1441,18 @@ const getHeaders = (event) => {
   }
   const userIdCookie = getCookieValues(data.userIdCookie)[0];
   if (userIdCookie) {
-    headers.Cookie = data.userIdCookie + '=' + userIdCookie;
+    headers.Cookie = mkCookie(data.userIdCookie, userIdCookie);
   }
   if (event['x-sp-anonymous']) {
     headers['SP-Anonymous'] = '*';
   }
+
+  const cookiesForwarded = mkCookies(data);
+  const cookieHeader = joinCookies([headers.Cookie, cookiesForwarded]);
+  if (cookieHeader) {
+    headers.Cookie = cookieHeader;
+  }
+
   return headers;
 };
 
@@ -2114,6 +2235,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -2210,6 +2332,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -2286,6 +2409,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: true,
@@ -2384,6 +2508,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: true,
       customStructuredDefs: ['play'],
@@ -2472,6 +2597,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: true,
       customStructuredDefs: ['video_auto_play_start'],
@@ -2562,6 +2688,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: true,
@@ -2684,6 +2811,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -2834,6 +2962,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3011,6 +3140,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3142,6 +3272,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3226,6 +3357,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3318,6 +3450,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3361,6 +3494,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3404,6 +3538,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3447,6 +3582,7 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3479,8 +3615,10 @@ scenarios:
     // Assert
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasCalled();
-- name: Test logs - Request and Response
+- name: Test logs and cookie headers - Request and Response
   code: |
+    const decodeUri = require('decodeUriComponent');
+
     // test constants
     const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
@@ -3491,6 +3629,13 @@ scenarios:
 
       userIdCookie: 'sp',
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: true,
+      cookiesToForward: [
+        { cookieName: 'foo', decode: 'no' },
+        { cookieName: 'bar', decode: 'no' },
+        { cookieName: 'baz', decode: 'yes' },
+        { cookieName: 'notexists', decode: 'no' },
+      ],
 
       defineAsStructured: false,
       defineAsSelfDescribing: false,
@@ -3540,6 +3685,23 @@ scenarios:
       return headers[key];
     });
 
+    // mocking based on
+    // https://developers.google.com/tag-platform/tag-manager/templates/api#getcookievalues
+    mock('getCookieValues', function (cookieName, noDecode) {
+      const testMap = {
+        foo: ['a', 'b'],
+        bar: ['test%26%3F'],
+        baz: ['test%26%3F'],
+      };
+
+      const cookieVals = testMap[cookieName] || [];
+      if (noDecode) {
+        return cookieVals;
+      }
+
+      return cookieVals.map((v) => decodeUri(v));
+    });
+
     // Call runCode to run the template's code.
     runCode(mockData);
 
@@ -3551,6 +3713,7 @@ scenarios:
       'Content-Type': 'application/json',
       'User-Agent': 'user-agent',
       'SP-Anonymous': '*',
+      Cookie: 'foo=a; foo=b; bar=test%26%3F; baz=test&?',
     };
     const expectedRequestLog = jsonApi.stringify({
       Name: 'Snowplow',
@@ -3575,10 +3738,11 @@ scenarios:
       ResponseHeaders: { foo: 'bar' },
       ResponseBody: 'ok',
     });
+
+    assertThat(argOptions.headers).isEqualTo(expectedHeaders);
     assertApi('logToConsole').wasCalled();
     assertApi('logToConsole').wasCalledWith(expectedRequestLog);
     assertApi('logToConsole').wasCalledWith(expectedResponseLog);
-    assertThat(argOptions.headers).isEqualTo(expectedHeaders);
 - name: Test logs - containerVersion undefined
   code: |
     // test constants
@@ -3590,6 +3754,7 @@ scenarios:
       userIdCookie: 'sp',
       defineAsStructured: false,
       cookieOverrideEnabled: false,
+      forwardCookieHeaders: false,
       collectorUrl: 'collector.test.com',
       defineAsSelfDescribing: false,
       logType: 'debug', // so that we assert on fallback for undefined containerVersion()
