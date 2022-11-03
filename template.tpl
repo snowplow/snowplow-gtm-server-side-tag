@@ -1329,7 +1329,7 @@ const getHeaders = (event) => {
   if (userIdCookie) {
     headers.Cookie = data.userIdCookie + '=' + userIdCookie;
   }
-  if (event.snowplow_anonymous) {
+  if (event['x-sp-anonymous']) {
     headers['SP-Anonymous'] = '*';
   }
   return headers;
@@ -3550,6 +3550,7 @@ scenarios:
     const expectedHeaders = {
       'Content-Type': 'application/json',
       'User-Agent': 'user-agent',
+      'SP-Anonymous': '*',
     };
     const expectedRequestLog = jsonApi.stringify({
       Name: 'Snowplow',
@@ -3577,6 +3578,7 @@ scenarios:
     assertApi('logToConsole').wasCalled();
     assertApi('logToConsole').wasCalledWith(expectedRequestLog);
     assertApi('logToConsole').wasCalledWith(expectedResponseLog);
+    assertThat(argOptions.headers).isEqualTo(expectedHeaders);
 - name: Test logs - containerVersion undefined
   code: |
     // test constants
@@ -3659,7 +3661,7 @@ setup: |-
     origin: 'origin',
     host: 'host',
     'x-sp-tp2': setMockRawSnowplowPageView,
-    'x-sp-anonymous': undefined,
+    'x-sp-anonymous': '*',
     'x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1': {
       id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
     },
