@@ -1395,10 +1395,10 @@ const mkCookies = (tagConfig) => {
       .map((row) => {
         // cookieName cannot be empty (see validation rules)
         const cookieName = row.cookieName;
-        const noDecode = row.decode === 'yes' ? false : true;
+        const decode = row.decode === 'yes' ? true : false;
 
         // getCookieValues returns empty array if no such cookie
-        const cookieValues = getCookieValues(cookieName, noDecode);
+        const cookieValues = getCookieValues(cookieName, !decode);
         return cookieValues.map((v) => (v ? mkCookie(cookieName, v) : ''));
       })
       .reduce((acc, curr) => {
