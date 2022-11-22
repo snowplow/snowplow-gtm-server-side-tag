@@ -1,14 +1,22 @@
-homepage: "https://www.snowplowanalytics.com"
-documentation: "https://docs.snowplowanalytics.com/docs/forwarding-events-to-destinations/forwarding-events/google-tag-manager-server-side/snowplow-tag-for-gtm-ss/"
+homepage: "https://www.snowplow.io"
+documentation: "https://docs.snowplow.io/docs/forwarding-events-to-destinations/forwarding-events/google-tag-manager-server-side/snowplow-tag-for-gtm-ss/"
 versions:
   # Latest version
+  - sha: f1d16cfef665bac61d4498d647ab973871278373
+    changeNotes: |2
+      Allow forwarding cookies in request headers (#17)
+      Fix setting of SP-Anonymous header (#18)
+      Switch to snowplow.io domain (#15)
+      Add GitHub Actions (#14)
+      Add support for context entities (#13)
+      Use same helper functions to other Snowplow gtm-ss templates (#12)
+  # Older versions
   - sha: 223e70d304b3136a55ceefc98cef72bba37fc22b
     changeNotes: |2
       Standardize logs (#6)
       Add help text and tests for logs settings (#8)
       Update copyright for 2022 (#9)
       Run through prettier (#10)
-  # Older versions
   - sha: 2cdbce7155df131659670f70d83d85a83a1d799f
     changeNotes: Add non-Snowplow Page View support (#4)
   - sha: bf3cd5eac1bc05e36fceae4e2ec843586eb4df7b
