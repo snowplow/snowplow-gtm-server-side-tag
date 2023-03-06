@@ -920,7 +920,7 @@ const spSelfDescribingSchema =
 const spContextsSchema =
   'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
-const spVersion = 'gtmss-0.4.1';
+const spVersion = 'gtmss-0.4.1-rc1';
 const tagName = 'Snowplow';
 
 // event data mappings for self-describing Snowplow events
