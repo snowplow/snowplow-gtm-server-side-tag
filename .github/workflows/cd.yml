@@ -6,30 +6,6 @@ on:
     - '*.*.*'
 
 jobs:
-  version:
-    runs-on: ubuntu-22.04
-    outputs:
-      v_tag: ${{ steps.version.outputs.TAG_VERSION }}
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Get tag version
-      id: version
-      env:
-        TEMPLATE_FILEPATH: 'template.tpl'
-      run: |
-        echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-        echo "TEMPLATE_VERSION=$(cat "${TEMPLATE_FILEPATH}" | sed -n -e 's/^.*spVersion = '\''gtmss-\(.*\)'\'';/\1/p')" >> $GITHUB_ENV
-
-    - name: Fail if version mismatch
-      run: |
-        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ env.TEMPLATE_VERSION }}" ] ; then
-          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in template file (${{ env.TEMPLATE_VERSION }})"
-          exit 1
-        fi
-
   lint:
     runs-on: ubuntu-22.04
 
@@ -50,8 +26,67 @@ jobs:
     - name: Lint metadata file
       run: yamllint -d relaxed metadata.yaml
 
+  metadata:
+    needs: ["lint"]
+    runs-on: ubuntu-22.04
+    outputs:
+      latest_sha: ${{ steps.sha.outputs.LATEST_SHA }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get latest sha from metadata file
+      id: sha
+      env:
+        METADATA_FILEPATH: 'metadata.yaml'
+      run: |
+        echo "LATEST_SHA=$(cat "${METADATA_FILEPATH}" | sed -n -e 's/^.*sha: \(.*\)$/\1/p' | head -n 1)" >> $GITHUB_OUTPUT
+
+
+  template:
+    needs: ["metadata"]
+    runs-on: ubuntu-22.04
+    outputs:
+      v_template: ${{ steps.template_version.outputs.TEMPLATE_VERSION }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ needs.metadata.outputs.latest_sha }}
+
+    - name: Get template version
+      id: template_version
+      env:
+        TEMPLATE_FILEPATH: 'template.tpl'
+      run: |
+        echo "TEMPLATE_VERSION=$(cat "${TEMPLATE_FILEPATH}" | sed -n -e 's/^.*spVersion = '\''gtmss-\(.*\)'\'';/\1/p')" >> $GITHUB_OUTPUT
+
+  version:
+    needs: ["template"]
+    runs-on: ubuntu-22.04
+    outputs:
+      v_tag: ${{ steps.version.outputs.TAG_VERSION }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get tag version
+      id: version
+      run: |
+        echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
+    - name: Fail if version mismatch
+      run: |
+        if [ "${{ steps.version.outputs.TAG_VERSION }}" != "${{ needs.template.outputs.v_template }}" ] ; then
+          echo "Tag version (${{ steps.version.outputs.TAG_VERSION }}) doesn't match version in template file (${{ needs.template.outputs.v_template }})"
+          exit 1
+        fi
+
   release:
-    needs: ["lint", "version"]
+    needs: ["version"]
     runs-on: ubuntu-22.04
 
     steps:
