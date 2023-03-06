@@ -2,6 +2,12 @@ homepage: "https://www.snowplow.io"
 documentation: "https://docs.snowplow.io/docs/forwarding-events-to-destinations/forwarding-events/google-tag-manager-server-side/snowplow-tag-for-gtm-ss/"
 versions:
   # Latest version
+  - sha: 5a8eb1e1847024f294b12733c4b5196571b7c853
+    changeNotes: |2
+      Update copyright to 2023 (#23)
+      Update tracker version in template (#21)
+      Ensure version check applies to latest sha (#20)
+  # Older versions
   - sha: f1d16cfef665bac61d4498d647ab973871278373
     changeNotes: |2
       Allow forwarding cookies in request headers (#17)
@@ -10,7 +16,6 @@ versions:
       Add GitHub Actions (#14)
       Add support for context entities (#13)
       Use same helper functions to other Snowplow gtm-ss templates (#12)
-  # Older versions
   - sha: 223e70d304b3136a55ceefc98cef72bba37fc22b
     changeNotes: |2
       Standardize logs (#6)
