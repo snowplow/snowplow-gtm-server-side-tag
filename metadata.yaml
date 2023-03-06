@@ -2,7 +2,7 @@ homepage: "https://www.snowplow.io"
 documentation: "https://docs.snowplow.io/docs/forwarding-events-to-destinations/forwarding-events/google-tag-manager-server-side/snowplow-tag-for-gtm-ss/"
 versions:
   # Latest version
-  - sha: 9c256e572f00d1825a47c61d48a3eaf83a7c5465
+  - sha: f748cdc0c5ce95a9a4b0f21bedade4c1dbbafa93
     changeNotes: |2
       Update tracker version in template (#21)
       Ensure version check applies to latest sha (#20)
