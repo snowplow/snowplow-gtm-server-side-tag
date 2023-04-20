@@ -2229,7 +2229,8 @@ scenarios:
 - name: Test Snowplow page_view event
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const rawSnowplowEvent = snowplowTp2PageView;
+    const mockSnowplowEvent = setMockEventObjectFromSpPv;
     const collectorUrl = 'collector.test.com';
     const expectedPostUrl = 'https://' + collectorUrl + spDefaultPostPath;
 
@@ -2256,7 +2257,7 @@ scenarios:
     let argUrl, argCallback, argOptions, argBody;
 
     // mock API
-    mock('getAllEventData', setMockEventObjectFromSpPv);
+    mock('getAllEventData', mockSnowplowEvent);
     mock('sendHttpRequest', function () {
       argUrl = arguments[0];
       argCallback = arguments[1];
@@ -2284,7 +2285,7 @@ scenarios:
     assertThat(argOptions.headers['Content-Type']).isStrictlyEqualTo(
       'application/json'
     );
-    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('user-agent');
+    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('curl/7.81.0');
 
     const body = jsonApi.parse(argBody);
     assertThat(body).isObject();
@@ -2293,36 +2294,12 @@ scenarios:
 
     const actEvent = body.data[0];
     assertThat(actEvent).isObject();
-    assertThat(actEvent.e).isStrictlyEqualTo(mockSnowplowEvent.e);
-    assertThat(actEvent.url).isStrictlyEqualTo(mockSnowplowEvent.url);
-    assertThat(actEvent.page).isStrictlyEqualTo(mockSnowplowEvent.page);
-    assertThat(actEvent.tv).isStrictlyEqualTo(mockSnowplowEvent.tv);
-    assertThat(actEvent.tna).isStrictlyEqualTo(mockSnowplowEvent.tna);
-    assertThat(actEvent.aid).isStrictlyEqualTo(mockSnowplowEvent.aid);
-    assertThat(actEvent.p).isStrictlyEqualTo(mockSnowplowEvent.p);
-    assertThat(actEvent.tz).isStrictlyEqualTo(mockSnowplowEvent.tz);
-    assertThat(actEvent.lang).isStrictlyEqualTo(mockSnowplowEvent.lang);
-    assertThat(actEvent.cs).isStrictlyEqualTo(mockSnowplowEvent.cs);
-    assertThat(actEvent.res).isStrictlyEqualTo(mockSnowplowEvent.res);
-    assertThat(actEvent.cd).isStrictlyEqualTo(mockSnowplowEvent.cd);
-    assertThat(actEvent.cookie).isStrictlyEqualTo(mockSnowplowEvent.cookie);
-    assertThat(actEvent.eid).isStrictlyEqualTo(mockSnowplowEvent.eid);
-    assertThat(actEvent.dtm).isStrictlyEqualTo(mockSnowplowEvent.dtm);
-    assertThat(actEvent.cx).isStrictlyEqualTo(mockSnowplowEvent.cx);
-    assertThat(actEvent.vp).isStrictlyEqualTo(mockSnowplowEvent.vp);
-    assertThat(actEvent.ds).isStrictlyEqualTo(mockSnowplowEvent.ds);
-    assertThat(actEvent.vid).isStrictlyEqualTo(mockSnowplowEvent.vid);
-    assertThat(actEvent.sid).isStrictlyEqualTo(mockSnowplowEvent.sid);
-    assertThat(actEvent.duid).isStrictlyEqualTo(mockSnowplowEvent.duid);
-    assertThat(actEvent.stm).isStrictlyEqualTo(mockSnowplowEvent.stm);
-    assertThat(actEvent.uid).isStrictlyEqualTo(mockSnowplowEvent.uid);
-
-    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent).isEqualTo(rawSnowplowEvent);
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test Snowplow page_view event with ip_override
   code: |
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockSnowplowEvent = snowplowTp2PageView;
     const mockEventObjectIpOverride = jsonApi.parse(
       jsonApi.stringify(setMockEventObjectFromSpPv)
     );
@@ -3445,7 +3422,6 @@ scenarios:
 - name: Test logs settings - debug does not log on prod
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3586,7 +3562,6 @@ scenarios:
 - name: Test logs settings - always (1)
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3630,7 +3605,6 @@ scenarios:
 - name: Test logs settings - always (2)
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3676,7 +3650,7 @@ scenarios:
     const decodeUri = require('decodeUriComponent');
 
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockSnowplowEvent = snowplowTp2PageView;
     const mockEventObject = setMockEventObjectFromSpPv;
     const testCollector = 'collector.test.com';
 
@@ -3767,7 +3741,7 @@ scenarios:
     const expectedUrl = 'https://' + testCollector + spDefaultPostPath;
     const expectedHeaders = {
       'Content-Type': 'application/json',
-      'User-Agent': 'user-agent',
+      'User-Agent': 'curl/7.81.0',
       'SP-Anonymous': '*',
       Cookie: 'foo=a; foo=b; bar=test%26%3F; baz=test&?',
     };
@@ -3802,7 +3776,6 @@ scenarios:
 - name: Test logs - containerVersion undefined
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3838,7 +3811,7 @@ setup: |-
   const spPayloadSchema =
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
   const spDefaultPostPath = '/com.snowplowanalytics.snowplow/tp2';
-  const setMockRawSnowplowPageView = {
+  const snowplowTp2PageView = {
     e: 'pv',
     url: 'https://snowplowanalytics.com/',
     page: 'Collect, manage and operationalize behavioral data at scale | Snowplow',
@@ -3866,81 +3839,65 @@ setup: |-
 
   const setMockEventObjectFromSpPv = {
     event_name: 'page_view',
-    client_id: 'd54a1904-7798-401a-be0b-1a83bea73634',
     language: 'en-GB',
     page_encoding: 'UTF-8',
     page_hostname: 'snowplowanalytics.com',
     page_location: 'https://snowplowanalytics.com/',
     page_path: '/',
-    page_referrer: 'referer',
     page_title:
       'Collect, manage and operationalize behavioral data at scale | Snowplow',
     screen_resolution: '1920x1080',
-    user_id: 'snow123',
     viewport_size: '745x1302',
-    user_agent: 'user-agent',
-    origin: 'origin',
-    host: 'host',
-    'x-sp-tp2': setMockRawSnowplowPageView,
+    user_agent: 'curl/7.81.0',
+    host: 'engineering-sandbox.appspot.com',
+    'x-sp-app_id': 'website',
+    'x-sp-platform': 'web',
+    'x-sp-dvce_created_tstamp': '1628586512246',
+    'x-sp-event_id': '8676de79-0eba-4435-ad95-8a41a8a0129c',
+    'x-sp-name_tracker': 'sp',
+    'x-sp-v_tracker': 'js-3.1.4',
+    'x-sp-domain_sessionid': 'e7580b71-227b-4868-9ea9-322a263ce885',
+    'x-sp-domain_sessionidx': 1,
+    'x-sp-domain_userid': 'd54a1904-7798-401a-be0b-1a83bea73634',
+    'x-sp-user_id': 'snow123',
+    'x-sp-br_cookies': '1',
+    'x-sp-br_colordepth': '24',
+    'x-sp-br_viewwidth': 745,
+    'x-sp-br_viewheight': 1302,
+    'x-sp-dvce_screenwidth': 1920,
+    'x-sp-dvce_screenheight': 1080,
+    'x-sp-doc_charset': 'UTF-8',
+    'x-sp-doc_width': 730,
+    'x-sp-doc_height': 12393,
+    'x-sp-dvce_sent_tstamp': '1628586512248',
+    'x-sp-tp2': jsonApi.parse(jsonApi.stringify(snowplowTp2PageView)),
     'x-sp-anonymous': '*',
-    'x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1': {
-      id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
-    },
-    'x-sp-context_org_w3_PerformanceTiming_jsonschema_1': {
-      navigationStart: 1628586508610,
-      unloadEventStart: 0,
-      unloadEventEnd: 0,
-      redirectStart: 0,
-      redirectEnd: 0,
-      fetchStart: 1628586508610,
-      domainLookupStart: 1628586508637,
-      domainLookupEnd: 1628586508691,
-      connectStart: 1628586508691,
-      connectEnd: 1628586508763,
-      secureConnectionStart: 1628586508721,
-      requestStart: 1628586508763,
-      responseStart: 1628586508797,
-      responseEnd: 1628586508821,
-      domLoading: 1628586509076,
-      domInteractive: 1628586509381,
-      domContentLoadedEventStart: 1628586509408,
-      domContentLoadedEventEnd: 1628586509417,
-      domComplete: 1628586510332,
-      loadEventStart: 1628586510332,
-      loadEventEnd: 1628586510334,
-    },
-    'x-sp-contexts': [
+    'x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1': [
+      { id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d' },
+    ],
+    'x-sp-contexts_org_w3_performance_timing_1': [
       {
-        schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
-        data: {
-          id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
-        },
-      },
-      {
-        schema: 'iglu:org.w3/PerformanceTiming/jsonschema/1-0-0',
-        data: {
-          navigationStart: 1628586508610,
-          unloadEventStart: 0,
-          unloadEventEnd: 0,
-          redirectStart: 0,
-          redirectEnd: 0,
-          fetchStart: 1628586508610,
-          domainLookupStart: 1628586508637,
-          domainLookupEnd: 1628586508691,
-          connectStart: 1628586508691,
-          connectEnd: 1628586508763,
-          secureConnectionStart: 1628586508721,
-          requestStart: 1628586508763,
-          responseStart: 1628586508797,
-          responseEnd: 1628586508821,
-          domLoading: 1628586509076,
-          domInteractive: 1628586509381,
-          domContentLoadedEventStart: 1628586509408,
-          domContentLoadedEventEnd: 1628586509417,
-          domComplete: 1628586510332,
-          loadEventStart: 1628586510332,
-          loadEventEnd: 1628586510334,
-        },
+        navigationStart: 1628586508610,
+        unloadEventStart: 0,
+        unloadEventEnd: 0,
+        redirectStart: 0,
+        redirectEnd: 0,
+        fetchStart: 1628586508610,
+        domainLookupStart: 1628586508637,
+        domainLookupEnd: 1628586508691,
+        connectStart: 1628586508691,
+        connectEnd: 1628586508763,
+        secureConnectionStart: 1628586508721,
+        requestStart: 1628586508763,
+        responseStart: 1628586508797,
+        responseEnd: 1628586508821,
+        domLoading: 1628586509076,
+        domInteractive: 1628586509381,
+        domContentLoadedEventStart: 1628586509408,
+        domContentLoadedEventEnd: 1628586509417,
+        domComplete: 1628586510332,
+        loadEventStart: 1628586510332,
+        loadEventEnd: 1628586510334,
       },
     ],
     ga_session_id: 'e7580b71-227b-4868-9ea9-322a263ce885',
@@ -3948,6 +3905,8 @@ setup: |-
     'x-ga-mp2-seg': '1',
     'x-ga-protocol_version': '2',
     'x-ga-page_id': 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
+    client_id: 'd54a1904-7798-401a-be0b-1a83bea73634',
+    user_id: 'snow123',
   };
 
   const mockEventObjectSelfDesc = {
