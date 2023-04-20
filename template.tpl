@@ -920,7 +920,7 @@ const spSelfDescribingSchema =
 const spContextsSchema =
   'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
-const spVersion = 'gtmss-0.4.1';
+const spVersion = 'gtmss-0.5.0';
 const tagName = 'Snowplow';
 
 // event data mappings for self-describing Snowplow events
@@ -1572,7 +1572,9 @@ const splitStringPath = (stringPath) => {
 const getFromPath = (path, obj) => {
   if (getType(path) === 'string') {
     const splitPath = splitStringPath(path);
-    return splitPath.reduce((acc, curr) => acc && acc[curr], obj);
+    return splitPath.reduce((acc, curr) => {
+      return acc && acc[curr];
+    }, obj);
   }
   return undefined;
 };
@@ -1838,14 +1840,15 @@ const mkEntities = (evObj, tagConfig) => {
 
 /*
  * Determines whether to apply base64 url encoding. It is being used
- * when contexts are added to a Snowplow event, and so we may need to
- * match any existing encoding.
+ * when contexts are added to a Snowplow event.
+ * If encoding of the original Snowplow event can be determined, is matched.
+ * Else the configuration option applies.
  */
 const determineSpEncoding = (spEvent, tagConfig) => {
-  if (spEvent.ue_px) {
+  if (spEvent.ue_px || spEvent.cx) {
     return true;
   }
-  if (spEvent.ue_pr) {
+  if (spEvent.ue_pr || spEvent.co) {
     return false;
   }
   return tagConfig.encodeBase64;
@@ -3486,8 +3489,7 @@ scenarios:
 - name: Test logs settings - no does not log on prod
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
-    const mockEventObject = setMockEventObjectFromSpPv;
+    const mockSnowplowEvent = setMockEventObjectFromSpPv;
 
     const mockData = {
       collectorUrl: 'collector.test.com',
@@ -3499,8 +3501,20 @@ scenarios:
       defineAsStructured: false,
       defineAsSelfDescribing: false,
 
-      applyToSp: false,
+      applyToSp: true,
       customUseVariables: false,
+      customEntities: [
+        {
+          eventName: 'page_view',
+          ctxSchema:
+            'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'eventProperty',
+          value:
+            'x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1.0.id',
+        },
+      ],
       globalUseVariable: false,
 
       encodeBase64: true,
@@ -3509,9 +3523,13 @@ scenarios:
     };
 
     // mock API
-    mock('getAllEventData', mockEventObject);
+    mock('getAllEventData', mockSnowplowEvent);
+    let argUrl, argCallback, argOptions, argBody;
     mock('sendHttpRequest', function () {
-      return true;
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
     });
     mock('getContainerVersion', function () {
       let containerVersion = {
@@ -3526,7 +3544,45 @@ scenarios:
 
     // Assert
     assertApi('sendHttpRequest').wasCalled();
-    assertApi('logToConsole').wasNotCalled();
+    //assertApi('logToConsole').wasNotCalled();
+
+    // Assert on contexts/encoding
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    const expectedContexts = jsonApi.stringify({
+      schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+      data: [
+        {
+          schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          data: { id: mockSnowplowEvent['x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1'][0].id },
+        },
+      ],
+    });
+
+    assertThat(actEvent.cx).isDefined();
+    assertThat(actEvent.co).isUndefined();
+
+    const fromBase64 = require('fromBase64');
+    const base64urldecode = (data) => {
+      const padding = 4 - (data.length % 4);
+      switch (padding) {
+        case 1:
+          data += '=';
+          break;
+        case 2:
+          data += '==';
+          break;
+        case 3:
+          data += '=';
+          break;
+      }
+      const b64Data = data.replace('-', '+').replace('_', '/');
+      return fromBase64(b64Data);
+    };
+
+    const actualContexts = base64urldecode(actEvent.cx);
+    assertThat(actualContexts).isEqualTo(expectedContexts);
 - name: Test logs settings - always (1)
   code: |
     // test constants
