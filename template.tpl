@@ -1487,7 +1487,6 @@ const asBoolean = (val) => {
 /*
  * Ovewrites the default custom event definitions with the user provided ones if any.
  * Does not validate data - assumes the non-empty validation rule.
- * Guarantees that for any custom self-describing mapping m, m.value is a string.
  */
 const mkCustomDefs = (tagConfig, defaultDefinitions) => {
   const newDefinitions = {};
@@ -1511,7 +1510,7 @@ const mkCustomDefs = (tagConfig, defaultDefinitions) => {
             spPropName: m.snowplowPropName,
             type: m.type,
             ref: m.ref,
-            value: makeString(m.value),
+            value: m.value,
           };
         });
       newDefinitions[evName] = {
@@ -1623,16 +1622,15 @@ const setFromPath = (path, val, obj, target) => {
   return obj;
 };
 
-/*
- * Assumes val argument is string.
+/**
  * Interprets val according to a type typ.
  * If val is a name (referred to by ref as 'eventProperty'),
  *   interprets its value in (event)object instead.
  *
- * @param val {string} - the value to interpret
- * @param typ {string} - the type (one of number, boolean, string, default)
- * @param ref {string} - singifies whether val refers to a name in evObj
- * @param evObj {Object} - the object ref may refer to.
+ * @param {*} val - the value to interpret
+ * @param {string} typ - the type (one of number, boolean, string, default)
+ * @param {string} ref - singifies whether val refers to a name in evObj
+ * @param {Object} evObj - the object ref may refer to.
  * @returns - the interpreted value
  */
 function interpret(val, typ, ref, evObj) {
@@ -1676,28 +1674,31 @@ const mkStandardPairs = (evObj, evType, tagConfig) => {
   };
 };
 
-/*
+/**
  * Given a client event, makes a self-describing Snowplow event
  *
- * @param evObj {Object} - the client event object
- * @param evSchema {string} - the schema for the event
- * @param mappings {Array} - the event data mappings
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the self-describing Snowplow event object
+ * @param {Object} evObj - the client event object
+ * @param {string} evSchema - the schema for the event
+ * @param {(string[] | Object[])} mappings - the event data mappings
+ * @param {Object} tagConfig - the tag configuration data
+ * @returns {Object} - the self-describing Snowplow event object
  */
 const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
   const event = mkStandardPairs(evObj, 'ue', tagConfig);
-  const selfDescData = {};
-
-  mappings.forEach((m) => {
-    if (getType(m) === 'string') {
-      const setVal = interpret(m, 'default', 'eventProperty', evObj);
-      setFromPath(m, setVal, selfDescData);
-    } else {
-      const setVal = interpret(m.value, m.type, m.ref, evObj);
-      setFromPath(m.spPropName, setVal, selfDescData);
+  const selfDescData = mappings.reduce((acc, curr) => {
+    if (getType(curr) === 'string') {
+      return setFromPath(
+        curr,
+        interpret(curr, 'default', 'eventProperty', evObj),
+        acc
+      );
     }
-  });
+    return setFromPath(
+      curr.spPropName,
+      interpret(curr.value, curr.type, curr.ref, evObj),
+      acc
+    );
+  }, {});
 
   const uePr = JSON.stringify({
     schema: spSelfDescribingSchema,
@@ -2663,6 +2664,7 @@ scenarios:
       'x-ga-js_client_id': '1182338296.1632069552',
     };
 
+    const testVariable = [{ x: 1 }, { x: 2 }];
     const mockData = {
       collectorUrl: 'test',
 
@@ -2699,6 +2701,13 @@ scenarios:
           type: 'boolean',
           ref: 'userSet',
           value: true,
+        },
+        {
+          eventName: 'foo',
+          snowplowPropName: 'additionalObject.testArrayVar',
+          type: 'default',
+          ref: 'userSet',
+          value: testVariable,
         },
       ],
 
@@ -2756,9 +2765,18 @@ scenarios:
     assertThat(actSD.data.schema).isStrictlyEqualTo(
       'iglu:com.acme.test/foo/jsonschema/1-0-0'
     );
-    assertThat(actSD.data.data.foo_age).isStrictlyEqualTo(55);
-    assertThat(actSD.data.data.avg_load_time).isStrictlyEqualTo(1);
-    assertThat(actSD.data.data.additionalData.isDebugMode).isTrue();
+
+    const expectedData = {
+      foo_age: 55,
+      avg_load_time: 1,
+      additionalData: {
+        isDebugMode: true,
+      },
+      additionalObject: {
+        testArrayVar: testVariable,
+      },
+    };
+    assertThat(actSD.data.data).isEqualTo(expectedData);
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test boolean type with exception event
