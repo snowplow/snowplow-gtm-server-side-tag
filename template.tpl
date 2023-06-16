@@ -3788,7 +3788,7 @@ scenarios:
     const mockData = {
       collectorUrl: 'collector.test.com',
 
-      userIdCookie: 'sp',
+      userIdCookie: 'micro',
       cookieOverrideEnabled: false,
       forwardCookieHeaders: true,
       cookiesToForward: [
@@ -3824,7 +3824,11 @@ scenarios:
 
       // mock response
       let respStatusCode = 200;
-      let respHeaders = { foo: 'bar' };
+      let respHeaders = {
+        foo: 'bar',
+        'set-cookie':
+          'micro=60f9c826-79b4-46b1-b27c-4f816899c09f; Expires=Sat, 15 Jun 2024 20:06:33 GMT; Path=/',
+      };
       let respBody = 'ok';
 
       // and call the callback with mock response
@@ -3896,11 +3900,28 @@ scenarios:
       TraceId: 'someTestTraceId',
       EventName: 'page_view',
       ResponseStatusCode: 200,
-      ResponseHeaders: { foo: 'bar' },
+      ResponseHeaders: {
+        foo: 'bar',
+        'set-cookie':
+          'micro=60f9c826-79b4-46b1-b27c-4f816899c09f; Expires=Sat, 15 Jun 2024 20:06:33 GMT; Path=/',
+      },
       ResponseBody: 'ok',
     });
 
     assertThat(argOptions.headers).isEqualTo(expectedHeaders);
+    assertApi('setCookie').wasCalled();
+    assertApi('setCookie').wasCalledWith(
+      'micro',
+      '60f9c826-79b4-46b1-b27c-4f816899c09f',
+      {
+        domain: 'auto',
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+        expires: 'Sat, 15 Jun 2024 20:06:33 GMT',
+      }
+    );
     assertApi('logToConsole').wasCalled();
     assertApi('logToConsole').wasCalledWith(expectedRequestLog);
     assertApi('logToConsole').wasCalledWith(expectedResponseLog);
