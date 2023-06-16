@@ -1195,12 +1195,12 @@ const spDefaultCustomDefs = {
 
 // Helpers
 
-/*
+/**
  * Assumes logType argument is string.
  * Determines if logging is enabled.
  *
- * @param logType {string} - the logType set ('no', 'debug', 'always')
- * @returns - whether logging is enabled (boolean)
+ * @param {string} logType - The logType set ('no', 'debug', 'always')
+ * @returns {boolean} Whether logging is enabled
  */
 const determineIsLoggingEnabled = (logType) => {
   const containerVersion = getContainerVersion();
@@ -1222,12 +1222,13 @@ const determineIsLoggingEnabled = (logType) => {
   return data.logType === 'always';
 };
 
-/*
+/**
  * Creates the log message and logs it to console.
  *
- * @param typeName {string} - the type of log ('Message', 'Request', 'Response')
- * @param stdInfo {Object} - the standard info for all logs (Name, Type, TraceId, EventName)
- * @param logInfo {Object} - an object including information for the specific log type
+ * @param {string} typeName - The type of log ('Message', 'Request', 'Response')
+ * @param {Object} stdInfo - The standard info for all logs (Name, Type, TraceId, EventName)
+ * @param {Object} logInfo - An object including information for the specific log type
+ * @returns {undefined}
  */
 const doLogging = (typeName, stdInfo, logInfo) => {
   const logMessage = {
@@ -1260,13 +1261,14 @@ const doLogging = (typeName, stdInfo, logInfo) => {
   log(JSON.stringify(logMessage));
 };
 
-/*
+/**
  * Fails the tag.
  * If logs are enabled, also logs a message before failing.
  *
- * @param logsEnabled {boolean} - whether logs are enabled
- * @param stdInfo {Object} - the standard info for all logs (Name, Type, TraceId, EventName)
- * @param logInfo {Object} - an object including information for the Message
+ * @param {boolean} logsEnabled - Whether logs are enabled
+ * @param {Object} stdInfo - The standard info for all logs (Name, Type, TraceId, EventName)
+ * @param {Object} logInfo - An object including information for the Message
+ * @returns {undefined}
  */
 const fail = (logsEnabled, stdInfo, logInfo) => {
   if (logsEnabled) {
@@ -1275,6 +1277,12 @@ const fail = (logsEnabled, stdInfo, logInfo) => {
   return data.gtmOnFailure();
 };
 
+/**
+ * Merges objects.
+ *
+ * @param {Object[]} args - The array of objects to merge
+ * @returns {Object} The resulting object
+ */
 const merge = (args) => {
   let target = {};
 
@@ -1293,6 +1301,14 @@ const merge = (args) => {
   return target;
 };
 
+/**
+ * Replaces all instances of substring in a string.
+ *
+ * @param {string} str - The string
+ * @param {string} substr - The substring to replace in str
+ * @param {string} newSubstr - The replacement string
+ * @returns {string}
+ */
 const replaceAll = (str, substr, newSubstr) => {
   let finished = false,
     result = str;
@@ -1306,6 +1322,12 @@ const replaceAll = (str, substr, newSubstr) => {
   return result;
 };
 
+/**
+ * Encodes a string in base64url.
+ *
+ * @param {string} data - The string to encode
+ * @returns {string} The encoded string
+ */
 const base64urlencode = (data) => {
   if (!data) {
     return data;
@@ -1319,10 +1341,14 @@ const base64urlencode = (data) => {
   return urlBase64Enc;
 };
 
-/*
+/**
  * Parses the cookie attributes of set-cookie header and returns the corresponding object.
- * e.g. parseCookie('name=value; Secure; HttpOnly') returns
- *       { name:value, Secure:true, HttpOnly:true }
+ * @example
+ * // returns { name:value, Secure:true, HttpOnly:true }
+ * parseCookie('name=value; Secure; HttpOnly')
+ *
+ * @param {string} str - The set-cookie header value
+ * @returns {Object}
  */
 const parseCookie = (str) =>
   makeString(str)
@@ -1339,9 +1365,13 @@ const parseCookie = (str) =>
       return acc;
     }, {});
 
-/*
+/**
  * Sets the cookie
  * (assumes: if headers['set-cookie'])
+ *
+ * @param {Object} headers - The headers
+ * @param {Object} data - The tag configuration
+ * @returns {undefined}
  */
 const setCookieFrom = (headers, data) => {
   const cookieValues = parseCookie(headers['set-cookie']);
@@ -1377,24 +1407,34 @@ const setCookieFrom = (headers, data) => {
   );
 };
 
-/*
+/**
  * Given name and value strings returns 'name=value'.
+ *
+ * @param {string} name - The cookie name
+ * @param {string} value - The cookie value
+ * @returns {string}
  */
 const mkCookie = (name, value) => {
   return makeString(name) + '=' + makeString(value);
 };
 
-/*
+/**
  * Joins an array of cookie-pairs ('name=value' strings).
+ *
+ * @param {string[]} args - The array of cookie pairs
+ * @returns {string}
  */
 const joinCookies = (args) => {
   const separator = '; ';
   return args.filter((c) => !!c).join(separator);
 };
 
-/*
+/**
  * Creates a Cookie header value based on the cookiesToForward field
  * of the tag configuration.
+ *
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {string}
  */
 const mkCookies = (tagConfig) => {
   if (!tagConfig.forwardCookieHeaders) {
@@ -1422,7 +1462,7 @@ const mkCookies = (tagConfig) => {
   return '';
 };
 
-/*
+/**
  * Creates the headers for the request. Namely:
  *   - Content-Type
  *   - User-Agent (if exists in event)
@@ -1430,6 +1470,9 @@ const mkCookies = (tagConfig) => {
  *     - user id (based on userIdCookie field)
  *     - selected cookies (from cookiesToForward field)
  *   - SP-Anonymous
+ *
+ * @param {Object} event - The event object
+ * @returns {Object} The headers for the request
  */
 const getHeaders = (event) => {
   const headers = {
@@ -1456,8 +1499,11 @@ const getHeaders = (event) => {
   return headers;
 };
 
-/*
+/**
  * Adds https as the default protocol if not provided in collector url.
+ *
+ * @param {string} collectorUrl - The collector URL
+ * @returns {string}
  */
 const asCollectorUrl = (collectorUrl) => {
   if (collectorUrl.indexOf('http') === 0) {
@@ -1466,6 +1512,12 @@ const asCollectorUrl = (collectorUrl) => {
   return 'https://' + collectorUrl;
 };
 
+/**
+ * Adds iglu if not provided in the schema.
+ *
+ * @param {string} schema - The provided schema
+ * @returns {string}
+ */
 const asIgluSchema = (schema) => {
   if (schema.indexOf('iglu:') === 0) {
     return schema;
@@ -1473,9 +1525,12 @@ const asIgluSchema = (schema) => {
   return 'iglu:' + schema;
 };
 
-/*
+/**
  * Returns a boolean from a value, maps the string 'false' to boolean false.
  *  e.g. asBoolean('false') => false
+ *
+ * @param {*} val - The provided value
+ * @returns {boolean}
  */
 const asBoolean = (val) => {
   if (val === 'false') {
@@ -1484,9 +1539,13 @@ const asBoolean = (val) => {
   return !!val;
 };
 
-/*
+/**
  * Ovewrites the default custom event definitions with the user provided ones if any.
  * Does not validate data - assumes the non-empty validation rule.
+ *
+ * @param {Object} tagConfig - The tag configuration
+ * @param {Object} defaultDefinitions - The default event definitions
+ * @returns {Object} The final event definitions
  */
 const mkCustomDefs = (tagConfig, defaultDefinitions) => {
   const newDefinitions = {};
@@ -1524,9 +1583,12 @@ const mkCustomDefs = (tagConfig, defaultDefinitions) => {
   return merge([defaultDefinitions, newDefinitions]);
 };
 
-/*
+/**
  * Helper that wraps mkCustomDefs and returns a function that closes over the
  * provided event definitions.
+ *
+ * @param {Object} definitions - The event definitions to use
+ * @returns {function} A function that given the tag configuration returns the final event definitions
  */
 const withDefinitions = (definitions) => {
   return function (tagConfig) {
@@ -1534,11 +1596,11 @@ const withDefinitions = (definitions) => {
   };
 };
 
-/*
+/**
  * Returns whether a string can be parsed as an integer.
  *
- * @param x {string} - the string to check
- * @returns - boolean
+ * @param {string} x - The string to check
+ * @returns {boolean}
  */
 const isInt = (x) => {
   const y = Math.floor(x);
@@ -1548,25 +1610,25 @@ const isInt = (x) => {
   return !!y;
 };
 
-/*
+/**
  * Splits a string as a path where path components are separated by dots.
  * (used by both getFromPath and setFromPath)
  *
- * @param stringPath {string} - the string to split
- * @returns - the array of path components
+ * @param {string} stringPath - The string to split
+ * @returns {string[]} The array of path components
  */
 const splitStringPath = (stringPath) => {
   return stringPath.split('.').filter((p) => !!p);
 };
 
-/*
+/**
  * Gets the value in obj from path.
  * Path must be a string denoting a (nested) property path separated by '.'
  *  e.g. getFromPath('a.b', {a: {b: 2}}) => 2
  *
- * @param path {string} - the string to replace into
- * @param obj {Object} - the object to look into
- * @returns - the corresponding value or undefined
+ * @param {string} path - The path to get the value of
+ * @param {Object} obj - The object to look into
+ * @returns {*} The corresponding value or undefined
  */
 const getFromPath = (path, obj) => {
   if (getType(path) === 'string') {
@@ -1578,20 +1640,27 @@ const getFromPath = (path, obj) => {
   return undefined;
 };
 
-/*
+/**
  * Sets the value in obj from path (side-effects).
  * Overwrites if encounters existing properties, and creates nesting if needed.
- * Examples:
- *  e.g. setFromPath('a.b.c', 3, {a: {b: 0}}) => {a: {b: {c: 3}}}
- *       setFromPath('a.0.x', 4, {a: {b: 0}}) => {a: [{x: 4}]}
- *       setFromPath('a.0',   4, {a: {b: 0}}) => {a: [4]}
- *       setFromPath('a.2',   5, {a: [1,1,1]}) => {a: [1,1,5]}
+ * @example
+ * // returns {a: {b: {c: 3}}}
+ * setFromPath('a.b.c', 3, {a: {b: 0}})
+ * @example
+ * // returns {a: [{x: 4}]}
+ * setFromPath('a.0.x', 4, {a: {b: 0}})
+ * @example
+ * // returns {a: [4]}
+ * setFromPath('a.0', 4, {a: {b: 0}})
+ * @example
+ * // returns {a: [1,1,5]}
+ * setFromPath('a.2', 5, {a: [1,1,1]})
  *
- * @param path {string | array} - the string to replace into
- * @param val {string} - the substring to replace
- * @param obj {Object} - the object to mutate
- * @param target {Object} - (optional) the object that the path refers to
- * @returns - the object mutated with the value set
+ * @param {(string|string[])} path - The path where to set the value
+ * @param {*} val - The value to be set
+ * @param {Object} obj - The object to mutate
+ * @param {Object} [target] - The object that the path refers to
+ * @returns {Object} The object mutated with the value set
  */
 const setFromPath = (path, val, obj, target) => {
   const numAsIdx = true;
@@ -1627,11 +1696,11 @@ const setFromPath = (path, val, obj, target) => {
  * If val is a name (referred to by ref as 'eventProperty'),
  *   interprets its value in (event)object instead.
  *
- * @param {*} val - the value to interpret
- * @param {string} typ - the type (one of number, boolean, string, default)
- * @param {string} ref - singifies whether val refers to a name in evObj
- * @param {Object} evObj - the object ref may refer to.
- * @returns - the interpreted value
+ * @param {*} val - The value to interpret
+ * @param {string} typ - The type (one of number, boolean, string, default)
+ * @param {string} ref - Singifies whether val refers to a name in evObj
+ * @param {Object} evObj - The object ref may refer to.
+ * @returns {*} The interpreted value
  */
 function interpret(val, typ, ref, evObj) {
   const deducedVal = ref === 'eventProperty' ? getFromPath(val, evObj) : val;
@@ -1647,13 +1716,13 @@ function interpret(val, typ, ref, evObj) {
   }
 }
 
-/*
+/**
  * Makes the standard name-value pairs of Snowplow event.
  *
- * @param evObj {Object} - the client event object
- * @param evType {string} - the Snowplow event type ('se' or 'ue')
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the initial Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {string} evType - The Snowplow event type ('se' or 'ue')
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The initial Snowplow event object
  */
 const mkStandardPairs = (evObj, evType, tagConfig) => {
   return {
@@ -1677,11 +1746,11 @@ const mkStandardPairs = (evObj, evType, tagConfig) => {
 /**
  * Given a client event, makes a self-describing Snowplow event
  *
- * @param {Object} evObj - the client event object
- * @param {string} evSchema - the schema for the event
- * @param {(string[] | Object[])} mappings - the event data mappings
- * @param {Object} tagConfig - the tag configuration data
- * @returns {Object} - the self-describing Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {string} evSchema - The schema for the event
+ * @param {(string[]|Object[])} mappings - The event data mappings
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The self-describing Snowplow event object
  */
 const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
   const event = mkStandardPairs(evObj, 'ue', tagConfig);
@@ -1718,12 +1787,12 @@ const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
   return event;
 };
 
-/*
+/**
  * Given a client event, makes a structured Snowplow event
  *
- * @param evObj {Object} - the client event object
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the structured Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The structured Snowplow event object
  */
 const mkStructuredEvent = (evObj, tagConfig) => {
   const action = evObj.event_action ? evObj.event_action : evObj.event_name;
@@ -1741,13 +1810,13 @@ const mkStructuredEvent = (evObj, tagConfig) => {
   return undefined;
 };
 
-/*
+/**
  * Makes a Snowplow event from a non-Snowplow client event.
  *
- * @param evObj {Object} - the client event object
- * @param customDefs {Object} - the custom event data definitions
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the Snowplow event or undefined, if event could not be constructed
+ * @param {Object} evObj - The client event object
+ * @param {Object} customDefs - The custom event data definitions
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {(Object|undefined)} The Snowplow event or undefined, if event could not be constructed
  */
 const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
   const eventName = evObj.event_name;
@@ -1774,8 +1843,11 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
   return undefined;
 };
 
-/*
+/**
  * Helper to ensure an array is returned.
+ *
+ * @param {*} x
+ * @returns {Array}
  */
 const asArray = (x) => {
   if (getType(x) !== 'array') {
@@ -1784,9 +1856,13 @@ const asArray = (x) => {
   return x;
 };
 
-/*
+/**
  * Gets context entities from the configuration option that allows
  * settings custom and/or global contexts using variables.
+ *
+ * @param {Object} evObj - The event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {Object[]} Array of context entities
  */
 const getEntitiesFromVariables = (evObj, tagConfig) => {
   const globalCtxFromVar = asArray(tagConfig.globalEntitiesFromVar);
@@ -1803,8 +1879,12 @@ const getEntitiesFromVariables = (evObj, tagConfig) => {
   return globalCtxFromVar;
 };
 
-/*
+/**
  * Makes the context entities to attach to the event.
+ *
+ * @param {Object} evObj - The event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {(Object[]|undefined)} The context entities to attach to Snowplow event
  */
 const mkEntities = (evObj, tagConfig) => {
   const eventName = evObj.event_name;
@@ -1839,11 +1919,15 @@ const mkEntities = (evObj, tagConfig) => {
   return finalEntities.length > 0 ? finalEntities : undefined;
 };
 
-/*
+/**
  * Determines whether to apply base64 url encoding. It is being used
  * when contexts are added to a Snowplow event.
  * If encoding of the original Snowplow event can be determined, is matched.
  * Else the configuration option applies.
+ *
+ * @param {Object} spEvent - The Snowplow event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {boolean}
  */
 const determineSpEncoding = (spEvent, tagConfig) => {
   if (spEvent.ue_px || spEvent.cx) {
@@ -1855,8 +1939,13 @@ const determineSpEncoding = (spEvent, tagConfig) => {
   return tagConfig.encodeBase64;
 };
 
-/*
+/**
  * Adds the configured context entities to the given snowplow event.
+ *
+ * @param {Object} spEvent - The Snowplow event
+ * @param {Object} evObj - The common client event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {Object} The Snowplow event with contexts attached
  */
 const addContextEntities = (spEvent, evObj, tagConfig) => {
   if (!spEvent) {
@@ -1879,10 +1968,15 @@ const addContextEntities = (spEvent, evObj, tagConfig) => {
   return spEvent;
 };
 
-/*
+/**
  * Given the client event object,
  *  - gets the Snowplow event from 'x-sp-tp2' (by Snowplow client)
  *  - or makes a Snowplow event
+ *
+ * @param {Object} evObj - The common event
+ * @param {Object} tagConfig - The tag configuration
+ * @param {function} definerFunction - The function to create the event definitions
+ * @param {Object} The Snowplow event
  */
 const buildSpEvent = (evObj, tagConfig, definerFunction) => {
   if (evObj['x-sp-tp2']) {
@@ -1906,8 +2000,11 @@ const buildSpEvent = (evObj, tagConfig, definerFunction) => {
   return rawEvent ? rawEvent : undefined;
 };
 
-/*
+/**
  * Given a Snowplow event, returns the Snowplow payload to be sent.
+ *
+ * @param {Object} snowplowEvent - The Snowplow event
+ * @returns {Object} The Snowplow payload
  */
 const mkSnowplowPayload = (snowplowEvent) => {
   if (snowplowEvent) {
