@@ -28,6 +28,8 @@ In addition, users can change the default or add custom event definitions accord
 
 ## Installation
 
+_The server Docker image must be 2.0.0 or later._
+
 ### Installing from the Google Tag Manager Template Gallery
 
 1. From the Templates tab in GTM Server Side, click "Search Gallery" in the Tag Templates section
