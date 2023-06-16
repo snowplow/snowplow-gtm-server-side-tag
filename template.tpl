@@ -896,6 +896,7 @@ ___TEMPLATE_PARAMETERS___
 ___SANDBOXED_JS_FOR_SERVER___
 
 // Server-side tagging API imports
+const createRegex = require('createRegex');
 const decodeUriComponent = require('decodeUriComponent');
 const getAllEventData = require('getAllEventData');
 const getCookieValues = require('getCookieValues');
@@ -1300,43 +1301,29 @@ const merge = (args) => {
 };
 
 /**
- * Replaces all instances of substring in a string.
- *
- * @param {string} str - The string
- * @param {string} substr - The substring to replace in str
- * @param {string} newSubstr - The replacement string
- * @returns {string}
- */
-const replaceAll = (str, substr, newSubstr) => {
-  let finished = false,
-    result = str;
-  while (!finished) {
-    const newStr = result.replace(substr, newSubstr);
-    if (result === newStr) {
-      finished = true;
-    }
-    result = newStr;
-  }
-  return result;
-};
-
-/**
  * Encodes a string in base64url.
  *
- * @param {string} data - The string to encode
+ * @param {string} str - The string to encode
  * @returns {string} The encoded string
  */
-const base64urlencode = (data) => {
-  if (!data) {
-    return data;
+const base64urlencode = (str) => {
+  if (!str) {
+    return str;
   }
-  const base64Enc = toBase64(data);
-  const urlBase64Enc = replaceAll(
-    replaceAll(replaceAll(base64Enc, '=', ''), '+', '-'),
-    '/',
-    '_'
-  );
-  return urlBase64Enc;
+
+  const rexp = createRegex('[=+/]', 'g');
+  return toBase64(str).replace(rexp, (match) => {
+    switch (match) {
+      case '=':
+        return '';
+      case '+':
+        return '-';
+      case '/':
+        return '_';
+      default:
+        return match;
+    }
+  });
 };
 
 /**
@@ -3671,7 +3658,7 @@ scenarios:
 
     const actualContexts = base64urldecode(actEvent.cx);
     assertThat(actualContexts).isEqualTo(expectedContexts);
-- name: Test logs settings - always (1)
+- name: Test logs settings (always in prod) and base64urlencode
   code: |
     // test constants
     const mockEventObject = setMockEventObjectFromSpPv;
@@ -3686,19 +3673,44 @@ scenarios:
       defineAsStructured: false,
       defineAsSelfDescribing: false,
 
-      applyToSp: false,
+      applyToSp: true,
       customUseVariables: false,
+      customEntities: [
+        {
+          eventName: 'page_view',
+          ctxSchema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'address.postal_code',
+          type: 'default',
+          ref: 'userSet',
+          value: 'foo',
+        },
+      ],
       globalUseVariable: false,
+      globalEntities: [
+        {
+          ctxSchema: 'com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'userSet',
+          value: 'a948af5f-abbd-454e-b81e-04e69ff88106',
+        },
+      ],
 
-      encodeBase64: true,
+      encodeBase64: false,
       platform: 'srv',
       logType: 'always',
     };
 
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
     // mock API
     mock('getAllEventData', mockEventObject);
     mock('sendHttpRequest', function () {
-      return true;
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
     });
     mock('getContainerVersion', function () {
       let containerVersion = {
@@ -3714,6 +3726,13 @@ scenarios:
     // Assert
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasCalled();
+
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    const expectedContexts = 'eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uZ29vZ2xlLnRhZy1tYW5hZ2VyLnNlcnZlci1zaWRlL3VzZXJfZGF0YS9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJhZGRyZXNzIjp7InBvc3RhbF9jb2RlIjoiZm9vIn19fSx7InNjaGVtYSI6ImlnbHU6Y29tLnNub3dwbG93YW5hbHl0aWNzLnNub3dwbG93L3dlYl9wYWdlL2pzb25zY2hlbWEvMS0wLTAiLCJkYXRhIjp7ImlkIjoiYTk0OGFmNWYtYWJiZC00NTRlLWI4MWUtMDRlNjlmZjg4MTA2In19XX0';
+    assertThat(actEvent.cx).isEqualTo(expectedContexts);
+    assertThat(actEvent.co).isUndefined();
 - name: Test logs settings - always (2)
   code: |
     // test constants
