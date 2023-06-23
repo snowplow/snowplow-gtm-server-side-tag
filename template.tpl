@@ -896,6 +896,7 @@ ___TEMPLATE_PARAMETERS___
 ___SANDBOXED_JS_FOR_SERVER___
 
 // Server-side tagging API imports
+const createRegex = require('createRegex');
 const decodeUriComponent = require('decodeUriComponent');
 const getAllEventData = require('getAllEventData');
 const getCookieValues = require('getCookieValues');
@@ -920,7 +921,7 @@ const spSelfDescribingSchema =
 const spContextsSchema =
   'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
-const spVersion = 'gtmss-0.4.0';
+const spVersion = 'gtmss-0.5.0';
 const tagName = 'Snowplow';
 
 // event data mappings for self-describing Snowplow events
@@ -1195,12 +1196,12 @@ const spDefaultCustomDefs = {
 
 // Helpers
 
-/*
+/**
  * Assumes logType argument is string.
  * Determines if logging is enabled.
  *
- * @param logType {string} - the logType set ('no', 'debug', 'always')
- * @returns - whether logging is enabled (boolean)
+ * @param {string} logType - The logType set ('no', 'debug', 'always')
+ * @returns {boolean} Whether logging is enabled
  */
 const determineIsLoggingEnabled = (logType) => {
   const containerVersion = getContainerVersion();
@@ -1222,12 +1223,12 @@ const determineIsLoggingEnabled = (logType) => {
   return data.logType === 'always';
 };
 
-/*
+/**
  * Creates the log message and logs it to console.
  *
- * @param typeName {string} - the type of log ('Message', 'Request', 'Response')
- * @param stdInfo {Object} - the standard info for all logs (Name, Type, TraceId, EventName)
- * @param logInfo {Object} - an object including information for the specific log type
+ * @param {string} typeName - The type of log ('Message', 'Request', 'Response')
+ * @param {Object} stdInfo - The standard info for all logs (Name, Type, TraceId, EventName)
+ * @param {Object} logInfo - An object including information for the specific log type
  */
 const doLogging = (typeName, stdInfo, logInfo) => {
   const logMessage = {
@@ -1260,13 +1261,13 @@ const doLogging = (typeName, stdInfo, logInfo) => {
   log(JSON.stringify(logMessage));
 };
 
-/*
+/**
  * Fails the tag.
  * If logs are enabled, also logs a message before failing.
  *
- * @param logsEnabled {boolean} - whether logs are enabled
- * @param stdInfo {Object} - the standard info for all logs (Name, Type, TraceId, EventName)
- * @param logInfo {Object} - an object including information for the Message
+ * @param {boolean} logsEnabled - Whether logs are enabled
+ * @param {Object} stdInfo - The standard info for all logs (Name, Type, TraceId, EventName)
+ * @param {Object} logInfo - An object including information for the Message
  */
 const fail = (logsEnabled, stdInfo, logInfo) => {
   if (logsEnabled) {
@@ -1275,6 +1276,12 @@ const fail = (logsEnabled, stdInfo, logInfo) => {
   return data.gtmOnFailure();
 };
 
+/**
+ * Merges objects.
+ *
+ * @param {Object[]} args - The array of objects to merge
+ * @returns {Object} The resulting object
+ */
 const merge = (args) => {
   let target = {};
 
@@ -1293,36 +1300,40 @@ const merge = (args) => {
   return target;
 };
 
-const replaceAll = (str, substr, newSubstr) => {
-  let finished = false,
-    result = str;
-  while (!finished) {
-    const newStr = result.replace(substr, newSubstr);
-    if (result === newStr) {
-      finished = true;
+/**
+ * Encodes a string in base64url.
+ *
+ * @param {string} str - The string to encode
+ * @returns {string} The encoded string
+ */
+const base64urlencode = (str) => {
+  if (!str) {
+    return str;
+  }
+
+  const rexp = createRegex('[=+/]', 'g');
+  return toBase64(str).replace(rexp, (match) => {
+    switch (match) {
+      case '=':
+        return '';
+      case '+':
+        return '-';
+      case '/':
+        return '_';
+      default:
+        return match;
     }
-    result = newStr;
-  }
-  return result;
+  });
 };
 
-const base64urlencode = (data) => {
-  if (!data) {
-    return data;
-  }
-  const base64Enc = toBase64(data);
-  const urlBase64Enc = replaceAll(
-    replaceAll(replaceAll(base64Enc, '=', ''), '+', '-'),
-    '/',
-    '_'
-  );
-  return urlBase64Enc;
-};
-
-/*
+/**
  * Parses the cookie attributes of set-cookie header and returns the corresponding object.
- * e.g. parseCookie('name=value; Secure; HttpOnly') returns
- *       { name:value, Secure:true, HttpOnly:true }
+ * @example
+ * // returns { name:value, Secure:true, HttpOnly:true }
+ * parseCookie('name=value; Secure; HttpOnly')
+ *
+ * @param {string} str - The set-cookie header value
+ * @returns {Object}
  */
 const parseCookie = (str) =>
   makeString(str)
@@ -1339,9 +1350,12 @@ const parseCookie = (str) =>
       return acc;
     }, {});
 
-/*
+/**
  * Sets the cookie
  * (assumes: if headers['set-cookie'])
+ *
+ * @param {Object} headers - The headers
+ * @param {Object} data - The tag configuration
  */
 const setCookieFrom = (headers, data) => {
   const cookieValues = parseCookie(headers['set-cookie']);
@@ -1377,24 +1391,34 @@ const setCookieFrom = (headers, data) => {
   );
 };
 
-/*
+/**
  * Given name and value strings returns 'name=value'.
+ *
+ * @param {string} name - The cookie name
+ * @param {string} value - The cookie value
+ * @returns {string}
  */
 const mkCookie = (name, value) => {
   return makeString(name) + '=' + makeString(value);
 };
 
-/*
+/**
  * Joins an array of cookie-pairs ('name=value' strings).
+ *
+ * @param {string[]} args - The array of cookie pairs
+ * @returns {string}
  */
 const joinCookies = (args) => {
   const separator = '; ';
   return args.filter((c) => !!c).join(separator);
 };
 
-/*
+/**
  * Creates a Cookie header value based on the cookiesToForward field
  * of the tag configuration.
+ *
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {string}
  */
 const mkCookies = (tagConfig) => {
   if (!tagConfig.forwardCookieHeaders) {
@@ -1422,7 +1446,7 @@ const mkCookies = (tagConfig) => {
   return '';
 };
 
-/*
+/**
  * Creates the headers for the request. Namely:
  *   - Content-Type
  *   - User-Agent (if exists in event)
@@ -1430,6 +1454,9 @@ const mkCookies = (tagConfig) => {
  *     - user id (based on userIdCookie field)
  *     - selected cookies (from cookiesToForward field)
  *   - SP-Anonymous
+ *
+ * @param {Object} event - The event object
+ * @returns {Object} The headers for the request
  */
 const getHeaders = (event) => {
   const headers = {
@@ -1456,8 +1483,11 @@ const getHeaders = (event) => {
   return headers;
 };
 
-/*
+/**
  * Adds https as the default protocol if not provided in collector url.
+ *
+ * @param {string} collectorUrl - The collector URL
+ * @returns {string}
  */
 const asCollectorUrl = (collectorUrl) => {
   if (collectorUrl.indexOf('http') === 0) {
@@ -1466,6 +1496,12 @@ const asCollectorUrl = (collectorUrl) => {
   return 'https://' + collectorUrl;
 };
 
+/**
+ * Adds iglu if not provided in the schema.
+ *
+ * @param {string} schema - The provided schema
+ * @returns {string}
+ */
 const asIgluSchema = (schema) => {
   if (schema.indexOf('iglu:') === 0) {
     return schema;
@@ -1473,9 +1509,12 @@ const asIgluSchema = (schema) => {
   return 'iglu:' + schema;
 };
 
-/*
+/**
  * Returns a boolean from a value, maps the string 'false' to boolean false.
  *  e.g. asBoolean('false') => false
+ *
+ * @param {*} val - The provided value
+ * @returns {boolean}
  */
 const asBoolean = (val) => {
   if (val === 'false') {
@@ -1484,10 +1523,13 @@ const asBoolean = (val) => {
   return !!val;
 };
 
-/*
+/**
  * Ovewrites the default custom event definitions with the user provided ones if any.
  * Does not validate data - assumes the non-empty validation rule.
- * Guarantees that for any custom self-describing mapping m, m.value is a string.
+ *
+ * @param {Object} tagConfig - The tag configuration
+ * @param {Object} defaultDefinitions - The default event definitions
+ * @returns {Object} The final event definitions
  */
 const mkCustomDefs = (tagConfig, defaultDefinitions) => {
   const newDefinitions = {};
@@ -1511,7 +1553,7 @@ const mkCustomDefs = (tagConfig, defaultDefinitions) => {
             spPropName: m.snowplowPropName,
             type: m.type,
             ref: m.ref,
-            value: makeString(m.value),
+            value: m.value,
           };
         });
       newDefinitions[evName] = {
@@ -1525,9 +1567,12 @@ const mkCustomDefs = (tagConfig, defaultDefinitions) => {
   return merge([defaultDefinitions, newDefinitions]);
 };
 
-/*
+/**
  * Helper that wraps mkCustomDefs and returns a function that closes over the
  * provided event definitions.
+ *
+ * @param {Object} definitions - The event definitions to use
+ * @returns {function} A function that given the tag configuration returns the final event definitions
  */
 const withDefinitions = (definitions) => {
   return function (tagConfig) {
@@ -1535,11 +1580,11 @@ const withDefinitions = (definitions) => {
   };
 };
 
-/*
+/**
  * Returns whether a string can be parsed as an integer.
  *
- * @param x {string} - the string to check
- * @returns - boolean
+ * @param {string} x - The string to check
+ * @returns {boolean}
  */
 const isInt = (x) => {
   const y = Math.floor(x);
@@ -1549,48 +1594,57 @@ const isInt = (x) => {
   return !!y;
 };
 
-/*
+/**
  * Splits a string as a path where path components are separated by dots.
  * (used by both getFromPath and setFromPath)
  *
- * @param stringPath {string} - the string to split
- * @returns - the array of path components
+ * @param {string} stringPath - The string to split
+ * @returns {string[]} The array of path components
  */
 const splitStringPath = (stringPath) => {
   return stringPath.split('.').filter((p) => !!p);
 };
 
-/*
+/**
  * Gets the value in obj from path.
  * Path must be a string denoting a (nested) property path separated by '.'
  *  e.g. getFromPath('a.b', {a: {b: 2}}) => 2
  *
- * @param path {string} - the string to replace into
- * @param obj {Object} - the object to look into
- * @returns - the corresponding value or undefined
+ * @param {string} path - The path to get the value of
+ * @param {Object} obj - The object to look into
+ * @returns {*} The corresponding value or undefined
  */
 const getFromPath = (path, obj) => {
   if (getType(path) === 'string') {
     const splitPath = splitStringPath(path);
-    return splitPath.reduce((acc, curr) => acc && acc[curr], obj);
+    return splitPath.reduce((acc, curr) => {
+      return acc && acc[curr];
+    }, obj);
   }
   return undefined;
 };
 
-/*
+/**
  * Sets the value in obj from path (side-effects).
  * Overwrites if encounters existing properties, and creates nesting if needed.
- * Examples:
- *  e.g. setFromPath('a.b.c', 3, {a: {b: 0}}) => {a: {b: {c: 3}}}
- *       setFromPath('a.0.x', 4, {a: {b: 0}}) => {a: [{x: 4}]}
- *       setFromPath('a.0',   4, {a: {b: 0}}) => {a: [4]}
- *       setFromPath('a.2',   5, {a: [1,1,1]}) => {a: [1,1,5]}
+ * @example
+ * // returns {a: {b: {c: 3}}}
+ * setFromPath('a.b.c', 3, {a: {b: 0}})
+ * @example
+ * // returns {a: [{x: 4}]}
+ * setFromPath('a.0.x', 4, {a: {b: 0}})
+ * @example
+ * // returns {a: [4]}
+ * setFromPath('a.0', 4, {a: {b: 0}})
+ * @example
+ * // returns {a: [1,1,5]}
+ * setFromPath('a.2', 5, {a: [1,1,1]})
  *
- * @param path {string | array} - the string to replace into
- * @param val {string} - the substring to replace
- * @param obj {Object} - the object to mutate
- * @param target {Object} - (optional) the object that the path refers to
- * @returns - the object mutated with the value set
+ * @param {(string|string[])} path - The path where to set the value
+ * @param {*} val - The value to be set
+ * @param {Object} obj - The object to mutate
+ * @param {Object} [target] - The object that the path refers to
+ * @returns {Object} The object mutated with the value set
  */
 const setFromPath = (path, val, obj, target) => {
   const numAsIdx = true;
@@ -1621,17 +1675,16 @@ const setFromPath = (path, val, obj, target) => {
   return obj;
 };
 
-/*
- * Assumes val argument is string.
+/**
  * Interprets val according to a type typ.
  * If val is a name (referred to by ref as 'eventProperty'),
  *   interprets its value in (event)object instead.
  *
- * @param val {string} - the value to interpret
- * @param typ {string} - the type (one of number, boolean, string, default)
- * @param ref {string} - singifies whether val refers to a name in evObj
- * @param evObj {Object} - the object ref may refer to.
- * @returns - the interpreted value
+ * @param {*} val - The value to interpret
+ * @param {string} typ - The type (one of number, boolean, string, default)
+ * @param {string} ref - Singifies whether val refers to a name in evObj
+ * @param {Object} evObj - The object ref may refer to.
+ * @returns {*} The interpreted value
  */
 function interpret(val, typ, ref, evObj) {
   const deducedVal = ref === 'eventProperty' ? getFromPath(val, evObj) : val;
@@ -1647,13 +1700,13 @@ function interpret(val, typ, ref, evObj) {
   }
 }
 
-/*
+/**
  * Makes the standard name-value pairs of Snowplow event.
  *
- * @param evObj {Object} - the client event object
- * @param evType {string} - the Snowplow event type ('se' or 'ue')
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the initial Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {string} evType - The Snowplow event type ('se' or 'ue')
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The initial Snowplow event object
  */
 const mkStandardPairs = (evObj, evType, tagConfig) => {
   return {
@@ -1674,28 +1727,31 @@ const mkStandardPairs = (evObj, evType, tagConfig) => {
   };
 };
 
-/*
+/**
  * Given a client event, makes a self-describing Snowplow event
  *
- * @param evObj {Object} - the client event object
- * @param evSchema {string} - the schema for the event
- * @param mappings {Array} - the event data mappings
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the self-describing Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {string} evSchema - The schema for the event
+ * @param {(string[]|Object[])} mappings - The event data mappings
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The self-describing Snowplow event object
  */
 const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
   const event = mkStandardPairs(evObj, 'ue', tagConfig);
-  const selfDescData = {};
-
-  mappings.forEach((m) => {
-    if (getType(m) === 'string') {
-      const setVal = interpret(m, 'default', 'eventProperty', evObj);
-      setFromPath(m, setVal, selfDescData);
-    } else {
-      const setVal = interpret(m.value, m.type, m.ref, evObj);
-      setFromPath(m.spPropName, setVal, selfDescData);
+  const selfDescData = mappings.reduce((acc, curr) => {
+    if (getType(curr) === 'string') {
+      return setFromPath(
+        curr,
+        interpret(curr, 'default', 'eventProperty', evObj),
+        acc
+      );
     }
-  });
+    return setFromPath(
+      curr.spPropName,
+      interpret(curr.value, curr.type, curr.ref, evObj),
+      acc
+    );
+  }, {});
 
   const uePr = JSON.stringify({
     schema: spSelfDescribingSchema,
@@ -1715,12 +1771,12 @@ const mkSelfDescribingEvent = (evObj, evSchema, mappings, tagConfig) => {
   return event;
 };
 
-/*
+/**
  * Given a client event, makes a structured Snowplow event
  *
- * @param evObj {Object} - the client event object
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the structured Snowplow event object
+ * @param {Object} evObj - The client event object
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {Object} The structured Snowplow event object
  */
 const mkStructuredEvent = (evObj, tagConfig) => {
   const action = evObj.event_action ? evObj.event_action : evObj.event_name;
@@ -1738,13 +1794,13 @@ const mkStructuredEvent = (evObj, tagConfig) => {
   return undefined;
 };
 
-/*
+/**
  * Makes a Snowplow event from a non-Snowplow client event.
  *
- * @param evObj {Object} - the client event object
- * @param customDefs {Object} - the custom event data definitions
- * @param tagConfig {Object} - the tag configuration data
- * @returns - the Snowplow event or undefined, if event could not be constructed
+ * @param {Object} evObj - The client event object
+ * @param {Object} customDefs - The custom event data definitions
+ * @param {Object} tagConfig - The tag configuration data
+ * @returns {(Object|undefined)} The Snowplow event or undefined, if event could not be constructed
  */
 const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
   const eventName = evObj.event_name;
@@ -1771,8 +1827,11 @@ const mkSnowplowEvent = (evObj, customDefs, tagConfig) => {
   return undefined;
 };
 
-/*
+/**
  * Helper to ensure an array is returned.
+ *
+ * @param {*} x
+ * @returns {Array}
  */
 const asArray = (x) => {
   if (getType(x) !== 'array') {
@@ -1781,9 +1840,13 @@ const asArray = (x) => {
   return x;
 };
 
-/*
+/**
  * Gets context entities from the configuration option that allows
  * settings custom and/or global contexts using variables.
+ *
+ * @param {Object} evObj - The event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {Object[]} Array of context entities
  */
 const getEntitiesFromVariables = (evObj, tagConfig) => {
   const globalCtxFromVar = asArray(tagConfig.globalEntitiesFromVar);
@@ -1800,8 +1863,12 @@ const getEntitiesFromVariables = (evObj, tagConfig) => {
   return globalCtxFromVar;
 };
 
-/*
+/**
  * Makes the context entities to attach to the event.
+ *
+ * @param {Object} evObj - The event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {(Object[]|undefined)} The context entities to attach to Snowplow event
  */
 const mkEntities = (evObj, tagConfig) => {
   const eventName = evObj.event_name;
@@ -1836,23 +1903,33 @@ const mkEntities = (evObj, tagConfig) => {
   return finalEntities.length > 0 ? finalEntities : undefined;
 };
 
-/*
+/**
  * Determines whether to apply base64 url encoding. It is being used
- * when contexts are added to a Snowplow event, and so we may need to
- * match any existing encoding.
+ * when contexts are added to a Snowplow event.
+ * If encoding of the original Snowplow event can be determined, is matched.
+ * Else the configuration option applies.
+ *
+ * @param {Object} spEvent - The Snowplow event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {boolean}
  */
 const determineSpEncoding = (spEvent, tagConfig) => {
-  if (spEvent.ue_px) {
+  if (spEvent.ue_px || spEvent.cx) {
     return true;
   }
-  if (spEvent.ue_pr) {
+  if (spEvent.ue_pr || spEvent.co) {
     return false;
   }
   return tagConfig.encodeBase64;
 };
 
-/*
+/**
  * Adds the configured context entities to the given snowplow event.
+ *
+ * @param {Object} spEvent - The Snowplow event
+ * @param {Object} evObj - The common client event
+ * @param {Object} tagConfig - The tag configuration
+ * @returns {Object} The Snowplow event with contexts attached
  */
 const addContextEntities = (spEvent, evObj, tagConfig) => {
   if (!spEvent) {
@@ -1875,10 +1952,15 @@ const addContextEntities = (spEvent, evObj, tagConfig) => {
   return spEvent;
 };
 
-/*
+/**
  * Given the client event object,
  *  - gets the Snowplow event from 'x-sp-tp2' (by Snowplow client)
  *  - or makes a Snowplow event
+ *
+ * @param {Object} evObj - The common event
+ * @param {Object} tagConfig - The tag configuration
+ * @param {function} definerFunction - The function to create the event definitions
+ * @param {Object} The Snowplow event
  */
 const buildSpEvent = (evObj, tagConfig, definerFunction) => {
   if (evObj['x-sp-tp2']) {
@@ -1902,8 +1984,11 @@ const buildSpEvent = (evObj, tagConfig, definerFunction) => {
   return rawEvent ? rawEvent : undefined;
 };
 
-/*
+/**
  * Given a Snowplow event, returns the Snowplow payload to be sent.
+ *
+ * @param {Object} snowplowEvent - The Snowplow event
+ * @returns {Object} The Snowplow payload
  */
 const mkSnowplowPayload = (snowplowEvent) => {
   if (snowplowEvent) {
@@ -2226,7 +2311,8 @@ scenarios:
 - name: Test Snowplow page_view event
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const rawSnowplowEvent = snowplowTp2PageView;
+    const mockSnowplowEvent = setMockEventObjectFromSpPv;
     const collectorUrl = 'collector.test.com';
     const expectedPostUrl = 'https://' + collectorUrl + spDefaultPostPath;
 
@@ -2253,7 +2339,7 @@ scenarios:
     let argUrl, argCallback, argOptions, argBody;
 
     // mock API
-    mock('getAllEventData', setMockEventObjectFromSpPv);
+    mock('getAllEventData', mockSnowplowEvent);
     mock('sendHttpRequest', function () {
       argUrl = arguments[0];
       argCallback = arguments[1];
@@ -2281,7 +2367,7 @@ scenarios:
     assertThat(argOptions.headers['Content-Type']).isStrictlyEqualTo(
       'application/json'
     );
-    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('user-agent');
+    assertThat(argOptions.headers['User-Agent']).isStrictlyEqualTo('curl/7.81.0');
 
     const body = jsonApi.parse(argBody);
     assertThat(body).isObject();
@@ -2290,36 +2376,12 @@ scenarios:
 
     const actEvent = body.data[0];
     assertThat(actEvent).isObject();
-    assertThat(actEvent.e).isStrictlyEqualTo(mockSnowplowEvent.e);
-    assertThat(actEvent.url).isStrictlyEqualTo(mockSnowplowEvent.url);
-    assertThat(actEvent.page).isStrictlyEqualTo(mockSnowplowEvent.page);
-    assertThat(actEvent.tv).isStrictlyEqualTo(mockSnowplowEvent.tv);
-    assertThat(actEvent.tna).isStrictlyEqualTo(mockSnowplowEvent.tna);
-    assertThat(actEvent.aid).isStrictlyEqualTo(mockSnowplowEvent.aid);
-    assertThat(actEvent.p).isStrictlyEqualTo(mockSnowplowEvent.p);
-    assertThat(actEvent.tz).isStrictlyEqualTo(mockSnowplowEvent.tz);
-    assertThat(actEvent.lang).isStrictlyEqualTo(mockSnowplowEvent.lang);
-    assertThat(actEvent.cs).isStrictlyEqualTo(mockSnowplowEvent.cs);
-    assertThat(actEvent.res).isStrictlyEqualTo(mockSnowplowEvent.res);
-    assertThat(actEvent.cd).isStrictlyEqualTo(mockSnowplowEvent.cd);
-    assertThat(actEvent.cookie).isStrictlyEqualTo(mockSnowplowEvent.cookie);
-    assertThat(actEvent.eid).isStrictlyEqualTo(mockSnowplowEvent.eid);
-    assertThat(actEvent.dtm).isStrictlyEqualTo(mockSnowplowEvent.dtm);
-    assertThat(actEvent.cx).isStrictlyEqualTo(mockSnowplowEvent.cx);
-    assertThat(actEvent.vp).isStrictlyEqualTo(mockSnowplowEvent.vp);
-    assertThat(actEvent.ds).isStrictlyEqualTo(mockSnowplowEvent.ds);
-    assertThat(actEvent.vid).isStrictlyEqualTo(mockSnowplowEvent.vid);
-    assertThat(actEvent.sid).isStrictlyEqualTo(mockSnowplowEvent.sid);
-    assertThat(actEvent.duid).isStrictlyEqualTo(mockSnowplowEvent.duid);
-    assertThat(actEvent.stm).isStrictlyEqualTo(mockSnowplowEvent.stm);
-    assertThat(actEvent.uid).isStrictlyEqualTo(mockSnowplowEvent.uid);
-
-    assertThat(actEvent.ip).isUndefined();
+    assertThat(actEvent).isEqualTo(rawSnowplowEvent);
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test Snowplow page_view event with ip_override
   code: |
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockSnowplowEvent = snowplowTp2PageView;
     const mockEventObjectIpOverride = jsonApi.parse(
       jsonApi.stringify(setMockEventObjectFromSpPv)
     );
@@ -2683,6 +2745,7 @@ scenarios:
       'x-ga-js_client_id': '1182338296.1632069552',
     };
 
+    const testVariable = [{ x: 1 }, { x: 2 }];
     const mockData = {
       collectorUrl: 'test',
 
@@ -2719,6 +2782,13 @@ scenarios:
           type: 'boolean',
           ref: 'userSet',
           value: true,
+        },
+        {
+          eventName: 'foo',
+          snowplowPropName: 'additionalObject.testArrayVar',
+          type: 'default',
+          ref: 'userSet',
+          value: testVariable,
         },
       ],
 
@@ -2776,9 +2846,18 @@ scenarios:
     assertThat(actSD.data.schema).isStrictlyEqualTo(
       'iglu:com.acme.test/foo/jsonschema/1-0-0'
     );
-    assertThat(actSD.data.data.foo_age).isStrictlyEqualTo(55);
-    assertThat(actSD.data.data.avg_load_time).isStrictlyEqualTo(1);
-    assertThat(actSD.data.data.additionalData.isDebugMode).isTrue();
+
+    const expectedData = {
+      foo_age: 55,
+      avg_load_time: 1,
+      additionalData: {
+        isDebugMode: true,
+      },
+      additionalObject: {
+        testArrayVar: testVariable,
+      },
+    };
+    assertThat(actSD.data.data).isEqualTo(expectedData);
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test boolean type with exception event
@@ -3442,7 +3521,6 @@ scenarios:
 - name: Test logs settings - debug does not log on prod
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3486,8 +3564,7 @@ scenarios:
 - name: Test logs settings - no does not log on prod
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
-    const mockEventObject = setMockEventObjectFromSpPv;
+    const mockSnowplowEvent = setMockEventObjectFromSpPv;
 
     const mockData = {
       collectorUrl: 'collector.test.com',
@@ -3499,8 +3576,20 @@ scenarios:
       defineAsStructured: false,
       defineAsSelfDescribing: false,
 
-      applyToSp: false,
+      applyToSp: true,
       customUseVariables: false,
+      customEntities: [
+        {
+          eventName: 'page_view',
+          ctxSchema:
+            'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'eventProperty',
+          value:
+            'x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1.0.id',
+        },
+      ],
       globalUseVariable: false,
 
       encodeBase64: true,
@@ -3509,9 +3598,13 @@ scenarios:
     };
 
     // mock API
-    mock('getAllEventData', mockEventObject);
+    mock('getAllEventData', mockSnowplowEvent);
+    let argUrl, argCallback, argOptions, argBody;
     mock('sendHttpRequest', function () {
-      return true;
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
     });
     mock('getContainerVersion', function () {
       let containerVersion = {
@@ -3526,11 +3619,48 @@ scenarios:
 
     // Assert
     assertApi('sendHttpRequest').wasCalled();
-    assertApi('logToConsole').wasNotCalled();
-- name: Test logs settings - always (1)
+    //assertApi('logToConsole').wasNotCalled();
+
+    // Assert on contexts/encoding
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    const expectedContexts = jsonApi.stringify({
+      schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
+      data: [
+        {
+          schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          data: { id: mockSnowplowEvent['x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1'][0].id },
+        },
+      ],
+    });
+
+    assertThat(actEvent.cx).isDefined();
+    assertThat(actEvent.co).isUndefined();
+
+    const fromBase64 = require('fromBase64');
+    const base64urldecode = (data) => {
+      const padding = 4 - (data.length % 4);
+      switch (padding) {
+        case 1:
+          data += '=';
+          break;
+        case 2:
+          data += '==';
+          break;
+        case 3:
+          data += '=';
+          break;
+      }
+      const b64Data = data.replace('-', '+').replace('_', '/');
+      return fromBase64(b64Data);
+    };
+
+    const actualContexts = base64urldecode(actEvent.cx);
+    assertThat(actualContexts).isEqualTo(expectedContexts);
+- name: Test logs settings (always in prod) and base64urlencode
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3543,19 +3673,44 @@ scenarios:
       defineAsStructured: false,
       defineAsSelfDescribing: false,
 
-      applyToSp: false,
+      applyToSp: true,
       customUseVariables: false,
+      customEntities: [
+        {
+          eventName: 'page_view',
+          ctxSchema:
+            'iglu:com.google.tag-manager.server-side/user_data/jsonschema/1-0-0',
+          ctxProp: 'address.postal_code',
+          type: 'default',
+          ref: 'userSet',
+          value: 'foo',
+        },
+      ],
       globalUseVariable: false,
+      globalEntities: [
+        {
+          ctxSchema: 'com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
+          ctxProp: 'id',
+          type: 'default',
+          ref: 'userSet',
+          value: 'a948af5f-abbd-454e-b81e-04e69ff88106',
+        },
+      ],
 
-      encodeBase64: true,
+      encodeBase64: false,
       platform: 'srv',
       logType: 'always',
     };
 
+    // to assert on
+    let argUrl, argCallback, argOptions, argBody;
     // mock API
     mock('getAllEventData', mockEventObject);
     mock('sendHttpRequest', function () {
-      return true;
+      argUrl = arguments[0];
+      argCallback = arguments[1];
+      argOptions = arguments[2];
+      argBody = arguments[3];
     });
     mock('getContainerVersion', function () {
       let containerVersion = {
@@ -3571,10 +3726,16 @@ scenarios:
     // Assert
     assertApi('sendHttpRequest').wasCalled();
     assertApi('logToConsole').wasCalled();
+
+    const body = jsonApi.parse(argBody);
+    const actEvent = body.data[0];
+
+    const expectedContexts = 'eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uZ29vZ2xlLnRhZy1tYW5hZ2VyLnNlcnZlci1zaWRlL3VzZXJfZGF0YS9qc29uc2NoZW1hLzEtMC0wIiwiZGF0YSI6eyJhZGRyZXNzIjp7InBvc3RhbF9jb2RlIjoiZm9vIn19fSx7InNjaGVtYSI6ImlnbHU6Y29tLnNub3dwbG93YW5hbHl0aWNzLnNub3dwbG93L3dlYl9wYWdlL2pzb25zY2hlbWEvMS0wLTAiLCJkYXRhIjp7ImlkIjoiYTk0OGFmNWYtYWJiZC00NTRlLWI4MWUtMDRlNjlmZjg4MTA2In19XX0';
+    assertThat(actEvent.cx).isEqualTo(expectedContexts);
+    assertThat(actEvent.co).isUndefined();
 - name: Test logs settings - always (2)
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3620,14 +3781,14 @@ scenarios:
     const decodeUri = require('decodeUriComponent');
 
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
+    const mockSnowplowEvent = snowplowTp2PageView;
     const mockEventObject = setMockEventObjectFromSpPv;
     const testCollector = 'collector.test.com';
 
     const mockData = {
       collectorUrl: 'collector.test.com',
 
-      userIdCookie: 'sp',
+      userIdCookie: 'micro',
       cookieOverrideEnabled: false,
       forwardCookieHeaders: true,
       cookiesToForward: [
@@ -3663,7 +3824,11 @@ scenarios:
 
       // mock response
       let respStatusCode = 200;
-      let respHeaders = { foo: 'bar' };
+      let respHeaders = {
+        foo: 'bar',
+        'set-cookie':
+          'micro=60f9c826-79b4-46b1-b27c-4f816899c09f; Expires=Sat, 15 Jun 2024 20:06:33 GMT; Path=/',
+      };
       let respBody = 'ok';
 
       // and call the callback with mock response
@@ -3711,7 +3876,7 @@ scenarios:
     const expectedUrl = 'https://' + testCollector + spDefaultPostPath;
     const expectedHeaders = {
       'Content-Type': 'application/json',
-      'User-Agent': 'user-agent',
+      'User-Agent': 'curl/7.81.0',
       'SP-Anonymous': '*',
       Cookie: 'foo=a; foo=b; bar=test%26%3F; baz=test&?',
     };
@@ -3735,18 +3900,34 @@ scenarios:
       TraceId: 'someTestTraceId',
       EventName: 'page_view',
       ResponseStatusCode: 200,
-      ResponseHeaders: { foo: 'bar' },
+      ResponseHeaders: {
+        foo: 'bar',
+        'set-cookie':
+          'micro=60f9c826-79b4-46b1-b27c-4f816899c09f; Expires=Sat, 15 Jun 2024 20:06:33 GMT; Path=/',
+      },
       ResponseBody: 'ok',
     });
 
     assertThat(argOptions.headers).isEqualTo(expectedHeaders);
+    assertApi('setCookie').wasCalled();
+    assertApi('setCookie').wasCalledWith(
+      'micro',
+      '60f9c826-79b4-46b1-b27c-4f816899c09f',
+      {
+        domain: 'auto',
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+        expires: 'Sat, 15 Jun 2024 20:06:33 GMT',
+      }
+    );
     assertApi('logToConsole').wasCalled();
     assertApi('logToConsole').wasCalledWith(expectedRequestLog);
     assertApi('logToConsole').wasCalledWith(expectedResponseLog);
 - name: Test logs - containerVersion undefined
   code: |
     // test constants
-    const mockSnowplowEvent = setMockRawSnowplowPageView;
     const mockEventObject = setMockEventObjectFromSpPv;
 
     const mockData = {
@@ -3782,7 +3963,7 @@ setup: |-
   const spPayloadSchema =
     'iglu:com.snowplowanalytics.snowplow/payload_data/jsonschema/1-0-4';
   const spDefaultPostPath = '/com.snowplowanalytics.snowplow/tp2';
-  const setMockRawSnowplowPageView = {
+  const snowplowTp2PageView = {
     e: 'pv',
     url: 'https://snowplowanalytics.com/',
     page: 'Collect, manage and operationalize behavioral data at scale | Snowplow',
@@ -3810,81 +3991,65 @@ setup: |-
 
   const setMockEventObjectFromSpPv = {
     event_name: 'page_view',
-    client_id: 'd54a1904-7798-401a-be0b-1a83bea73634',
     language: 'en-GB',
     page_encoding: 'UTF-8',
     page_hostname: 'snowplowanalytics.com',
     page_location: 'https://snowplowanalytics.com/',
     page_path: '/',
-    page_referrer: 'referer',
     page_title:
       'Collect, manage and operationalize behavioral data at scale | Snowplow',
     screen_resolution: '1920x1080',
-    user_id: 'snow123',
     viewport_size: '745x1302',
-    user_agent: 'user-agent',
-    origin: 'origin',
-    host: 'host',
-    'x-sp-tp2': setMockRawSnowplowPageView,
+    user_agent: 'curl/7.81.0',
+    host: 'engineering-sandbox.appspot.com',
+    'x-sp-app_id': 'website',
+    'x-sp-platform': 'web',
+    'x-sp-dvce_created_tstamp': '1628586512246',
+    'x-sp-event_id': '8676de79-0eba-4435-ad95-8a41a8a0129c',
+    'x-sp-name_tracker': 'sp',
+    'x-sp-v_tracker': 'js-3.1.4',
+    'x-sp-domain_sessionid': 'e7580b71-227b-4868-9ea9-322a263ce885',
+    'x-sp-domain_sessionidx': 1,
+    'x-sp-domain_userid': 'd54a1904-7798-401a-be0b-1a83bea73634',
+    'x-sp-user_id': 'snow123',
+    'x-sp-br_cookies': '1',
+    'x-sp-br_colordepth': '24',
+    'x-sp-br_viewwidth': 745,
+    'x-sp-br_viewheight': 1302,
+    'x-sp-dvce_screenwidth': 1920,
+    'x-sp-dvce_screenheight': 1080,
+    'x-sp-doc_charset': 'UTF-8',
+    'x-sp-doc_width': 730,
+    'x-sp-doc_height': 12393,
+    'x-sp-dvce_sent_tstamp': '1628586512248',
+    'x-sp-tp2': jsonApi.parse(jsonApi.stringify(snowplowTp2PageView)),
     'x-sp-anonymous': '*',
-    'x-sp-context_com_snowplowanalytics_snowplow_web_page_jsonschema_1': {
-      id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
-    },
-    'x-sp-context_org_w3_PerformanceTiming_jsonschema_1': {
-      navigationStart: 1628586508610,
-      unloadEventStart: 0,
-      unloadEventEnd: 0,
-      redirectStart: 0,
-      redirectEnd: 0,
-      fetchStart: 1628586508610,
-      domainLookupStart: 1628586508637,
-      domainLookupEnd: 1628586508691,
-      connectStart: 1628586508691,
-      connectEnd: 1628586508763,
-      secureConnectionStart: 1628586508721,
-      requestStart: 1628586508763,
-      responseStart: 1628586508797,
-      responseEnd: 1628586508821,
-      domLoading: 1628586509076,
-      domInteractive: 1628586509381,
-      domContentLoadedEventStart: 1628586509408,
-      domContentLoadedEventEnd: 1628586509417,
-      domComplete: 1628586510332,
-      loadEventStart: 1628586510332,
-      loadEventEnd: 1628586510334,
-    },
-    'x-sp-contexts': [
+    'x-sp-contexts_com_snowplowanalytics_snowplow_web_page_1': [
+      { id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d' },
+    ],
+    'x-sp-contexts_org_w3_performance_timing_1': [
       {
-        schema: 'iglu:com.snowplowanalytics.snowplow/web_page/jsonschema/1-0-0',
-        data: {
-          id: 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
-        },
-      },
-      {
-        schema: 'iglu:org.w3/PerformanceTiming/jsonschema/1-0-0',
-        data: {
-          navigationStart: 1628586508610,
-          unloadEventStart: 0,
-          unloadEventEnd: 0,
-          redirectStart: 0,
-          redirectEnd: 0,
-          fetchStart: 1628586508610,
-          domainLookupStart: 1628586508637,
-          domainLookupEnd: 1628586508691,
-          connectStart: 1628586508691,
-          connectEnd: 1628586508763,
-          secureConnectionStart: 1628586508721,
-          requestStart: 1628586508763,
-          responseStart: 1628586508797,
-          responseEnd: 1628586508821,
-          domLoading: 1628586509076,
-          domInteractive: 1628586509381,
-          domContentLoadedEventStart: 1628586509408,
-          domContentLoadedEventEnd: 1628586509417,
-          domComplete: 1628586510332,
-          loadEventStart: 1628586510332,
-          loadEventEnd: 1628586510334,
-        },
+        navigationStart: 1628586508610,
+        unloadEventStart: 0,
+        unloadEventEnd: 0,
+        redirectStart: 0,
+        redirectEnd: 0,
+        fetchStart: 1628586508610,
+        domainLookupStart: 1628586508637,
+        domainLookupEnd: 1628586508691,
+        connectStart: 1628586508691,
+        connectEnd: 1628586508763,
+        secureConnectionStart: 1628586508721,
+        requestStart: 1628586508763,
+        responseStart: 1628586508797,
+        responseEnd: 1628586508821,
+        domLoading: 1628586509076,
+        domInteractive: 1628586509381,
+        domContentLoadedEventStart: 1628586509408,
+        domContentLoadedEventEnd: 1628586509417,
+        domComplete: 1628586510332,
+        loadEventStart: 1628586510332,
+        loadEventEnd: 1628586510334,
       },
     ],
     ga_session_id: 'e7580b71-227b-4868-9ea9-322a263ce885',
@@ -3892,6 +4057,8 @@ setup: |-
     'x-ga-mp2-seg': '1',
     'x-ga-protocol_version': '2',
     'x-ga-page_id': 'a86c42e5-b831-45c8-b706-e214c26b4b3d',
+    client_id: 'd54a1904-7798-401a-be0b-1a83bea73634',
+    user_id: 'snow123',
   };
 
   const mockEventObjectSelfDesc = {

@@ -28,6 +28,8 @@ In addition, users can change the default or add custom event definitions accord
 
 ## Installation
 
+_The server Docker image must be 2.0.0 or later._
+
 ### Installing from the Google Tag Manager Template Gallery
 
 1. From the Templates tab in GTM Server Side, click "Search Gallery" in the Tag Templates section
@@ -129,7 +131,7 @@ Feedback and contributions are welcome - if you have identified a bug, please lo
 
 ## Copyright and license
 
-Snowplow Tag for Google Tag Manager Server-side is copyright 2021-2022 Snowplow Analytics Ltd.
+Snowplow Tag for Google Tag Manager Server-side is copyright 2021-2023 Snowplow Analytics Ltd.
 
 Licensed under the **[Apache License, Version 2.0][license]** (the "License");
 you may not use this software except in compliance with the License.
