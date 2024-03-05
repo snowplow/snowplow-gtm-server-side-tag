@@ -131,7 +131,7 @@ Feedback and contributions are welcome - if you have identified a bug, please lo
 
 ## Copyright and license
 
-Snowplow Tag for Google Tag Manager Server-side is copyright 2021-2023 Snowplow Analytics Ltd.
+Snowplow Tag for Google Tag Manager Server-side is copyright 2021-2024 Snowplow Analytics Ltd.
 
 Licensed under the **[Apache License, Version 2.0][license]** (the "License");
 you may not use this software except in compliance with the License.
