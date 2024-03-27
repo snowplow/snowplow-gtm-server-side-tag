@@ -854,6 +854,14 @@ ___TEMPLATE_PARAMETERS___
             "simpleValueType": true,
             "help": "The application platform",
             "defaultValue": "srv"
+          },
+          {
+            "type": "TEXT",
+            "name": "appId",
+            "displayName": "App ID",
+            "simpleValueType": true,
+            "help": "Use this option to set the app_id for your events. If the value provided is not a string, it will be ignored.",
+            "alwaysInSummary": true
           }
         ]
       }
@@ -921,7 +929,7 @@ const spSelfDescribingSchema =
 const spContextsSchema =
   'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0';
 const spPostPath = '/com.snowplowanalytics.snowplow/tp2';
-const spVersion = 'gtmss-0.5.0';
+const spVersion = 'gtmss-0.6.0';
 const tagName = 'Snowplow';
 
 // event data mappings for self-describing Snowplow events
@@ -1709,9 +1717,11 @@ function interpret(val, typ, ref, evObj) {
  * @returns {Object} The initial Snowplow event object
  */
 const mkStandardPairs = (evObj, evType, tagConfig) => {
+  const appId = getType(tagConfig.appId) === 'string' ? tagConfig.appId : undefined;
   return {
     e: evType,
     p: tagConfig.platform,
+    aid: appId,
     tv: spVersion,
     dtm: makeString(getTimestampMillis()),
     url: evObj.page_location,
@@ -2405,6 +2415,7 @@ scenarios:
 
       encodeBase64: true,
       platform: 'srv',
+      appId: 'should not apply to sp events',
       logType: 'no',
     };
 
@@ -2437,6 +2448,8 @@ scenarios:
     const actEvent = body.data[0];
     assertThat(actEvent.ip).isDefined();
     assertThat(actEvent.ip).isEqualTo(mockEventObjectIpOverride.ip_override);
+    assertThat(actEvent.aid).isNotEqualTo('should not apply to sp events');
+    assertThat(actEvent.aid).isEqualTo('website'); // original value
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test overriding login event
@@ -2497,6 +2510,7 @@ scenarios:
 
       encodeBase64: false,
       platform: 'srv',
+      appId: 'testApp',
       logType: 'no',
     };
 
@@ -2537,6 +2551,7 @@ scenarios:
     assertThat(actEvent.ip).isStrictlyEqualTo('1.2.3.4');
     assertThat(actEvent.ue_pr).isDefined();
     assertThat(actEvent.ue_px).isUndefined();
+    assertThat(actEvent.aid).isStrictlyEqualTo('testApp');
 
     const actSD = jsonApi.parse(actEvent.ue_pr);
     assertThat(actSD.schema).isStrictlyEqualTo(
@@ -2582,6 +2597,7 @@ scenarios:
 
       encodeBase64: true,
       platform: 'srv',
+      appId: '', // empty string ok
       logType: 'no',
     };
 
@@ -2624,6 +2640,7 @@ scenarios:
     assertThat(actEvent.se_la).isStrictlyEqualTo('holiday');
     assertThat(actEvent.se_pr).isUndefined();
     assertThat(actEvent.se_va).isUndefined();
+    assertThat(actEvent.aid).isStrictlyEqualTo('');
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test custom structured event mp2
@@ -2671,6 +2688,7 @@ scenarios:
 
       encodeBase64: false,
       platform: 'srv',
+      // no appId set
       logType: 'no',
     };
 
@@ -2717,6 +2735,7 @@ scenarios:
     assertThat(actEvent.se_la).isStrictlyEqualTo('My promotional video');
     assertThat(actEvent.se_pr).isUndefined();
     assertThat(actEvent.se_va).isUndefined();
+    assertThat(actEvent.appId).isUndefined();
 
     assertApi('logToConsole').wasNotCalled();
 - name: Test custom unstructured event
@@ -2798,6 +2817,7 @@ scenarios:
 
       encodeBase64: false,
       platform: 'srv',
+      appId: 3, // to test that non string value (e.g. through a variable) gets ignored
       logType: 'no',
     };
 
@@ -2838,6 +2858,7 @@ scenarios:
     assertThat(actEvent.ip).isUndefined();
     assertThat(actEvent.ue_pr).isDefined();
     assertThat(actEvent.ue_px).isUndefined();
+    assertThat(actEvent.aid).isUndefined();
 
     const actSD = jsonApi.parse(actEvent.ue_pr);
     assertThat(actSD.schema).isStrictlyEqualTo(
@@ -2901,6 +2922,7 @@ scenarios:
 
       encodeBase64: false,
       platform: 'srv',
+      appId: 'my-app',
       logType: 'no',
     };
 
@@ -2941,6 +2963,7 @@ scenarios:
     assertThat(actEvent.ip).isUndefined();
     assertThat(actEvent.ue_pr).isDefined();
     assertThat(actEvent.ue_px).isUndefined();
+    assertThat(actEvent.aid).isStrictlyEqualTo('my-app');
 
     const actSD = jsonApi.parse(actEvent.ue_pr);
     assertThat(actSD.schema).isStrictlyEqualTo(
@@ -3463,6 +3486,7 @@ scenarios:
 
       encodeBase64: false,
       platform: 'srv',
+      appId: 'testApp',
       logType: 'no',
     };
 
@@ -3503,6 +3527,7 @@ scenarios:
     assertThat(actEvent.ip).isUndefined();
     assertThat(actEvent.ue_pr).isUndefined();
     assertThat(actEvent.ue_px).isUndefined();
+    assertThat(actEvent.aid).isStrictlyEqualTo('testApp');
 
     const expectedContexts = jsonApi.stringify({
       schema: 'iglu:com.snowplowanalytics.snowplow/contexts/jsonschema/1-0-0',
